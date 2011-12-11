@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageConverter.cs" />
+    <Compile Include="AgatImageConverter.cs" />
     <Compile Include="HgrImageFormat.cs" />
-    <Compile Include="ImageFormat.cs" />
+    <Compile Include="AgatImageFormat.cs" />
     <Compile Include="MgrImageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

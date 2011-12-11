@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FilLib;
-using ImageLib;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Diagnostics;
-using NDesk.Options;
 using System.IO;
+using FilLib;
+using ImageLib;
+using NDesk.Options;
 
 namespace filconv
 {
@@ -64,14 +62,14 @@ namespace filconv
                 return 1;
             }
 
-            ImageLib.ImageFormat filFormat;
+            AgatImageFormat filFormat;
             switch (filFormatName)
             {
                 case "mgr":
-                    filFormat = new ImageLib.MgrImageFormat();
+                    filFormat = new MgrImageFormat();
                     break;
                 case "hgr":
-                    filFormat = new ImageLib.HgrImageFormat();
+                    filFormat = new HgrImageFormat();
                     break;
                 default:
                     throw new Exception(string.Format("Invalid image format specified: '{0}'", filFormatName));
@@ -84,7 +82,7 @@ namespace filconv
             {
                 // converting from Agat to PC
                 string ext = Path.GetExtension(dst);
-                System.Drawing.Imaging.ImageFormat imgFormat;
+                ImageFormat imgFormat;
                 if (!_extToFormat.TryGetValue(ext, out imgFormat))
                 {
                     System.Console.Error.WriteLine("Supported PC formats are {0} but output file is {1}", string.Join(", ", _extToFormat.Keys), dst);
@@ -106,17 +104,17 @@ namespace filconv
             return 0;
         }
 
-        static void FromFil(string from, string to, ImageLib.ImageFormat formatFrom, System.Drawing.Imaging.ImageFormat formatTo)
+        static void FromFil(string from, string to, AgatImageFormat formatFrom, ImageFormat formatTo)
         {
             Fil fil = Fil.FromFile(from);
-            Bitmap bmp = ImageLib.ImageConverter.GetBitmap(fil.Data, formatFrom);
+            Bitmap bmp = AgatImageConverter.GetBitmap(fil.Data, formatFrom);
             bmp.Save(to, formatTo);
         }
 
-        static void ToFil(string from, string to, ImageLib.ImageFormat format, FilType type)
+        static void ToFil(string from, string to, AgatImageFormat format, FilType type)
         {
             Bitmap bmp = (Bitmap)Image.FromFile(from);
-            var pixels = ImageLib.ImageConverter.GetBytes(bmp, format);
+            var pixels = AgatImageConverter.GetBytes(bmp, format);
             var fil = new Fil(Path.GetFileNameWithoutExtension(to));
             fil.Type = type;
             fil.Data = pixels;
@@ -132,13 +130,13 @@ namespace filconv
             options.WriteOptionDescriptions(System.Console.Out);
         }
 
-        static readonly Dictionary<string, System.Drawing.Imaging.ImageFormat> _extToFormat =
-            new Dictionary<string, System.Drawing.Imaging.ImageFormat>(StringComparer.InvariantCultureIgnoreCase)
+        static readonly Dictionary<string, ImageFormat> _extToFormat =
+            new Dictionary<string, ImageFormat>(StringComparer.InvariantCultureIgnoreCase)
         {
-            { ".png", System.Drawing.Imaging.ImageFormat.Png },
-            { ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg },
-            { ".gif", System.Drawing.Imaging.ImageFormat.Gif },
-            { ".bmp", System.Drawing.Imaging.ImageFormat.Bmp },
+            { ".png", ImageFormat.Png },
+            { ".jpg", ImageFormat.Jpeg },
+            { ".gif", ImageFormat.Gif },
+            { ".bmp", ImageFormat.Bmp },
         };
     }
 }

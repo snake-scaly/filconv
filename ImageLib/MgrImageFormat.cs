@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace ImageLib
 {
-    public class MgrImageFormat : ImageFormat
+    public class MgrImageFormat : AgatImageFormat
     {
         private const int _width = 128;
         private const int _height = 128;

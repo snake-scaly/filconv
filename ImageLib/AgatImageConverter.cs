@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 
 namespace ImageLib
 {
-    public static class ImageConverter
+    public static class AgatImageConverter
     {
         public static Bitmap GetBitmap(byte[] bytes)
         {
@@ -15,7 +15,7 @@ namespace ImageLib
             return GetBytes(bmp, new HgrImageFormat());
         }
 
-        public static Bitmap GetBitmap(byte[] bytes, ImageFormat format)
+        public static Bitmap GetBitmap(byte[] bytes, AgatImageFormat format)
         {
             var bmp = new Bitmap(format.Width, format.Height, PixelFormat.Format24bppRgb);
             for (int y = 0; y < format.Height; ++y)
@@ -28,7 +28,7 @@ namespace ImageLib
             return bmp;
         }
 
-        public static byte[] GetBytes(Bitmap bmp, ImageFormat format)
+        public static byte[] GetBytes(Bitmap bmp, AgatImageFormat format)
         {
             byte[] bytes = new byte[format.ImageSizeInBytes];
             for (int y = 0; y < format.Height; ++y)

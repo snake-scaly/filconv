@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ImageLib
 {
-    public interface ImageFormat
+    public interface AgatImageFormat
     {
         int Width { get; }
         int Height { get; }
