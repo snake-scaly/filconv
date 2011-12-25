@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageLib", "ImageLib\ImageL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NDesk.Options", "NDesk.Options\NDesk.Options.csproj", "{7D7BCAAB-D66A-4E76-8DB3-9797E58F9944}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilConvGui", "FilConvGui\FilConvGui.csproj", "{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,16 @@ Global
 		{7D7BCAAB-D66A-4E76-8DB3-9797E58F9944}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7D7BCAAB-D66A-4E76-8DB3-9797E58F9944}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7D7BCAAB-D66A-4E76-8DB3-9797E58F9944}.Release|x86.ActiveCfg = Release|Any CPU
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Debug|x86.ActiveCfg = Debug|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Debug|x86.Build.0 = Debug|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Release|Any CPU.ActiveCfg = Release|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Release|x86.ActiveCfg = Release|x86
+		{63F8131B-AA17-40F3-9A0B-C1605D8C7B9B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
