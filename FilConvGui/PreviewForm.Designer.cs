@@ -167,12 +167,15 @@
             // 
             // previewContainer
             // 
+            this.previewContainer.AllowDrop = true;
             this.previewContainer.Controls.Add(this.previewPictureBox);
             this.previewContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.previewContainer.Location = new System.Drawing.Point(0, 28);
             this.previewContainer.Name = "previewContainer";
             this.previewContainer.Size = new System.Drawing.Size(635, 406);
             this.previewContainer.TabIndex = 2;
+            this.previewContainer.DragDrop += new System.Windows.Forms.DragEventHandler(this.previewContainer_DragDrop);
+            this.previewContainer.DragEnter += new System.Windows.Forms.DragEventHandler(this.previewContainer_DragEnter);
             // 
             // PreviewForm
             // 

@@ -119,5 +119,15 @@ namespace FilConvGui
         {
             _controller.Exit();
         }
+
+        private void previewContainer_DragDrop(object sender, DragEventArgs e)
+        {
+            _controller.DragDrop(e);
+        }
+
+        private void previewContainer_DragEnter(object sender, DragEventArgs e)
+        {
+            _controller.DragEnter(e);
+        }
     }
 }

@@ -37,8 +37,11 @@ namespace FilConvGui
                 return;
             }
 
-            string fileName = ofd.FileName;
+            Open(ofd.FileName);
+        }
 
+        void Open(string fileName)
+        {
             try
             {
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
@@ -81,6 +84,27 @@ namespace FilConvGui
         public void Exit()
         {
             Application.Exit();
+        }
+
+        public void DragEnter(DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        public void DragDrop(DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                object[] files = (object[])e.Data.GetData(DataFormats.FileDrop);
+                Open(files[0].ToString());
+            }
         }
 
         string GetFileFilter()
