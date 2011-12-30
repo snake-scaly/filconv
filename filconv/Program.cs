@@ -118,7 +118,10 @@ namespace filconv
             var fil = new Fil(Path.GetFileNameWithoutExtension(to));
             fil.Type = type;
             fil.Data = pixels;
-            fil.Write(new FileStream(to, FileMode.Create));
+            using (var fs = new FileStream(to, FileMode.Create))
+            {
+                fil.Write(fs);
+            }
         }
 
         static void Usage(OptionSet options)
