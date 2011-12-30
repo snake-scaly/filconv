@@ -8,126 +8,209 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using ImageLib;
+using FilLib;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace FilConvGui
 {
     public partial class PreviewForm : Form
     {
-        PreviewFormController _controller;
+        Preview left;
+        Preview right;
+        string fileName;
 
         public PreviewForm()
         {
             InitializeComponent();
-            _controller = new PreviewFormController(this);
-            _controller.Initialize();
-        }
 
-        internal void Update(PreviewFormModel model)
-        {
-            var scale = new Tuple<PictureScale, ToolStripMenuItem>[]
-            {
-                new Tuple<PictureScale, ToolStripMenuItem>(PictureScale.Single, scale100MenuItem),
-                new Tuple<PictureScale, ToolStripMenuItem>(PictureScale.Double, scale200MenuItem),
-                new Tuple<PictureScale, ToolStripMenuItem>(PictureScale.Triple, scale300MenuItem),
-                new Tuple<PictureScale, ToolStripMenuItem>(PictureScale.Free, scaleFreeMenuItem),
-            };
+            left = new Preview();
+            left.Dock = DockStyle.Fill;
+            left.Title = "Оригинал";
+            left.DisplayPictureChange += left_ConvertedBitmapChange;
+            splitContainer1.Panel1.Controls.Add(left);
 
-            var aspect = new Tuple<PictureAspect, ToolStripMenuItem>[]
-            {
-                new Tuple<PictureAspect, ToolStripMenuItem>(PictureAspect.Original, aspectOriginalMenuItem),
-                new Tuple<PictureAspect, ToolStripMenuItem>(PictureAspect.Television, aspectTeleMenuItem),
-            };
-
-            foreach (var t in scale)
-            {
-                t.Item2.Checked = t.Item1 == model.Scale;
-            }
-
-            foreach (var t in aspect)
-            {
-                t.Item2.Checked = t.Item1 == model.Aspect;
-            }
-
-            if (model.BitmapPicture != null)
-            {
-                previewPictureBox.Image = model.BitmapPicture;
-            }
-            else if (model.FilPicture != null)
-            {
-                Debug.Assert(model.FilPictureFormat != null);
-                previewPictureBox.Image = AgatImageConverter.GetBitmap(
-                    model.FilPicture.Data,
-                    model.FilPictureFormat);
-            }
-
-            if (previewPictureBox.Image != null)
-            {
-                if (model.Scale.ResizeToFit)
-                {
-                    previewPictureBox.Dock = DockStyle.Fill;
-                    previewPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-                }
-                else
-                {
-                    previewPictureBox.Dock = DockStyle.None;
-                    previewPictureBox.Anchor = AnchorStyles.None;
-                    previewPictureBox.Width = (int)(previewPictureBox.Image.Width * model.Scale.Scale * model.Aspect.Aspect);
-                    previewPictureBox.Height = (int)(previewPictureBox.Image.Height * model.Scale.Scale);
-                    previewPictureBox.Left = (previewContainer.ClientSize.Width - previewPictureBox.Width) / 2;
-                    previewPictureBox.Top = (previewContainer.ClientSize.Height - previewPictureBox.Height) / 2;
-                    previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                }
-            }
+            right = new Preview();
+            right.Dock = DockStyle.Fill;
+            right.Title = "Результат";
+            right.Encode = true;
+            splitContainer1.Panel2.Controls.Add(right);
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _controller.Open();
-        }
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = string.Join("|", GetFileFilterList(true, true).Select(ff => ff.Filter));
+            DialogResult r = ofd.ShowDialog();
+            if (r != DialogResult.OK)
+            {
+                return;
+            }
 
-        private void scale100MenuItem_Click(object sender, EventArgs e)
-        {
-            _controller.SetScale(PictureScale.Single);
-        }
-
-        private void scale200MenuItem_Click(object sender, EventArgs e)
-        {
-            _controller.SetScale(PictureScale.Double);
-        }
-
-        private void scale300MenuItem_Click(object sender, EventArgs e)
-        {
-            _controller.SetScale(PictureScale.Triple);
-        }
-
-        private void scaleFreeMenuItem_Click(object sender, EventArgs e)
-        {
-            _controller.SetScale(PictureScale.Free);
-        }
-
-        private void aspectOriginalMenuItem_Click(object sender, EventArgs e)
-        {
-            _controller.SetAspect(PictureAspect.Original);
-        }
-
-        private void aspectTeleMenuItem_Click(object sender, EventArgs e)
-        {
-            _controller.SetAspect(PictureAspect.Television);
+            Open(ofd.FileName);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _controller.Exit();
+            Application.Exit();
         }
 
-        private void previewContainer_DragDrop(object sender, DragEventArgs e)
+        private void left_ConvertedBitmapChange(object sender, EventArgs e)
         {
-            _controller.DragDrop(e);
+            Debug.Assert(object.ReferenceEquals(sender, left));
+            right.BitmapPicture = left.DisplayPicture;
         }
 
-        private void previewContainer_DragEnter(object sender, DragEventArgs e)
+        void Open(string fileName)
         {
-            _controller.DragEnter(e);
+            try
+            {
+                if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    left.FilPicture = Fil.FromFile(fileName);
+                }
+                else
+                {
+                    left.BitmapPicture = (Bitmap)Image.FromFile(fileName);
+                }
+                this.fileName = fileName;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(
+                    string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
+                    "Fil Converter",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        void Save(string fileName, ImageFormat format)
+        {
+            if (format != null)
+            {
+                right.DisplayPicture.Save(fileName, format);
+            }
+            else
+            {
+                var fil = new Fil(Path.GetFileName(fileName));
+                fil.Data = AgatImageConverter.GetBytes(left.DisplayPicture, right.Format);
+                using (var fs = new FileStream(fileName, FileMode.Create))
+                {
+                    fil.Write(fs);
+                }
+            }
+        }
+
+        private void PreviewForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void PreviewForm_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                object[] files = (object[])e.Data.GetData(DataFormats.FileDrop);
+                Open(files[0].ToString());
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IEnumerable<FileFilter> filters = GetFileFilterList(right.Format != null, false);
+
+            var sfd = new SaveFileDialog();
+            sfd.FileName = Path.GetFileNameWithoutExtension(fileName);
+            sfd.Filter = string.Join("|", filters.Select(ff => ff.Filter));
+            sfd.FilterIndex = 1;
+            DialogResult result = sfd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                fileName = sfd.FileName;
+                ImageFormat format = filters.Skip(sfd.FilterIndex - 1).First().ImageFormat;
+                Save(fileName, format);
+            }
+        }
+
+        IEnumerable<FileFilter> GetFileFilterList(bool includeAgat, bool includeGeneric)
+        {
+            IEnumerable<SupportedFile> files = _supportedPcFiles.AsEnumerable();
+            if (includeAgat)
+            {
+                files = _supportedAgatFiles.Concat(files);
+            }
+
+            var types = files.Select(f => Tuple.Create(
+                f.Name,
+                string.Join(";", f.Extensions),
+                f.ImageFormat));
+
+            if (includeGeneric)
+            {
+                string allExts = string.Join(";", types.Select(t => t.Item2));
+                types = Enumerable
+                    .Repeat(Tuple.Create("Все поддерживаемые", allExts, (ImageFormat)null), 1)
+                    .Concat(types)
+                    .Concat(Enumerable.Repeat(Tuple.Create("Все", "*.*", (ImageFormat)null), 1));
+            }
+
+            return types.Select(t => new FileFilter(
+                string.Format("{0} ({1})|{1}", t.Item1, t.Item2),
+                t.Item3));
+        }
+
+        struct SupportedFile
+        {
+            public string Name;
+            public string[] Extensions;
+            public ImageFormat ImageFormat; // null means FIL
+
+            public SupportedFile(string name, string[] extensions, ImageFormat imageFormat)
+                : this()
+            {
+                Name = name;
+                Extensions = extensions;
+                ImageFormat = imageFormat;
+            }
+        }
+
+        struct FileFilter
+        {
+            public string Filter;
+            public ImageFormat ImageFormat;
+
+            public FileFilter(string filter, ImageFormat imageFormat)
+            {
+                Filter = filter;
+                ImageFormat = imageFormat;
+            }
+        }
+
+        static readonly SupportedFile[] _supportedAgatFiles =
+        {
+            new SupportedFile("Fil", new string[] { "*.fil" }, null),
+        };
+
+        static readonly SupportedFile[] _supportedPcFiles =
+        {
+            new SupportedFile("Bmp", new string[] { "*.bmp" }, ImageFormat.Bmp),
+            new SupportedFile("Jpeg", new string[] { "*.jpg", "*,jpeg" }, ImageFormat.Jpeg),
+            new SupportedFile("Png", new string[] { "*.png" }, ImageFormat.Png),
+            new SupportedFile("Gif", new string[] { "*.gif" }, ImageFormat.Gif),
+            new SupportedFile("Tiff", new string[] { "*.tif", "*.tiff" }, ImageFormat.Tiff),
+        };
+
+        private void опрограммеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutBox().ShowDialog();
         }
     }
 }
