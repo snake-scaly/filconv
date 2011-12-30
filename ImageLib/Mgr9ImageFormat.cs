@@ -33,6 +33,13 @@ namespace ImageLib
             get { return _colorPalette; }
         }
 
+        protected override int GetLineOffset(int y)
+        {
+            int bank;
+            int line = Math.DivRem(y, 2, out bank);
+            return (line + Height / 2 * bank) * BytesPerScanline;
+        }
+
         private static readonly Color[] _colorPalette =
         {
             Color.FromArgb(0, 0, 0),

@@ -25,12 +25,12 @@ namespace ImageLib
         protected abstract int BitsPerPixel { get; }
         protected abstract Color[] Palette { get; }
 
-        int PixelsPerByte
+        protected int PixelsPerByte
         {
             get { return 8 / BitsPerPixel; }
         }
 
-        int BytesPerScanline
+        protected int BytesPerScanline
         {
             get { return Width / PixelsPerByte; }
         }
@@ -40,7 +40,7 @@ namespace ImageLib
             ValidateCoordinates(x, y);
             int pixelIndex;
             int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
-            int offset = y * BytesPerScanline + byteInLine;
+            int offset = GetLineOffset(y) + byteInLine;
             int b = pixels[offset];
             b >>= (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
             b &= (1 << BitsPerPixel) - 1;
@@ -52,13 +52,18 @@ namespace ImageLib
             ValidateCoordinates(x, y);
             int pixelIndex;
             int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
-            int offset = y * BytesPerScanline + byteInLine;
+            int offset = GetLineOffset(y) + byteInLine;
             int b = pixels[offset];
             int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
             int mask = ((1 << BitsPerPixel) - 1) << shift;
             int index = GetClosestColor(Palette, color) << shift;
             b = b & ~mask | index;
             pixels[offset] = (byte)b;
+        }
+
+        protected virtual int GetLineOffset(int y)
+        {
+            return y * BytesPerScanline;
         }
 
         void ValidateCoordinates(int x, int y)

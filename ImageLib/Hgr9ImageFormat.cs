@@ -26,5 +26,12 @@ namespace ImageLib
         {
             get { return 2.0 / 3.0; }
         }
+
+        protected override int GetLineOffset(int y)
+        {
+            int bank;
+            int line = Math.DivRem(y, 2, out bank);
+            return (line + Height / 2 * bank) * BytesPerScanline;
+        }
     }
 }
