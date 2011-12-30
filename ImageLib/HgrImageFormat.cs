@@ -13,6 +13,11 @@ namespace ImageLib
         private const int _bytesPerScanline = 32;
         private const int _pixelsPerByte = 8;
 
+        public string Name
+        {
+            get { return "HGR"; }
+        }
+
         public int Width
         {
             get { return _width; }

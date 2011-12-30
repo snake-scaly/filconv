@@ -8,9 +8,11 @@ namespace ImageLib
 {
     public interface AgatImageFormat
     {
+        string Name { get; }
         int Width { get; }
         int Height { get; }
         int ImageSizeInBytes { get; }
+
         Color GetPixel(byte[] pixels, int x, int y);
         void SetPixel(byte[] pixels, int x, int y, Color color);
     }

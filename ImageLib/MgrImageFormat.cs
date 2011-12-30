@@ -13,6 +13,11 @@ namespace ImageLib
         private const int _bpp = 4;
         private const int _bytesPerScanline = 64;
 
+        public string Name
+        {
+            get { return "MGR"; }
+        }
+
         public int Width
         {
             get { return _width; }
