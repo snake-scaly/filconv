@@ -28,6 +28,7 @@ namespace FilLib
         public Fil(string name)
         {
             Name = name;
+            Type = FilType.B;
         }
 
         private Fil(byte[] originalName)
