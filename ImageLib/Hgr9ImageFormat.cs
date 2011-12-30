@@ -2,25 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 
 namespace ImageLib
 {
-    public class MgrImageFormat : C16ImageFormatAbstr
+    public class Hgr9ImageFormat : BwImageFormatAbstr
     {
         public override string Name
         {
-            get { return "MGR"; }
+            get { return "HGR9"; }
         }
 
         public override int Width
         {
-            get { return 128; }
+            get { return 512; }
         }
 
         public override int Height
         {
-            get { return 128; }
+            get { return 256; }
+        }
+
+        public override double Aspect
+        {
+            get { return 2.0 / 3.0; }
         }
     }
 }

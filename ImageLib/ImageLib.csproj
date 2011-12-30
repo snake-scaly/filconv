@@ -42,8 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgatImageConverter.cs" />
+    <Compile Include="AgatImageFormatAbstr.cs" />
+    <Compile Include="BwImageFormatAbstr.cs" />
+    <Compile Include="C16ImageFormatAbstr.cs" />
+    <Compile Include="Gr7ImageFormat.cs" />
+    <Compile Include="Hgr9ImageFormat.cs" />
     <Compile Include="HgrImageFormat.cs" />
     <Compile Include="AgatImageFormat.cs" />
+    <Compile Include="Mgr9ImageFormat.cs" />
     <Compile Include="MgrImageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

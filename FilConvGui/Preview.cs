@@ -144,6 +144,7 @@ namespace FilConvGui
 
             zoomComboBox.SelectedIndex = scale[model.Scale];
             aspectCheckBox.Checked = model.TvAspect;
+            aspectCheckBox.Enabled = model.TvAspectEnabled;
 
             previewPictureBox.SuspendLayout();
             previewPictureBox.Image = model.DisplayPicture;

@@ -11,6 +11,7 @@ namespace ImageLib
         string Name { get; }
         int Width { get; }
         int Height { get; }
+        double Aspect { get; }
         int ImageSizeInBytes { get; }
 
         Color GetPixel(byte[] pixels, int x, int y);

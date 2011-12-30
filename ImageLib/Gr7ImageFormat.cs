@@ -6,21 +6,21 @@ using System.Drawing;
 
 namespace ImageLib
 {
-    public class MgrImageFormat : C16ImageFormatAbstr
+    public class Gr7ImageFormat : C16ImageFormatAbstr
     {
         public override string Name
         {
-            get { return "MGR"; }
+            get { return "GR7"; }
         }
 
         public override int Width
         {
-            get { return 128; }
+            get { return 64; }
         }
 
         public override int Height
         {
-            get { return 128; }
+            get { return 64; }
         }
     }
 }

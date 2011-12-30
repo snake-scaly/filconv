@@ -11,8 +11,6 @@ namespace FilConvGui
 {
     class PreviewModel
     {
-        const double normalAspectValue = 1.0;
-        const double tvAspectValue = 4.0 / 3.0;
         static readonly PictureScale defaultScale = PictureScale.Double;
         static readonly bool defaultTvAspect = true;
 
@@ -26,7 +24,7 @@ namespace FilConvGui
 
         public PreviewModel()
         {
-            _format = _formats[0];
+            _format = _formats[1];
             _pictureScale = defaultScale;
             TvAspect = defaultTvAspect;
         }
@@ -163,9 +161,21 @@ namespace FilConvGui
 
         public bool TvAspect { get; set; }
 
+        public bool TvAspectEnabled
+        {
+            get { return _format != null && (Encode || _filPicture != null); }
+        }
+
         public double Aspect
         {
-            get { return TvAspect ? tvAspectValue : normalAspectValue; }
+            get
+            {
+                if (TvAspect && TvAspectEnabled)
+                {
+                    return _format.Aspect;
+                }
+                return 1;
+            }
         }
 
         public PictureScale Scale
@@ -199,8 +209,11 @@ namespace FilConvGui
 
         static readonly AgatImageFormat[] _formats =
         {
+            new Gr7ImageFormat(),
             new MgrImageFormat(),
             new HgrImageFormat(),
+            new Mgr9ImageFormat(),
+            new Hgr9ImageFormat(),
         };
     }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using FilLib;
 using ImageLib;
 using NDesk.Options;
@@ -16,17 +17,18 @@ namespace filconv
 
         static int Main(string[] args)
         {
-            string filFormatName = "mgr";
+            string filFormatName = "MGR";
             string filTypeName = "B";
+
+            string agatFormats = string.Join(", ", _agatFormats.Select(f => f.Name));
 
             var options = new OptionSet()
             {
                 {
                     "g|gfx-format=",
-                    "Agat image format, MGR or HGR (case-insensitive).  Default is MGR",
+                    "Agat image format (case-insensitive): " + agatFormats + ".  Default is MGR",
                     v => {
-                        v = v.ToLower();
-                        if (v != "mgr" && v != "hgr")
+                        if (GetFormatByName(v) == null)
                             throw new OptionException("Must be either MGR or HGR", "gfx-format");
                         filFormatName = v;
                     }
@@ -62,18 +64,7 @@ namespace filconv
                 return 1;
             }
 
-            AgatImageFormat filFormat;
-            switch (filFormatName)
-            {
-                case "mgr":
-                    filFormat = new MgrImageFormat();
-                    break;
-                case "hgr":
-                    filFormat = new HgrImageFormat();
-                    break;
-                default:
-                    throw new Exception(string.Format("Invalid image format specified: '{0}'", filFormatName));
-            }
+            AgatImageFormat filFormat = GetFormatByName(filFormatName);
 
             string src = positional[0];
             string dst = positional[1];
@@ -132,6 +123,27 @@ namespace filconv
             System.Console.WriteLine("Options:");
             options.WriteOptionDescriptions(System.Console.Out);
         }
+
+        static AgatImageFormat GetFormatByName(string name)
+        {
+            foreach (AgatImageFormat f in _agatFormats)
+            {
+                if (string.Compare(f.Name, name, true) == 0)
+                {
+                    return f;
+                }
+            }
+            return null;
+        }
+
+        static readonly AgatImageFormat[] _agatFormats =
+        {
+            new Gr7ImageFormat(),
+            new MgrImageFormat(),
+            new HgrImageFormat(),
+            new Mgr9ImageFormat(),
+            new Hgr9ImageFormat(),
+        };
 
         static readonly Dictionary<string, ImageFormat> _extToFormat =
             new Dictionary<string, ImageFormat>(StringComparer.InvariantCultureIgnoreCase)
