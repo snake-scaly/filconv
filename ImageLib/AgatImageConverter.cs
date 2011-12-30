@@ -5,16 +5,6 @@ namespace ImageLib
 {
     public static class AgatImageConverter
     {
-        public static Bitmap GetBitmap(byte[] bytes)
-        {
-            return GetBitmap(bytes, new HgrImageFormat());
-        }
-
-        public static byte[] GetBytes(Bitmap bmp)
-        {
-            return GetBytes(bmp, new HgrImageFormat());
-        }
-
         public static Bitmap GetBitmap(byte[] bytes, AgatImageFormat format)
         {
             var bmp = new Bitmap(format.Width, format.Height, PixelFormat.Format24bppRgb);
@@ -35,7 +25,8 @@ namespace ImageLib
             {
                 for (int x = 0; x < format.Width; ++x)
                 {
-                    format.SetPixel(bytes, x, y, bmp.GetPixel(x, y));
+                    Color pixel = (x < bmp.Width && y < bmp.Height) ? bmp.GetPixel(x, y) : Color.Black;
+                    format.SetPixel(bytes, x, y, pixel);
                 }
             }
             return bytes;
