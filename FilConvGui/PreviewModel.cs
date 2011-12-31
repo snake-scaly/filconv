@@ -163,7 +163,12 @@ namespace FilConvGui
 
         public bool TvAspectEnabled
         {
-            get { return _format != null && (Encode || _filPicture != null); }
+            get
+            {
+                return _format != null &&
+                    (Encode || _filPicture != null) &&
+                    _pictureScale != PictureScale.Free;
+            }
         }
 
         public double Aspect

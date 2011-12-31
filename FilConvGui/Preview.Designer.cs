@@ -32,8 +32,8 @@
             this.titleLabel = new System.Windows.Forms.ToolStripLabel();
             this.formatComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.zoomComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.aspectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.previewContainerPanel = new System.Windows.Forms.Panel();
-            this.aspectCheckBox = new System.Windows.Forms.CheckBox();
             this.previewPictureBox = new System.Windows.Forms.PictureBox();
             this.toolStrip.SuspendLayout();
             this.previewContainerPanel.SuspendLayout();
@@ -45,7 +45,8 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.titleLabel,
             this.formatComboBox,
-            this.zoomComboBox});
+            this.zoomComboBox,
+            this.aspectToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(450, 28);
@@ -83,29 +84,26 @@
             this.zoomComboBox.Size = new System.Drawing.Size(121, 28);
             this.zoomComboBox.SelectedIndexChanged += new System.EventHandler(this.zoomComboBox_SelectedIndexChanged);
             // 
+            // aspectToolStripButton
+            // 
+            this.aspectToolStripButton.CheckOnClick = true;
+            this.aspectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.aspectToolStripButton.Image = global::FilConvGui.Properties.Resources.television;
+            this.aspectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.aspectToolStripButton.Name = "aspectToolStripButton";
+            this.aspectToolStripButton.Size = new System.Drawing.Size(23, 25);
+            this.aspectToolStripButton.Text = "Пропорции Агата";
+            this.aspectToolStripButton.CheckStateChanged += new System.EventHandler(this.aspectToolStripButton_CheckStateChanged);
+            // 
             // previewContainerPanel
             // 
             this.previewContainerPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.previewContainerPanel.Controls.Add(this.aspectCheckBox);
             this.previewContainerPanel.Controls.Add(this.previewPictureBox);
             this.previewContainerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.previewContainerPanel.Location = new System.Drawing.Point(0, 28);
             this.previewContainerPanel.Name = "previewContainerPanel";
             this.previewContainerPanel.Size = new System.Drawing.Size(450, 276);
             this.previewContainerPanel.TabIndex = 1;
-            // 
-            // aspectCheckBox
-            // 
-            this.aspectCheckBox.AutoSize = true;
-            this.aspectCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.aspectCheckBox.Location = new System.Drawing.Point(0, 0);
-            this.aspectCheckBox.Name = "aspectCheckBox";
-            this.aspectCheckBox.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
-            this.aspectCheckBox.Size = new System.Drawing.Size(56, 21);
-            this.aspectCheckBox.TabIndex = 1;
-            this.aspectCheckBox.Text = "4:3";
-            this.aspectCheckBox.UseVisualStyleBackColor = false;
-            this.aspectCheckBox.CheckedChanged += new System.EventHandler(this.aspectCheckBox_CheckedChanged);
             // 
             // previewPictureBox
             // 
@@ -126,7 +124,6 @@
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.previewContainerPanel.ResumeLayout(false);
-            this.previewContainerPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -141,6 +138,6 @@
         private System.Windows.Forms.Panel previewContainerPanel;
         private System.Windows.Forms.PictureBox previewPictureBox;
         private System.Windows.Forms.ToolStripLabel titleLabel;
-        private System.Windows.Forms.CheckBox aspectCheckBox;
+        private System.Windows.Forms.ToolStripButton aspectToolStripButton;
     }
 }

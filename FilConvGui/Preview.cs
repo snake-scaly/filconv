@@ -26,8 +26,6 @@ namespace FilConvGui
             InitializeComponent();
 
             MinimizeComboBox(zoomComboBox);
-            
-            toolStrip.Items.Add(new ToolStripControlHost(aspectCheckBox));
 
             model = new PreviewModel();
             model.DisplayPictureChange += model_DisplayPictureChange;
@@ -143,8 +141,8 @@ namespace FilConvGui
             }
 
             zoomComboBox.SelectedIndex = scale[model.Scale];
-            aspectCheckBox.Checked = model.TvAspect;
-            aspectCheckBox.Enabled = model.TvAspectEnabled;
+            aspectToolStripButton.Checked = model.TvAspect;
+            aspectToolStripButton.Enabled = model.TvAspectEnabled;
 
             previewPictureBox.SuspendLayout();
             previewPictureBox.Image = model.DisplayPicture;
@@ -194,10 +192,10 @@ namespace FilConvGui
             Update();
         }
 
-        private void aspectCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void aspectToolStripButton_CheckStateChanged(object sender, EventArgs e)
         {
-            Debug.Assert(object.ReferenceEquals(sender, aspectCheckBox));
-            model.TvAspect = aspectCheckBox.Checked;
+            Debug.Assert(object.ReferenceEquals(sender, aspectToolStripButton));
+            model.TvAspect = aspectToolStripButton.Checked;
             Update();
         }
     }

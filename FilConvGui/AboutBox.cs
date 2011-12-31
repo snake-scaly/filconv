@@ -17,10 +17,9 @@ namespace FilConvGui
             InitializeComponent();
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Debug.Assert(object.ReferenceEquals(sender, siteLink));
-            Process.Start(siteLink.Text);
+            Process.Start(((LinkLabel)sender).Text);
         }
     }
 }
