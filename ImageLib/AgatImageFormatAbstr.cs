@@ -41,7 +41,7 @@ namespace ImageLib
             int pixelIndex;
             int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
             int offset = GetLineOffset(y) + byteInLine;
-            int b = pixels[offset];
+            int b = offset < pixels.Length ? pixels[offset] : 0;
             b >>= (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
             b &= (1 << BitsPerPixel) - 1;
             return Palette[b];
@@ -53,12 +53,15 @@ namespace ImageLib
             int pixelIndex;
             int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
             int offset = GetLineOffset(y) + byteInLine;
-            int b = pixels[offset];
-            int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
-            int mask = ((1 << BitsPerPixel) - 1) << shift;
-            int index = GetClosestColor(Palette, color) << shift;
-            b = b & ~mask | index;
-            pixels[offset] = (byte)b;
+            if (offset < pixels.Length)
+            {
+                int b = pixels[offset];
+                int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
+                int mask = ((1 << BitsPerPixel) - 1) << shift;
+                int index = GetClosestColor(Palette, color) << shift;
+                b = b & ~mask | index;
+                pixels[offset] = (byte)b;
+            }
         }
 
         protected virtual int GetLineOffset(int y)
