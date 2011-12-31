@@ -32,9 +32,10 @@
             this.titleLabel = new System.Windows.Forms.ToolStripLabel();
             this.formatComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.zoomComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.aspectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.previewContainerPanel = new System.Windows.Forms.Panel();
             this.previewPictureBox = new System.Windows.Forms.PictureBox();
+            this.aspectToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ditherToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.previewContainerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
@@ -46,7 +47,8 @@
             this.titleLabel,
             this.formatComboBox,
             this.zoomComboBox,
-            this.aspectToolStripButton});
+            this.aspectToolStripButton,
+            this.ditherToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(450, 28);
@@ -62,16 +64,13 @@
             // 
             // formatComboBox
             // 
-            this.formatComboBox.AutoSize = false;
             this.formatComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.formatComboBox.Margin = new System.Windows.Forms.Padding(1, 0, 6, 0);
             this.formatComboBox.Name = "formatComboBox";
             this.formatComboBox.Size = new System.Drawing.Size(121, 28);
             this.formatComboBox.SelectedIndexChanged += new System.EventHandler(this.formatComboBox_SelectedIndexChanged);
             // 
             // zoomComboBox
             // 
-            this.zoomComboBox.AutoSize = false;
             this.zoomComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.zoomComboBox.IntegralHeight = false;
             this.zoomComboBox.Items.AddRange(new object[] {
@@ -79,21 +78,9 @@
             "200%",
             "300%",
             "По окну"});
-            this.zoomComboBox.Margin = new System.Windows.Forms.Padding(1, 0, 6, 0);
             this.zoomComboBox.Name = "zoomComboBox";
             this.zoomComboBox.Size = new System.Drawing.Size(121, 28);
             this.zoomComboBox.SelectedIndexChanged += new System.EventHandler(this.zoomComboBox_SelectedIndexChanged);
-            // 
-            // aspectToolStripButton
-            // 
-            this.aspectToolStripButton.CheckOnClick = true;
-            this.aspectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.aspectToolStripButton.Image = global::FilConvGui.Properties.Resources.television;
-            this.aspectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.aspectToolStripButton.Name = "aspectToolStripButton";
-            this.aspectToolStripButton.Size = new System.Drawing.Size(23, 25);
-            this.aspectToolStripButton.Text = "Пропорции Агата";
-            this.aspectToolStripButton.CheckStateChanged += new System.EventHandler(this.aspectToolStripButton_CheckStateChanged);
             // 
             // previewContainerPanel
             // 
@@ -112,6 +99,29 @@
             this.previewPictureBox.Size = new System.Drawing.Size(100, 50);
             this.previewPictureBox.TabIndex = 0;
             this.previewPictureBox.TabStop = false;
+            // 
+            // aspectToolStripButton
+            // 
+            this.aspectToolStripButton.CheckOnClick = true;
+            this.aspectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.aspectToolStripButton.Image = global::FilConvGui.Properties.Resources.television;
+            this.aspectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.aspectToolStripButton.Margin = new System.Windows.Forms.Padding(0, 1, 1, 2);
+            this.aspectToolStripButton.Name = "aspectToolStripButton";
+            this.aspectToolStripButton.Size = new System.Drawing.Size(23, 25);
+            this.aspectToolStripButton.Text = "Пропорции Агата";
+            this.aspectToolStripButton.CheckStateChanged += new System.EventHandler(this.aspectToolStripButton_CheckStateChanged);
+            // 
+            // ditherToolStripButton
+            // 
+            this.ditherToolStripButton.CheckOnClick = true;
+            this.ditherToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ditherToolStripButton.Image = global::FilConvGui.Properties.Resources.rainbow;
+            this.ditherToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ditherToolStripButton.Name = "ditherToolStripButton";
+            this.ditherToolStripButton.Size = new System.Drawing.Size(23, 25);
+            this.ditherToolStripButton.Text = "Улучшенное преобразование цветов";
+            this.ditherToolStripButton.CheckStateChanged += new System.EventHandler(this.ditherToolStripButton_CheckStateChanged);
             // 
             // Preview
             // 
@@ -139,5 +149,6 @@
         private System.Windows.Forms.PictureBox previewPictureBox;
         private System.Windows.Forms.ToolStripLabel titleLabel;
         private System.Windows.Forms.ToolStripButton aspectToolStripButton;
+        private System.Windows.Forms.ToolStripButton ditherToolStripButton;
     }
 }

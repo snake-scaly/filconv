@@ -60,6 +60,13 @@ namespace FilConvGui.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap rainbow {
+            get {
+                object obj = ResourceManager.GetObject("rainbow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap television {
             get {
                 object obj = ResourceManager.GetObject("television", resourceCulture);

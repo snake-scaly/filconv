@@ -12,13 +12,15 @@ namespace FilConvGui
     class PreviewModel
     {
         static readonly PictureScale defaultScale = PictureScale.Double;
-        static readonly bool defaultTvAspect = true;
+        const bool defaultTvAspect = true;
+        const bool defaultDither = false;
 
         Fil _filPicture;
         Bitmap _bitmapPicture;
         AgatImageFormat _format;
         Bitmap _displayPicture;
         PictureScale _pictureScale;
+        bool _dither;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
 
@@ -27,6 +29,7 @@ namespace FilConvGui
             _format = _formats[1];
             _pictureScale = defaultScale;
             TvAspect = defaultTvAspect;
+            _dither = defaultDither;
         }
 
         public string Title { get; set; }
@@ -141,7 +144,7 @@ namespace FilConvGui
                         if (Encode && _format != null)
                         {
                             _displayPicture = AgatImageConverter.GetBitmap(
-                                AgatImageConverter.GetBytes(_bitmapPicture, _format),
+                                AgatImageConverter.GetBytes(_bitmapPicture, _format, _dither),
                                 _format);
                         }
                         else
@@ -203,6 +206,30 @@ namespace FilConvGui
         }
 
         public bool Encode { get; set; }
+
+        public bool Dither
+        {
+            get { return _dither; }
+            set
+            {
+                if (value != _dither)
+                {
+                    _dither = value;
+                    _displayPicture = null;
+                    OnDisplayPictureChange();
+                }
+            }
+        }
+
+        public bool DitherEnabled
+        {
+            get { return _format != null; }
+        }
+
+        public bool DitherVisible
+        {
+            get { return Encode; }
+        }
 
         protected void OnDisplayPictureChange()
         {

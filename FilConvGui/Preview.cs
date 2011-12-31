@@ -67,6 +67,11 @@ namespace FilConvGui
             get { return model.DisplayPicture; }
         }
 
+        public bool Dither
+        {
+            get { return model.Dither; }
+        }
+
         public bool Encode
         {
             get { return model.Encode; }
@@ -143,6 +148,9 @@ namespace FilConvGui
             zoomComboBox.SelectedIndex = scale[model.Scale];
             aspectToolStripButton.Checked = model.TvAspect;
             aspectToolStripButton.Enabled = model.TvAspectEnabled;
+            ditherToolStripButton.Checked = model.Dither;
+            ditherToolStripButton.Enabled = model.DitherEnabled;
+            ditherToolStripButton.Visible = model.DitherVisible;
 
             previewPictureBox.SuspendLayout();
             previewPictureBox.Image = model.DisplayPicture;
@@ -197,6 +205,12 @@ namespace FilConvGui
             Debug.Assert(object.ReferenceEquals(sender, aspectToolStripButton));
             model.TvAspect = aspectToolStripButton.Checked;
             Update();
+        }
+
+        private void ditherToolStripButton_CheckStateChanged(object sender, EventArgs e)
+        {
+            Debug.Assert(object.ReferenceEquals(sender, ditherToolStripButton));
+            model.Dither = ditherToolStripButton.Checked;
         }
     }
 }

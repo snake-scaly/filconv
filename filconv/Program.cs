@@ -19,6 +19,7 @@ namespace filconv
         {
             string filFormatName = "MGR";
             string filTypeName = "B";
+            bool dither = false;
 
             string agatFormats = string.Join(", ", _agatFormats.Select(f => f.Name));
 
@@ -42,6 +43,13 @@ namespace filconv
                         if (v.Length != 1 || "TBK".IndexOf(v) == -1)
                             throw new OptionException("Must be one of T, B or K", "type");
                         filTypeName = v;
+                    }
+                },
+                {
+                    "d|dither",
+                    "enable color dithering when reducing number of colors",
+                    v => {
+                        dither = true;
                     }
                 },
             };
@@ -84,7 +92,7 @@ namespace filconv
             else if (dst.ToLower().EndsWith(filExtension))
             {
                 // converting from PC to Agat
-                ToFil(src, dst, filFormat, FilType.FromName(filTypeName[0]));
+                ToFil(src, dst, filFormat, FilType.FromName(filTypeName[0]), dither);
             }
             else
             {
@@ -102,10 +110,10 @@ namespace filconv
             bmp.Save(to, formatTo);
         }
 
-        static void ToFil(string from, string to, AgatImageFormat format, FilType type)
+        static void ToFil(string from, string to, AgatImageFormat format, FilType type, bool dither)
         {
             Bitmap bmp = (Bitmap)Image.FromFile(from);
-            var pixels = AgatImageConverter.GetBytes(bmp, format);
+            var pixels = AgatImageConverter.GetBytes(bmp, format, dither);
             var fil = new Fil(Path.GetFileNameWithoutExtension(to));
             fil.Type = type;
             fil.Data = pixels;

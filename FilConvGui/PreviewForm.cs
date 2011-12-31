@@ -94,7 +94,7 @@ namespace FilConvGui
             else
             {
                 var fil = new Fil(Path.GetFileName(fileName));
-                fil.Data = AgatImageConverter.GetBytes(left.DisplayPicture, right.Format);
+                fil.Data = AgatImageConverter.GetBytes(left.DisplayPicture, right.Format, right.Dither);
                 using (var fs = new FileStream(fileName, FileMode.Create))
                 {
                     fil.Write(fs);

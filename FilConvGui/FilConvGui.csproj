@@ -108,7 +108,9 @@
       <Name>ImageLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\rainbow.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\television.png" />
   </ItemGroup>
