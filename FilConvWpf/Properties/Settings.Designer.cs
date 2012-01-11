@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FilConvGui.Properties
+namespace FilConvWpf.Properties
 {
 
 

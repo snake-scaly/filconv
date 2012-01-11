@@ -7,7 +7,7 @@ using ImageLib;
 using System.Drawing;
 using System.Diagnostics;
 
-namespace FilConvGui
+namespace FilConvWpf
 {
     class PreviewModel
     {
@@ -19,7 +19,7 @@ namespace FilConvGui
         Bitmap _bitmapPicture;
         AgatImageFormat _format;
         Bitmap _displayPicture;
-        PictureScale _pictureScale;
+        bool _tvAspect;
         bool _dither;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
@@ -27,7 +27,7 @@ namespace FilConvGui
         public PreviewModel()
         {
             _format = _formats[1];
-            _pictureScale = defaultScale;
+            Scale = defaultScale;
             TvAspect = defaultTvAspect;
             _dither = defaultDither;
         }
@@ -162,16 +162,15 @@ namespace FilConvGui
             }
         }
 
-        public bool TvAspect { get; set; }
+        public bool TvAspect
+        {
+            get { return TvAspectEnabled && _tvAspect; }
+            set { _tvAspect = value; }
+        }
 
         public bool TvAspectEnabled
         {
-            get
-            {
-                return _format != null &&
-                    (Encode || _filPicture != null) &&
-                    _pictureScale != PictureScale.Free;
-            }
+            get { return _format != null && (Encode || _filPicture != null); }
         }
 
         public double Aspect
@@ -186,19 +185,7 @@ namespace FilConvGui
             }
         }
 
-        public PictureScale Scale
-        {
-            get { return _pictureScale; }
-            set
-            {
-                _pictureScale = value;
-                if (value.ResizeToFit)
-                {
-                    // PictureBox does not support scaling with arbitrary aspect
-                    TvAspect = false;
-                }
-            }
-        }
+        public PictureScale Scale { get; set; }
 
         public bool DisplayFormatBox
         {

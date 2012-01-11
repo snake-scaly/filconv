@@ -1,64 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
-using ImageLib;
-using FilLib;
-using System.IO;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using FilLib;
+using ImageLib;
+using Microsoft.Win32;
 
-namespace FilConvGui
+namespace FilConvWpf
 {
-    public partial class PreviewForm : Form
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-        Preview left;
-        Preview right;
-        string fileName;
+        private string fileName;
 
-        public PreviewForm()
+        public MainWindow()
         {
             InitializeComponent();
-
-            left = new Preview();
-            left.Dock = DockStyle.Fill;
-            left.Title = "Оригинал";
-            left.DisplayPictureChange += left_ConvertedBitmapChange;
-            splitContainer1.Panel1.Controls.Add(left);
-
-            right = new Preview();
-            right.Dock = DockStyle.Fill;
-            right.Title = "Результат";
+            left.DisplayPictureChange += left_DisplayPictureChange;
             right.Encode = true;
-            splitContainer1.Panel2.Controls.Add(right);
-        }
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = string.Join("|", GetFileFilterList(true, true).Select(ff => ff.Filter));
-            DialogResult r = ofd.ShowDialog();
-            if (r != DialogResult.OK)
-            {
-                return;
-            }
-
-            Open(ofd.FileName);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        private void left_ConvertedBitmapChange(object sender, EventArgs e)
-        {
-            Debug.Assert(object.ReferenceEquals(sender, left));
-            right.BitmapPicture = left.DisplayPicture;
         }
 
         void Open(string fileName)
@@ -71,7 +36,7 @@ namespace FilConvGui
                 }
                 else
                 {
-                    left.BitmapPicture = (Bitmap)Image.FromFile(fileName);
+                    left.BitmapPicture = (Bitmap)System.Drawing.Image.FromFile(fileName);
                 }
                 this.fileName = fileName;
             }
@@ -80,8 +45,8 @@ namespace FilConvGui
                 MessageBox.Show(
                     string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
                     "Fil Converter",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -93,7 +58,7 @@ namespace FilConvGui
             }
             else
             {
-                var fil = new Fil(Path.GetFileName(fileName));
+                var fil = new Fil(System.IO.Path.GetFileName(fileName));
                 fil.Data = AgatImageConverter.GetBytes(left.DisplayPicture, right.Format, right.Dither);
                 using (var fs = new FileStream(fileName, FileMode.Create))
                 {
@@ -102,19 +67,19 @@ namespace FilConvGui
             }
         }
 
-        private void PreviewForm_DragEnter(object sender, DragEventArgs e)
+        protected override void OnDragEnter(DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                e.Effect = DragDropEffects.Copy;
+                e.Effects = DragDropEffects.Copy;
             }
             else
             {
-                e.Effect = DragDropEffects.None;
+                e.Effects = DragDropEffects.None;
             }
         }
 
-        private void PreviewForm_DragDrop(object sender, DragEventArgs e)
+        protected override void OnDrop(DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -123,7 +88,26 @@ namespace FilConvGui
             }
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        void left_DisplayPictureChange(object sender, EventArgs e)
+        {
+            Debug.Assert(object.ReferenceEquals(sender, left));
+            right.BitmapPicture = left.DisplayPicture;
+        }
+
+        private void menuOpen_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = string.Join("|", GetFileFilterList(true, true).Select(ff => ff.Filter));
+            bool? r = ofd.ShowDialog();
+            if (r == null || !r.Value)
+            {
+                return;
+            }
+
+            Open(ofd.FileName);
+        }
+
+        private void menuSaveAs_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<FileFilter> filters = GetFileFilterList(right.Format != null, false);
 
@@ -131,13 +115,25 @@ namespace FilConvGui
             sfd.FileName = Path.GetFileNameWithoutExtension(fileName);
             sfd.Filter = string.Join("|", filters.Select(ff => ff.Filter));
             sfd.FilterIndex = 1;
-            DialogResult result = sfd.ShowDialog();
-            if (result == DialogResult.OK)
+            bool? result = sfd.ShowDialog();
+            if (result != null && result.Value)
             {
                 fileName = sfd.FileName;
                 ImageFormat format = filters.Skip(sfd.FilterIndex - 1).First().ImageFormat;
                 Save(fileName, format);
             }
+        }
+
+        private void menuExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void menuAbout_Click(object sender, RoutedEventArgs e)
+        {
+            AboutBox about = new AboutBox();
+            about.Owner = this;
+            about.ShowDialog();
         }
 
         IEnumerable<FileFilter> GetFileFilterList(bool includeAgat, bool includeGeneric)
@@ -207,10 +203,5 @@ namespace FilConvGui
             new SupportedFile("Gif", new string[] { "*.gif" }, ImageFormat.Gif),
             new SupportedFile("Tiff", new string[] { "*.tif", "*.tiff" }, ImageFormat.Tiff),
         };
-
-        private void опрограммеToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AboutBox().ShowDialog();
-        }
     }
 }

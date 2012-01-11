@@ -1,0 +1,21 @@
+﻿<Window x:Class="FilConvWpf.AboutBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="О программе" Height="235" Width="365" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow"
+        Background="{x:Static SystemColors.ControlBrush}">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="1pt"/>
+        </Style>
+    </Window.Resources>
+    <StackPanel>
+        <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Margin="10pt">Fil Converter</TextBlock>
+        <TextBlock HorizontalAlignment="Center">(c) 2011-2012 Сергей &quot;SnakE&quot; Громов</TextBlock>
+        <TextBlock HorizontalAlignment="Center">Разработано для</TextBlock>
+        <TextBlock HorizontalAlignment="Center"><Hyperlink NavigateUri="http://deka.ssmu.ru/er/agat" Click="Hyperlink_Click">http://deka.ssmu.ru/er/agat</Hyperlink></TextBlock>
+        <TextBlock HorizontalAlignment="Center" Margin="0 10pt 0 0">В интерфейсе используются иконки Марка Джеймса</TextBlock>
+        <TextBlock HorizontalAlignment="Center"><Hyperlink NavigateUri="http://www.famfamfam.com/lab/icons/silk/" Click="Hyperlink_Click">http://www.famfamfam.com/lab/icons/silk/</Hyperlink></TextBlock>
+        <Button Content="OK" HorizontalAlignment="Center" Width="60pt" Margin="20pt" IsDefault="True" IsCancel="True" />
+    </StackPanel>
+</Window>

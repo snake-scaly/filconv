@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FilConvGui
+namespace FilConvWpf
 {
     struct PictureAspect
     {
@@ -18,14 +18,29 @@ namespace FilConvGui
             Aspect = aspect;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (!(obj is PictureAspect))
+            {
+                return false;
+            }
+            PictureAspect pa = (PictureAspect)obj;
+            return Aspect == pa.Aspect;
+        }
+
+        public override int GetHashCode()
+        {
+            return Aspect.GetHashCode();
+        }
+
         public static bool operator ==(PictureAspect a, PictureAspect b)
         {
-            return a.Aspect == b.Aspect;
+            return a.Equals(b);
         }
 
         public static bool operator !=(PictureAspect a, PictureAspect b)
         {
-            return !(a == b);
+            return !a.Equals(b);
         }
     }
 }
