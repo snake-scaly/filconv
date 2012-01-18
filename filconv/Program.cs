@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib;
 using NDesk.Options;
@@ -72,7 +71,7 @@ namespace filconv
                 return 1;
             }
 
-            AgatImageFormat filFormat = GetFormatByName(filFormatName);
+            NativeImageFormat filFormat = GetFormatByName(filFormatName);
 
             string src = positional[0];
             string dst = positional[1];
@@ -81,7 +80,7 @@ namespace filconv
             {
                 // converting from Agat to PC
                 string ext = Path.GetExtension(dst);
-                ImageFormat imgFormat;
+                Type imgFormat;
                 if (!_extToFormat.TryGetValue(ext, out imgFormat))
                 {
                     System.Console.Error.WriteLine("Supported PC formats are {0} but output file is {1}", string.Join(", ", _extToFormat.Keys), dst);
@@ -103,17 +102,26 @@ namespace filconv
             return 0;
         }
 
-        static void FromFil(string from, string to, AgatImageFormat formatFrom, ImageFormat formatTo)
+        static void FromFil(string from, string to, NativeImageFormat formatFrom, Type formatTo)
         {
             Fil fil = Fil.FromFile(from);
-            Bitmap bmp = AgatImageConverter.GetBitmap(fil.Data, formatFrom);
-            bmp.Save(to, formatTo);
+            NativeImage ni = new NativeImage(fil.Data, new FormatHint(Path.GetExtension(from)));
+            BitmapSource bmp = formatFrom.FromNative(ni);
+
+            BitmapEncoder enc = (BitmapEncoder)Activator.CreateInstance(formatTo);
+            enc.Frames.Add(BitmapFrame.Create(bmp));
+            using (FileStream fs = new FileStream(to, FileMode.Create))
+            {
+                enc.Save(fs);
+            }
         }
 
-        static void ToFil(string from, string to, AgatImageFormat format, FilType type, bool dither)
+        static void ToFil(string from, string to, NativeImageFormat format, FilType type, bool dither)
         {
-            Bitmap bmp = (Bitmap)Image.FromFile(from);
-            var pixels = AgatImageConverter.GetBytes(bmp, format, dither);
+            BitmapImage bmp = new BitmapImage(new Uri(from, UriKind.Relative));
+            EncodingOptions options = new EncodingOptions();
+            options.Dither = dither;
+            byte[] pixels = format.ToNative(bmp, options).Data;
             var fil = new Fil(Path.GetFileNameWithoutExtension(to));
             fil.Type = type;
             fil.Data = pixels;
@@ -132,9 +140,9 @@ namespace filconv
             options.WriteOptionDescriptions(System.Console.Out);
         }
 
-        static AgatImageFormat GetFormatByName(string name)
+        static NativeImageFormat GetFormatByName(string name)
         {
-            foreach (AgatImageFormat f in _agatFormats)
+            foreach (NativeImageFormat f in _agatFormats)
             {
                 if (string.Compare(f.Name, name, true) == 0)
                 {
@@ -144,7 +152,7 @@ namespace filconv
             return null;
         }
 
-        static readonly AgatImageFormat[] _agatFormats =
+        static readonly NativeImageFormat[] _agatFormats =
         {
             new Gr7ImageFormat(),
             new MgrImageFormat(),
@@ -153,13 +161,13 @@ namespace filconv
             new Hgr9ImageFormat(),
         };
 
-        static readonly Dictionary<string, ImageFormat> _extToFormat =
-            new Dictionary<string, ImageFormat>(StringComparer.InvariantCultureIgnoreCase)
+        static readonly Dictionary<string, Type> _extToFormat =
+            new Dictionary<string, Type>(StringComparer.InvariantCultureIgnoreCase)
         {
-            { ".png", ImageFormat.Png },
-            { ".jpg", ImageFormat.Jpeg },
-            { ".gif", ImageFormat.Gif },
-            { ".bmp", ImageFormat.Bmp },
+            { ".png", typeof(PngBitmapEncoder) },
+            { ".jpg", typeof(JpegBitmapEncoder) },
+            { ".gif", typeof(GifBitmapEncoder) },
+            { ".bmp", typeof(BmpBitmapEncoder) },
         };
     }
 }

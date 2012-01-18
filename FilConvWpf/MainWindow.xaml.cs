@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib;
 using Microsoft.Win32;
@@ -32,11 +31,12 @@ namespace FilConvWpf
             {
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    left.FilPicture = Fil.FromFile(fileName);
+                    Fil fil = Fil.FromFile(fileName);
+                    left.NativeImage = new NativeImage(fil.Data, new FormatHint(".fil"));
                 }
                 else
                 {
-                    left.BitmapPicture = (Bitmap)System.Drawing.Image.FromFile(fileName);
+                    left.BitmapPicture = new BitmapImage(new Uri(fileName));
                 }
                 this.fileName = fileName;
             }
@@ -50,16 +50,23 @@ namespace FilConvWpf
             }
         }
 
-        void Save(string fileName, ImageFormat format)
+        void Save(string fileName, Type encoderType)
         {
-            if (format != null)
+            if (encoderType != null)
             {
-                right.DisplayPicture.Save(fileName, format);
+                BitmapEncoder encoder = (BitmapEncoder)Activator.CreateInstance(encoderType);
+                encoder.Frames.Add(BitmapFrame.Create(right.DisplayPicture));
+                using (FileStream fs = new FileStream(fileName, FileMode.Create))
+                {
+                    encoder.Save(fs);
+                }
             }
             else
             {
                 var fil = new Fil(System.IO.Path.GetFileName(fileName));
-                fil.Data = AgatImageConverter.GetBytes(left.DisplayPicture, right.Format, right.Dither);
+                EncodingOptions options = new EncodingOptions();
+                options.Dither = right.Dither;
+                fil.Data = right.Format.ToNative(left.DisplayPicture, options).Data;
                 using (var fs = new FileStream(fileName, FileMode.Create))
                 {
                     fil.Write(fs);
@@ -119,7 +126,7 @@ namespace FilConvWpf
             if (result != null && result.Value)
             {
                 fileName = sfd.FileName;
-                ImageFormat format = filters.Skip(sfd.FilterIndex - 1).First().ImageFormat;
+                Type format = filters.Skip(sfd.FilterIndex - 1).First().EncoderType;
                 Save(fileName, format);
             }
         }
@@ -147,15 +154,15 @@ namespace FilConvWpf
             var types = files.Select(f => Tuple.Create(
                 f.Name,
                 string.Join(";", f.Extensions),
-                f.ImageFormat));
+                f.EncoderType));
 
             if (includeGeneric)
             {
                 string allExts = string.Join(";", types.Select(t => t.Item2));
                 types = Enumerable
-                    .Repeat(Tuple.Create("Все поддерживаемые", allExts, (ImageFormat)null), 1)
+                    .Repeat(Tuple.Create("Все поддерживаемые", allExts, (Type)null), 1)
                     .Concat(types)
-                    .Concat(Enumerable.Repeat(Tuple.Create("Все", "*.*", (ImageFormat)null), 1));
+                    .Concat(Enumerable.Repeat(Tuple.Create("Все", "*.*", (Type)null), 1));
             }
 
             return types.Select(t => new FileFilter(
@@ -167,26 +174,26 @@ namespace FilConvWpf
         {
             public string Name;
             public string[] Extensions;
-            public ImageFormat ImageFormat; // null means FIL
+            public Type EncoderType; // null means FIL
 
-            public SupportedFile(string name, string[] extensions, ImageFormat imageFormat)
+            public SupportedFile(string name, string[] extensions, Type encoderType)
                 : this()
             {
                 Name = name;
                 Extensions = extensions;
-                ImageFormat = imageFormat;
+                EncoderType = encoderType;
             }
         }
 
         struct FileFilter
         {
             public string Filter;
-            public ImageFormat ImageFormat;
+            public Type EncoderType;
 
-            public FileFilter(string filter, ImageFormat imageFormat)
+            public FileFilter(string filter, Type encoderType)
             {
                 Filter = filter;
-                ImageFormat = imageFormat;
+                EncoderType = encoderType;
             }
         }
 
@@ -197,11 +204,11 @@ namespace FilConvWpf
 
         static readonly SupportedFile[] _supportedPcFiles =
         {
-            new SupportedFile("Bmp", new string[] { "*.bmp" }, ImageFormat.Bmp),
-            new SupportedFile("Jpeg", new string[] { "*.jpg", "*,jpeg" }, ImageFormat.Jpeg),
-            new SupportedFile("Png", new string[] { "*.png" }, ImageFormat.Png),
-            new SupportedFile("Gif", new string[] { "*.gif" }, ImageFormat.Gif),
-            new SupportedFile("Tiff", new string[] { "*.tif", "*.tiff" }, ImageFormat.Tiff),
+            new SupportedFile("Bmp", new string[] { "*.bmp" }, typeof(BmpBitmapEncoder)),
+            new SupportedFile("Jpeg", new string[] { "*.jpg", "*,jpeg" }, typeof(JpegBitmapEncoder)),
+            new SupportedFile("Png", new string[] { "*.png" }, typeof(PngBitmapEncoder)),
+            new SupportedFile("Gif", new string[] { "*.gif" }, typeof(GifBitmapEncoder)),
+            new SupportedFile("Tiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder)),
         };
     }
 }

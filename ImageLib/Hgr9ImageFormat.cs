@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ImageLib
 {
@@ -12,12 +9,12 @@ namespace ImageLib
             get { return "HGR9"; }
         }
 
-        public override int Width
+        protected override int Width
         {
             get { return 512; }
         }
 
-        public override int Height
+        protected override int Height
         {
             get { return 256; }
         }

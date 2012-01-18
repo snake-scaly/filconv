@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+using System.Windows.Media;
 
 namespace ImageLib
 {
@@ -13,12 +10,12 @@ namespace ImageLib
             get { return "MGR9"; }
         }
 
-        public override int Width
+        protected override int Width
         {
             get { return 256; }
         }
 
-        public override int Height
+        protected override int Height
         {
             get { return 256; }
         }
@@ -42,10 +39,10 @@ namespace ImageLib
 
         private static readonly Color[] _colorPalette =
         {
-            Color.FromArgb(0, 0, 0),
-            Color.FromArgb(255, 0, 0),
-            Color.FromArgb(0, 255, 0),
-            Color.FromArgb(0, 0, 255),
+            Color.FromRgb(0, 0, 0),
+            Color.FromRgb(255, 0, 0),
+            Color.FromRgb(0, 255, 0),
+            Color.FromRgb(0, 0, 255),
         };
     }
 }

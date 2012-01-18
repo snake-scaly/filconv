@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-
-namespace ImageLib
+﻿namespace ImageLib
 {
     public class Gr7ImageFormat : C16ImageFormatAbstr
     {
@@ -13,12 +7,12 @@ namespace ImageLib
             get { return "GR7"; }
         }
 
-        public override int Width
+        protected override int Width
         {
             get { return 64; }
         }
 
-        public override int Height
+        protected override int Height
         {
             get { return 64; }
         }

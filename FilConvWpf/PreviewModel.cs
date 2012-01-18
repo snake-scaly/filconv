@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FilLib;
-using ImageLib;
-using System.Drawing;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using ImageLib;
 
 namespace FilConvWpf
 {
@@ -15,10 +13,10 @@ namespace FilConvWpf
         const bool defaultTvAspect = true;
         const bool defaultDither = false;
 
-        Fil _filPicture;
-        Bitmap _bitmapPicture;
-        AgatImageFormat _format;
-        Bitmap _displayPicture;
+        NativeImage _nativeImage;
+        BitmapSource _bitmapPicture;
+        NativeImageFormat _format;
+        BitmapSource _displayPicture;
         bool _tvAspect;
         bool _dither;
 
@@ -34,14 +32,14 @@ namespace FilConvWpf
 
         public string Title { get; set; }
 
-        public Fil FilPicture
+        public NativeImage NativeImage
         {
-            get { return _filPicture; }
+            get { return _nativeImage; }
             set
             {
-                if (value != _filPicture)
+                if (value != _nativeImage)
                 {
-                    _filPicture = value;
+                    _nativeImage = value;
                     _displayPicture = null;
                     if (value != null)
                     {
@@ -52,7 +50,7 @@ namespace FilConvWpf
             }
         }
 
-        public Bitmap BitmapPicture
+        public BitmapSource BitmapPicture
         {
             get { return _bitmapPicture; }
             set
@@ -62,7 +60,7 @@ namespace FilConvWpf
                     _bitmapPicture = value;
                     if (value != null)
                     {
-                        _filPicture = null;
+                        _nativeImage = null;
                         _displayPicture = null;
                     }
                     OnDisplayPictureChange();
@@ -101,7 +99,7 @@ namespace FilConvWpf
 
             set
             {
-                AgatImageFormat newFormat = null;
+                NativeImageFormat newFormat = null;
                 if (Encode)
                 {
                     --value;
@@ -119,21 +117,12 @@ namespace FilConvWpf
             }
         }
 
-        public IList<AgatImageFormat> FormatList
-        {
-            get
-            {
-                var formats = new List<AgatImageFormat>();
-                return new AgatImageFormat[] { null, null };
-            }
-        }
-
-        public AgatImageFormat Format
+        public NativeImageFormat Format
         {
             get { return _format; }
         }
 
-        public Bitmap DisplayPicture
+        public BitmapSource DisplayPicture
         {
             get
             {
@@ -143,19 +132,19 @@ namespace FilConvWpf
                     {
                         if (Encode && _format != null)
                         {
-                            _displayPicture = AgatImageConverter.GetBitmap(
-                                AgatImageConverter.GetBytes(_bitmapPicture, _format, _dither),
-                                _format);
+                            EncodingOptions options = new EncodingOptions();
+                            options.Dither = Dither;
+                            _displayPicture = _format.FromNative(_format.ToNative(_bitmapPicture, options));
                         }
                         else
                         {
                             _displayPicture = _bitmapPicture;
                         }
                     }
-                    else if (_filPicture != null)
+                    else if (_nativeImage != null)
                     {
                         Debug.Assert(_format != null);
-                        _displayPicture = AgatImageConverter.GetBitmap(_filPicture.Data, _format);
+                        _displayPicture = _format.FromNative(_nativeImage);
                     }
                 }
                 return _displayPicture;
@@ -170,7 +159,7 @@ namespace FilConvWpf
 
         public bool TvAspectEnabled
         {
-            get { return _format != null && (Encode || _filPicture != null); }
+            get { return _format != null && (Encode || _nativeImage != null); }
         }
 
         public double Aspect
@@ -189,7 +178,7 @@ namespace FilConvWpf
 
         public bool DisplayFormatBox
         {
-            get { return _filPicture != null || Encode; }
+            get { return _nativeImage != null || Encode; }
         }
 
         public bool Encode { get; set; }
@@ -226,7 +215,7 @@ namespace FilConvWpf
             }
         }
 
-        static readonly AgatImageFormat[] _formats =
+        static readonly NativeImageFormat[] _formats =
         {
             new Gr7ImageFormat(),
             new MgrImageFormat(),

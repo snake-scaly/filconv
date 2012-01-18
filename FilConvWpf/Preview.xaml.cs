@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using FilLib;
 using ImageLib;
 
 namespace FilConvWpf
@@ -47,24 +44,24 @@ namespace FilConvWpf
             }
         }
 
-        public Fil FilPicture
+        public NativeImage NativeImage
         {
-            get { return model.FilPicture; }
-            set { model.FilPicture = value; }
+            get { return model.NativeImage; }
+            set { model.NativeImage = value; }
         }
 
-        public Bitmap BitmapPicture
+        public BitmapSource BitmapPicture
         {
             get { return model.BitmapPicture; }
             set { model.BitmapPicture = value; }
         }
 
-        public AgatImageFormat Format
+        public NativeImageFormat Format
         {
             get { return model.Format; }
         }
 
-        public Bitmap DisplayPicture
+        public BitmapSource DisplayPicture
         {
             get { return model.DisplayPicture; }
         }
@@ -133,8 +130,9 @@ namespace FilConvWpf
                 ditherToggle.IsEnabled = model.DitherEnabled;
                 ditherToggle.Visibility = model.DitherVisible ? Visibility.Visible : Visibility.Collapsed;
 
-                BitmapSource bs = GdiBitmapSource(model.DisplayPicture);
+                BitmapSource bs = model.DisplayPicture;
                 previewPictureBox.Source = bs;
+
                 if (bs != null)
                 {
                     previewPictureBox.Scale = model.Scale.Scale;
@@ -144,20 +142,6 @@ namespace FilConvWpf
 
                 updating = false;
             }
-        }
-
-        static BitmapSource GdiBitmapSource(Bitmap bmp)
-        {
-            if (bmp == null)
-            {
-                return null;
-            }
-
-            return Imaging.CreateBitmapSourceFromHBitmap(
-                bmp.GetHbitmap(),
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
         }
 
         void model_DisplayPictureChange(object sender, EventArgs e)
