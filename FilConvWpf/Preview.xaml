@@ -94,8 +94,8 @@
                 <Control Template="{StaticResource contentImage}" Tag="{StaticResource dither}"/>
             </ToggleButton>
         </ToolBar>
-        <Viewbox Name="previewViewBox" Grid.Row="1">
-            <Image Name="previewPictureBox" Stretch="Fill" RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" SnapsToDevicePixels="True" />
+        <Viewbox Name="previewViewBox" Grid.Row="1" SnapsToDevicePixels="False">
+            <my:PixelAlignedBitmap x:Name="previewPictureBox" RenderOptions.BitmapScalingMode="NearestNeighbor" AllowDrop="True"/>
         </Viewbox>
     </Grid>
 </UserControl>

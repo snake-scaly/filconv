@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="PictureAspect.cs" />
     <Compile Include="PictureScale.cs" />
+    <Compile Include="PixelAlignedBitmap.cs" />
     <Compile Include="Preview.xaml.cs">
       <DependentUpon>Preview.xaml</DependentUpon>
     </Compile>

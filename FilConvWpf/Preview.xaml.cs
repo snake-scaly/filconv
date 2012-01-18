@@ -137,8 +137,8 @@ namespace FilConvWpf
                 previewPictureBox.Source = bs;
                 if (bs != null)
                 {
-                    previewPictureBox.Width = bs.Width * model.Scale.Scale * model.Aspect;
-                    previewPictureBox.Height = bs.Height * model.Scale.Scale;
+                    previewPictureBox.Scale = model.Scale.Scale;
+                    previewPictureBox.Aspect = model.Aspect;
                 }
                 previewViewBox.Stretch = model.Scale.ResizeToFit ? Stretch.Uniform : Stretch.None;
 
