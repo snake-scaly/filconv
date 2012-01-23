@@ -20,7 +20,7 @@ namespace filconv
             string filTypeName = "B";
             bool dither = false;
 
-            string agatFormats = string.Join(", ", _agatFormats.Select(f => f.Name));
+            string agatFormats = string.Join(", ", _agatFormats.Select(f => f.Item2));
 
             var options = new OptionSet()
             {
@@ -142,23 +142,23 @@ namespace filconv
 
         static NativeImageFormat GetFormatByName(string name)
         {
-            foreach (NativeImageFormat f in _agatFormats)
+            foreach (var f in _agatFormats)
             {
-                if (string.Compare(f.Name, name, true) == 0)
+                if (string.Compare(f.Item2, name, true) == 0)
                 {
-                    return f;
+                    return f.Item1;
                 }
             }
             return null;
         }
 
-        static readonly NativeImageFormat[] _agatFormats =
+        static readonly Tuple<NativeImageFormat, string>[] _agatFormats =
         {
-            new Gr7ImageFormat(),
-            new MgrImageFormat(),
-            new HgrImageFormat(),
-            new Mgr9ImageFormat(),
-            new Hgr9ImageFormat(),
+            Tuple.Create((NativeImageFormat)new Gr7ImageFormat(), "GR7"),
+            Tuple.Create((NativeImageFormat)new MgrImageFormat(), "MGR"),
+            Tuple.Create((NativeImageFormat)new HgrImageFormat(), "HGR"),
+            Tuple.Create((NativeImageFormat)new Mgr9ImageFormat(), "MGR9"),
+            Tuple.Create((NativeImageFormat)new Hgr9ImageFormat(), "HGR9"),
         };
 
         static readonly Dictionary<string, Type> _extToFormat =

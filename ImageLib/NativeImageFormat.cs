@@ -11,11 +11,6 @@ namespace ImageLib
     public interface NativeImageFormat
     {
         /// <summary>
-        /// Format name.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
         /// Native aspect ratio of the image pixels.
         /// </summary>
         double Aspect { get; }

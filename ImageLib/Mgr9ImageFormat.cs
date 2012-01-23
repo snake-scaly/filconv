@@ -5,11 +5,6 @@ namespace ImageLib
 {
     public class Mgr9ImageFormat : AgatImageFormatAbstr
     {
-        public override string Name
-        {
-            get { return "MGR9"; }
-        }
-
         protected override int Width
         {
             get { return 256; }

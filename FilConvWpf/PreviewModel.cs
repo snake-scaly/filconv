@@ -15,7 +15,7 @@ namespace FilConvWpf
 
         NativeImage _nativeImage;
         BitmapSource _bitmapPicture;
-        NativeImageFormat _format;
+        int _format;
         BitmapSource _displayPicture;
         bool _tvAspect;
         bool _dither;
@@ -24,7 +24,7 @@ namespace FilConvWpf
 
         public PreviewModel()
         {
-            _format = _formats[1];
+            _format = 1;
             Scale = defaultScale;
             TvAspect = defaultTvAspect;
             _dither = defaultDither;
@@ -53,6 +53,7 @@ namespace FilConvWpf
         public BitmapSource BitmapPicture
         {
             get { return _bitmapPicture; }
+
             set
             {
                 if (value != _bitmapPicture)
@@ -70,47 +71,31 @@ namespace FilConvWpf
 
         public IList<String> PreviewModes
         {
-            get
+            get 
             {
                 var modes = new List<String>();
                 if (Encode)
                 {
                     modes.Add("Оригинал");
                 }
-                modes.AddRange(_formats.Select(f => f.Name));
+                modes.AddRange(_formats.Select(f => f.Item2));
                 return modes;
             }
         }
 
         public int CurrentPreviewMode
         {
-            get
-            {
-                if (_format == null)
-                {
-                    Debug.Assert(Encode);
-                    return 0;
-                }
-
-                int i = Array.IndexOf(_formats, _format);
-                Debug.Assert(i != -1);
-                return i + (Encode ? 1 : 0);
-            }
+            get { return _format + (Encode ? 1 : 0); }
 
             set
             {
-                NativeImageFormat newFormat = null;
                 if (Encode)
                 {
                     --value;
                 }
-                if (value >= 0)
+                if (value != _format)
                 {
-                    newFormat = _formats[value];
-                }
-                if (newFormat != _format)
-                {
-                    _format = newFormat;
+                    _format = value;
                     _displayPicture = null;
                     OnDisplayPictureChange();
                 }
@@ -119,7 +104,7 @@ namespace FilConvWpf
 
         public NativeImageFormat Format
         {
-            get { return _format; }
+            get { return _formats[_format].Item1; }
         }
 
         public BitmapSource DisplayPicture
@@ -130,11 +115,12 @@ namespace FilConvWpf
                 {
                     if (_bitmapPicture != null)
                     {
-                        if (Encode && _format != null)
+                        if (Encode && _format != -1)
                         {
+                            NativeImageFormat format = _formats[_format].Item1;
                             EncodingOptions options = new EncodingOptions();
                             options.Dither = Dither;
-                            _displayPicture = _format.FromNative(_format.ToNative(_bitmapPicture, options));
+                            _displayPicture = format.FromNative(format.ToNative(_bitmapPicture, options));
                         }
                         else
                         {
@@ -143,8 +129,8 @@ namespace FilConvWpf
                     }
                     else if (_nativeImage != null)
                     {
-                        Debug.Assert(_format != null);
-                        _displayPicture = _format.FromNative(_nativeImage);
+                        Debug.Assert(_format != -1);
+                        _displayPicture = _formats[_format].Item1.FromNative(_nativeImage);
                     }
                 }
                 return _displayPicture;
@@ -159,7 +145,7 @@ namespace FilConvWpf
 
         public bool TvAspectEnabled
         {
-            get { return _format != null && (Encode || _nativeImage != null); }
+            get { return _format != -1 && (Encode || _nativeImage != null); }
         }
 
         public double Aspect
@@ -168,7 +154,7 @@ namespace FilConvWpf
             {
                 if (TvAspect && TvAspectEnabled)
                 {
-                    return _format.Aspect;
+                    return _formats[_format].Item1.Aspect;
                 }
                 return 1;
             }
@@ -199,7 +185,7 @@ namespace FilConvWpf
 
         public bool DitherEnabled
         {
-            get { return _format != null; }
+            get { return _format != -1; }
         }
 
         public bool DitherVisible
@@ -215,13 +201,13 @@ namespace FilConvWpf
             }
         }
 
-        static readonly NativeImageFormat[] _formats =
+        static readonly Tuple<NativeImageFormat, String>[] _formats =
         {
-            new Gr7ImageFormat(),
-            new MgrImageFormat(),
-            new HgrImageFormat(),
-            new Mgr9ImageFormat(),
-            new Hgr9ImageFormat(),
+            Tuple.Create((NativeImageFormat)new Gr7ImageFormat(), "GR7"),
+            Tuple.Create((NativeImageFormat)new MgrImageFormat(), "MGR"),
+            Tuple.Create((NativeImageFormat)new HgrImageFormat(), "HGR"),
+            Tuple.Create((NativeImageFormat)new Mgr9ImageFormat(), "MGR9"),
+            Tuple.Create((NativeImageFormat)new Hgr9ImageFormat(), "HGR9"),
         };
     }
 }

@@ -9,8 +9,6 @@ namespace ImageLib
     {
         private const double defaultDpi = 96;
 
-        public abstract string Name { get; }
-
         public virtual double Aspect
         {
             get { return 4.0 / 3.0; }

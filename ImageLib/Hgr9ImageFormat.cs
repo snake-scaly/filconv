@@ -4,11 +4,6 @@ namespace ImageLib
 {
     public class Hgr9ImageFormat : BwImageFormatAbstr
     {
-        public override string Name
-        {
-            get { return "HGR9"; }
-        }
-
         protected override int Width
         {
             get { return 512; }
