@@ -25,12 +25,12 @@ namespace ImageLib
             Color.FromRgb(0, 217, 217),
             Color.FromRgb(217, 217, 217),
             Color.FromRgb(38, 38, 38),
-            Color.FromRgb(255, 0, 0),
-            Color.FromRgb(0, 255, 0),
-            Color.FromRgb(255, 255, 0),
-            Color.FromRgb(0, 0, 255),
-            Color.FromRgb(255, 0, 255),
-            Color.FromRgb(0, 255, 255),
+            Color.FromRgb(255, 38, 38),
+            Color.FromRgb(38, 255, 38),
+            Color.FromRgb(255, 255, 38),
+            Color.FromRgb(38, 38, 255),
+            Color.FromRgb(255, 38, 255),
+            Color.FromRgb(38, 255, 255),
             Color.FromRgb(255, 255, 255),
         };
 
