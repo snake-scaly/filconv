@@ -47,6 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgatImageFormatAbstr.cs" />
+    <Compile Include="Apple2ImageFormat.cs" />
+    <Compile Include="Apple2NtscTv.cs" />
+    <Compile Include="Apple2DoublePixelTv.cs" />
+    <Compile Include="Apple2Palettes.cs" />
+    <Compile Include="Apple2FillTv.cs" />
+    <Compile Include="Apple2SimpleTv.cs" />
+    <Compile Include="Apple2TvSet.cs" />
+    <Compile Include="Apple2TvSetAbstr.cs" />
+    <Compile Include="Apple2TvSetUtils.cs" />
     <Compile Include="BwImageFormatAbstr.cs" />
     <Compile Include="C16ImageFormatAbstr.cs" />
     <Compile Include="ColorUtils.cs" />
@@ -60,6 +69,7 @@
     <Compile Include="Mgr9ImageFormat.cs" />
     <Compile Include="MgrImageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Apple2SimpleColor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
