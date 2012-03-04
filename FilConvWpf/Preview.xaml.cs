@@ -29,6 +29,7 @@ namespace FilConvWpf
 
                 model = new PreviewModel();
                 model.DisplayPictureChange += model_DisplayPictureChange;
+                model.Toolbar = new ToolbarFragment(toolBar, toolBar.Items.GetItemAt(toolBar.Items.Count - 1), null);
 
                 Update();
             }
@@ -44,10 +45,10 @@ namespace FilConvWpf
             }
         }
 
-        public NativeImage NativeImage
+        internal IImageDisplayAdapter Image
         {
-            get { return model.NativeImage; }
-            set { model.NativeImage = value; }
+            get { return model.Image; }
+            set { model.Image = value; }
         }
 
         public BitmapSource BitmapPicture

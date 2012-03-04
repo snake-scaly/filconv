@@ -13,12 +13,12 @@ namespace FilConvWpf
         const bool defaultTvAspect = true;
         const bool defaultDither = false;
 
-        NativeImage _nativeImage;
         BitmapSource _bitmapPicture;
         int _format;
         BitmapSource _displayPicture;
         bool _tvAspect;
         bool _dither;
+        IImageDisplayAdapter _image;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
 
@@ -32,19 +32,29 @@ namespace FilConvWpf
 
         public string Title { get; set; }
 
-        public NativeImage NativeImage
+        public IImageDisplayAdapter Image
         {
-            get { return _nativeImage; }
+            get { return _image; }
             set
             {
-                if (value != _nativeImage)
+                if (!object.ReferenceEquals(value, _image))
                 {
-                    _nativeImage = value;
-                    _displayPicture = null;
-                    if (value != null)
+                    if (_image != null)
                     {
-                        _bitmapPicture = null;
+                        _image.DisplayImageChanged -= image_DisplayImageChanged;
+                        _image.RevokeToolbarFragment();
                     }
+                    Toolbar.Clear();
+
+                    _image = value;
+
+                    if (_image != null)
+                    {
+                        _image.DisplayImageChanged += image_DisplayImageChanged;
+                        _image.GrantToolbarFragment(Toolbar);
+                    }
+
+                    _displayPicture = null;
                     OnDisplayPictureChange();
                 }
             }
@@ -56,12 +66,12 @@ namespace FilConvWpf
 
             set
             {
-                if (value != _bitmapPicture)
+                if (!object.ReferenceEquals(value, _bitmapPicture))
                 {
                     _bitmapPicture = value;
                     if (value != null)
                     {
-                        _nativeImage = null;
+                        _image = null;
                         _displayPicture = null;
                     }
                     OnDisplayPictureChange();
@@ -127,10 +137,9 @@ namespace FilConvWpf
                             _displayPicture = _bitmapPicture;
                         }
                     }
-                    else if (_nativeImage != null)
+                    else if (_image != null)
                     {
-                        Debug.Assert(_format != -1);
-                        _displayPicture = _formats[_format].Item1.FromNative(_nativeImage);
+                        _displayPicture = _image.DisplayImage.Bitmap;
                     }
                 }
                 return _displayPicture;
@@ -145,7 +154,7 @@ namespace FilConvWpf
 
         public bool TvAspectEnabled
         {
-            get { return _format != -1 && (Encode || _nativeImage != null); }
+            get { return _image != null && _image.EnableAspectCorrection; }
         }
 
         public double Aspect
@@ -154,7 +163,7 @@ namespace FilConvWpf
             {
                 if (TvAspect && TvAspectEnabled)
                 {
-                    return _formats[_format].Item1.Aspect;
+                    return _image.DisplayImage.Aspect;
                 }
                 return 1;
             }
@@ -164,7 +173,7 @@ namespace FilConvWpf
 
         public bool DisplayFormatBox
         {
-            get { return _nativeImage != null || Encode; }
+            get { return false; }
         }
 
         public bool Encode { get; set; }
@@ -193,12 +202,21 @@ namespace FilConvWpf
             get { return Encode; }
         }
 
-        protected void OnDisplayPictureChange()
+        public ToolbarFragment Toolbar { get; set; }
+
+        protected virtual void OnDisplayPictureChange()
         {
             if (DisplayPictureChange != null)
             {
                 DisplayPictureChange(this, EventArgs.Empty);
             }
+        }
+
+        private void image_DisplayImageChanged(object sender, EventArgs e)
+        {
+            Debug.Assert(object.ReferenceEquals(sender, _image));
+            _displayPicture = null;
+            OnDisplayPictureChange();
         }
 
         static readonly Tuple<NativeImageFormat, String>[] _formats =

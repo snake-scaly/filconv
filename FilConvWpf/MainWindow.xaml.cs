@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using FilConvWpf.Native;
 using FilLib;
 using ImageLib;
 using Microsoft.Win32;
@@ -27,27 +28,28 @@ namespace FilConvWpf
 
         void Open(string fileName)
         {
-            try
-            {
+            //try
+            //{
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Fil fil = Fil.FromFile(fileName);
-                    left.NativeImage = new NativeImage(fil.Data, new FormatHint(".fil"));
+                    NativeImage ni = new NativeImage(fil.Data, new FormatHint(".fil"));
+                    left.Image = new NativeImageDisplayAdapter(ni);
                 }
                 else
                 {
                     left.BitmapPicture = new BitmapImage(new Uri(fileName));
                 }
                 this.fileName = fileName;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(
-                    string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
-                    "Fil Converter",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show(
+            //        string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
+            //        "Fil Converter",
+            //        MessageBoxButton.OK,
+            //        MessageBoxImage.Error);
+            //}
         }
 
         void Save(string fileName, Type encoderType)
