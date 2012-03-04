@@ -9,7 +9,7 @@ namespace ImageLib
     public static class Apple2Palettes
     {
         public static Color[] American { get { return americanPalette; } }
-        public static Color[] Eruopean { get { return europeanPalette; } }
+        public static Color[] European { get { return europeanPalette; } }
 
         /// <summary>
         /// RGB colors corresponding to simple colors for American Apples
