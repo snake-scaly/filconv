@@ -91,9 +91,7 @@ namespace FilConvWpf.Native
                     _currentMode.FormatChanged -= currentMode_FormatChanged;
                     _currentMode.RevokeToolbarFragment();
                 }
-
                 _currentMode = _displayModes[mode];
-
                 _currentMode.FormatChanged += currentMode_FormatChanged;
                 if (_subBar != null)
                 {

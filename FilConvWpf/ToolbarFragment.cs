@@ -31,7 +31,7 @@ namespace FilConvWpf
         /// <param name="leftAnchor">left boundary of the fragment, or <code>null</code></param>
         /// <param name="rightAnchor">right boundary of the fragment, or <code>null</code></param>
         public ToolbarFragment(ToolBar toolbar, object leftAnchor, object rightAnchor)
-            : this(toolbar, leftAnchor, leftAnchor != null, rightAnchor, rightAnchor != null)
+            : this(toolbar, leftAnchor, false, rightAnchor, false)
         {
         }
 
@@ -46,9 +46,9 @@ namespace FilConvWpf
             return new ToolbarFragment(
                 _toolbar,
                 leftAnchor ?? _leftAnchor,
-                leftAnchor != null,
+                false,
                 rightAnchor ?? _rightAnchor,
-                rightAnchor != null);
+                false);
         }
 
         public void Clear()

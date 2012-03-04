@@ -76,26 +76,19 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ToolBarTray>
-            <ToolBar Name="toolBar" Grid.Row="0">
-                <Label Name="titleLabel" Content="Title"/>
-                <ComboBox Name="formatComboBox" SelectionChanged="formatComboBox_SelectedIndexChanged"/>
-                <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
-                    <ComboBoxItem Content="100%"/>
-                    <ComboBoxItem Content="200%"/>
-                    <ComboBoxItem Content="300%"/>
-                    <ComboBoxItem Content="По окну"/>
-                </ComboBox>
-                <ToggleButton Name="tvAspectToggle"
-                              ToolTip="Пропорции Агата" Checked="tvAspectToggle_Checked" Unchecked="tvAspectToggle_Unchecked">
-                    <Control Template="{StaticResource contentImage}" Tag="{StaticResource aspect}"/>
-                </ToggleButton>
-                <ToggleButton Name="ditherToggle"
-                              ToolTip="Улучшенное преобразование цветов" Checked="ditherToggle_Checked" Unchecked="ditherToggle_Unchecked">
-                    <Control Template="{StaticResource contentImage}" Tag="{StaticResource dither}"/>
-                </ToggleButton>
-            </ToolBar>
-        </ToolBarTray>
+        <ToolBar Name="toolBar" Grid.Row="0">
+            <Label Name="titleLabel" Content="Title"/>
+            <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
+                <ComboBoxItem Content="100%"/>
+                <ComboBoxItem Content="200%"/>
+                <ComboBoxItem Content="300%"/>
+                <ComboBoxItem Content="По окну"/>
+            </ComboBox>
+            <ToggleButton Name="tvAspectToggle"
+                            ToolTip="Пропорции Агата" Checked="tvAspectToggle_Checked" Unchecked="tvAspectToggle_Unchecked">
+                <Control Template="{StaticResource contentImage}" Tag="{StaticResource aspect}"/>
+            </ToggleButton>
+        </ToolBar>
         <Viewbox Name="previewViewBox" Grid.Row="1" SnapsToDevicePixels="False">
             <my:PixelAlignedBitmap x:Name="previewPictureBox" RenderOptions.BitmapScalingMode="NearestNeighbor" AllowDrop="True"/>
         </Viewbox>

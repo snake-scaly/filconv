@@ -55,9 +55,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Encode\IdentityEncoding.cs" />
+    <Compile Include="Encode\IEncoding.cs" />
+    <Compile Include="Encode\NativeEncoding.cs" />
     <Compile Include="Native\AppleDisplayMode.cs" />
     <Compile Include="IToolbarClient.cs" />
+    <Compile Include="Encode\EncodingImageDisplayAdapter.cs" />
     <Compile Include="ToolbarFragment.cs" />
+    <Compile Include="WpfImageDisplayAdapter.cs" />
     <Page Include="AboutBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -135,6 +140,12 @@
       <Project>{D920C1B3-0F11-4021-9C7C-E36A3AE5C3DC}</Project>
       <Name>ImageLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\useu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\fill.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

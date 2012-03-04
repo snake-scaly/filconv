@@ -14,8 +14,6 @@ namespace FilConvWpf
     /// </summary>
     public partial class Preview : UserControl
     {
-        const double screenDpi = 96;
-
         PreviewModel model;
         bool updating;
 
@@ -51,38 +49,12 @@ namespace FilConvWpf
             set { model.Image = value; }
         }
 
-        public BitmapSource BitmapPicture
-        {
-            get { return model.BitmapPicture; }
-            set { model.BitmapPicture = value; }
-        }
-
-        public NativeImageFormat Format
-        {
-            get { return model.Format; }
-        }
-
         public BitmapSource DisplayPicture
         {
             get { return model.DisplayPicture; }
         }
 
-        public bool Dither
-        {
-            get { return model.Dither; }
-        }
-
-        public bool Encode
-        {
-            get { return model.Encode; }
-            set
-            {
-                model.Encode = value;
-                Update();
-            }
-        }
-
-        protected virtual void OnConvertedBitmapChange()
+        protected virtual void OnDisplayPictureChange()
         {
             if (DisplayPictureChange != null)
             {
@@ -113,23 +85,9 @@ namespace FilConvWpf
 
                 titleLabel.Content = model.Title;
 
-                if (model.DisplayFormatBox)
-                {
-                    formatComboBox.ItemsSource = model.PreviewModes;
-                    formatComboBox.SelectedIndex = model.CurrentPreviewMode;
-                    formatComboBox.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    formatComboBox.Visibility = Visibility.Collapsed;
-                }
-
                 scaleComboBox.SelectedIndex = scale[model.Scale];
                 tvAspectToggle.IsChecked = model.TvAspect;
                 tvAspectToggle.IsEnabled = model.TvAspectEnabled;
-                ditherToggle.IsChecked = model.Dither;
-                ditherToggle.IsEnabled = model.DitherEnabled;
-                ditherToggle.Visibility = model.DitherVisible ? Visibility.Visible : Visibility.Collapsed;
 
                 BitmapSource bs = model.DisplayPicture;
                 previewPictureBox.Source = bs;
@@ -148,16 +106,7 @@ namespace FilConvWpf
         void model_DisplayPictureChange(object sender, EventArgs e)
         {
             Update();
-            OnConvertedBitmapChange();
-        }
-
-        void formatComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                Debug.Assert(object.ReferenceEquals(sender, formatComboBox));
-                model.CurrentPreviewMode = formatComboBox.SelectedIndex;
-            }
+            OnDisplayPictureChange();
         }
 
         void zoomComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -193,22 +142,6 @@ namespace FilConvWpf
             {
                 model.TvAspect = false;
                 Update();
-            }
-        }
-
-        void ditherToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                model.Dither = true;
-            }
-        }
-
-        void ditherToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                model.Dither = false;
             }
         }
 

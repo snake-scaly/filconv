@@ -3,6 +3,8 @@ using ImageLib;
 using System.Windows.Controls.Primitives;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace FilConvWpf.Native
 {
@@ -26,7 +28,7 @@ namespace FilConvWpf.Native
         {
             ToggleButton fill = new ToggleButton();
             fill.IsChecked = _fill;
-            fill.Content = "З";
+            fill.Content = GetResourceImage("fill.png");
             fill.ToolTip = "Заливка цветов";
             fill.Checked += fill_Checked;
             fill.Unchecked += fill_Unchecked;
@@ -34,11 +36,18 @@ namespace FilConvWpf.Native
 
             ToggleButton pal = new ToggleButton();
             pal.IsChecked = _pal;
-            pal.Content = "П";
+            pal.Content = GetResourceImage("useu.png");
             pal.ToolTip = "Переключение между европейской и американской палитрами";
             pal.Checked += pal_Checked;
             pal.Unchecked += pal_Unchecked;
             fragment.Add(pal);
+        }
+
+        private Image GetResourceImage(string fileName)
+        {
+            Image result = new Image();
+            result.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/" + fileName));
+            return result;
         }
 
         public void RevokeToolbarFragment()

@@ -9,6 +9,7 @@ using FilConvWpf.Native;
 using FilLib;
 using ImageLib;
 using Microsoft.Win32;
+using FilConvWpf.Encode;
 
 namespace FilConvWpf
 {
@@ -22,8 +23,7 @@ namespace FilConvWpf
         public MainWindow()
         {
             InitializeComponent();
-            left.DisplayPictureChange += left_DisplayPictureChange;
-            right.Encode = true;
+            right.Image = new EncodingImageDisplayAdapter(left);
         }
 
         void Open(string fileName)
@@ -38,7 +38,7 @@ namespace FilConvWpf
                 }
                 else
                 {
-                    left.BitmapPicture = new BitmapImage(new Uri(fileName));
+                    left.Image = new WpfImageDisplayAdapter(new BitmapImage(new Uri(fileName)));
                 }
                 this.fileName = fileName;
             //}
@@ -58,7 +58,7 @@ namespace FilConvWpf
             {
                 BitmapEncoder encoder = (BitmapEncoder)Activator.CreateInstance(encoderType);
                 encoder.Frames.Add(BitmapFrame.Create(right.DisplayPicture));
-                using (FileStream fs = new FileStream(fileName, FileMode.Create))
+                using (var fs = new FileStream(fileName, FileMode.Create))
                 {
                     encoder.Save(fs);
                 }
@@ -66,9 +66,8 @@ namespace FilConvWpf
             else
             {
                 var fil = new Fil(System.IO.Path.GetFileName(fileName));
-                EncodingOptions options = new EncodingOptions();
-                options.Dither = right.Dither;
-                fil.Data = right.Format.ToNative(left.DisplayPicture, options).Data;
+                var eida = (EncodingImageDisplayAdapter)right.Image;
+                eida.FillContainerData(fil);
                 using (var fs = new FileStream(fileName, FileMode.Create))
                 {
                     fil.Write(fs);
@@ -97,12 +96,6 @@ namespace FilConvWpf
             }
         }
 
-        void left_DisplayPictureChange(object sender, EventArgs e)
-        {
-            Debug.Assert(object.ReferenceEquals(sender, left));
-            right.BitmapPicture = left.DisplayPicture;
-        }
-
         private void menuOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -118,7 +111,8 @@ namespace FilConvWpf
 
         private void menuSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<FileFilter> filters = GetFileFilterList(right.Format != null, false);
+            var eida = (EncodingImageDisplayAdapter)right.Image;
+            IEnumerable<FileFilter> filters = GetFileFilterList(eida.IsContainerSupported(typeof(Fil)), false);
 
             var sfd = new SaveFileDialog();
             sfd.FileName = Path.GetFileNameWithoutExtension(fileName);
