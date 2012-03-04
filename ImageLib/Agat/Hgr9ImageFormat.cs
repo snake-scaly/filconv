@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImageLib
+namespace ImageLib.Agat
 {
     public class Hgr9ImageFormat : BwImageFormatAbstr
     {

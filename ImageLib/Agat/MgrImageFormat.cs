@@ -1,4 +1,4 @@
-﻿namespace ImageLib
+﻿namespace ImageLib.Agat
 {
     public class MgrImageFormat : C16ImageFormatAbstr
     {

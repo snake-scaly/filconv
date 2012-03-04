@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
-namespace ImageLib
+namespace ImageLib.Apple
 {
     public abstract class Apple2TvSetAbstr : Apple2TvSet
     {

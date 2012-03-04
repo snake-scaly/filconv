@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace ImageLib
+namespace ImageLib.Agat
 {
     public abstract class BwImageFormatAbstr : AgatImageFormatAbstr
     {

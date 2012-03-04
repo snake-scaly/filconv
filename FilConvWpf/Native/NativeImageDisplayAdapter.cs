@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Controls;
-using FilConvWpf.Native;
 using ImageLib;
+using ImageLib.Agat;
+using ImageLib.Apple;
 
 namespace FilConvWpf.Native
 {

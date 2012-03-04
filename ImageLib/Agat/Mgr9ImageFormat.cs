@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 
-namespace ImageLib
+namespace ImageLib.Agat
 {
     public class Mgr9ImageFormat : AgatImageFormatAbstr
     {

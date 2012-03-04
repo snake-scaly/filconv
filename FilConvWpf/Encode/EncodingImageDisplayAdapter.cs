@@ -1,8 +1,7 @@
 ﻿using System;
-using FilConvWpf.Native;
-using ImageLib;
-using System.Windows.Controls;
 using System.Diagnostics;
+using System.Windows.Controls;
+using ImageLib.Agat;
 
 namespace FilConvWpf.Encode
 {

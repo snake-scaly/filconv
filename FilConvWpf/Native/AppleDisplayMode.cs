@@ -1,10 +1,11 @@
 ﻿using System;
-using ImageLib;
-using System.Windows.Controls.Primitives;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageLib;
+using ImageLib.Apple;
 
 namespace FilConvWpf.Native
 {

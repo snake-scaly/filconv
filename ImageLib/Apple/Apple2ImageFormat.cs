@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 
-namespace ImageLib
+namespace ImageLib.Apple
 {
     public class Apple2ImageFormat : NativeImageFormat
     {

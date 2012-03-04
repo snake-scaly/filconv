@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ImageLib
+namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : NativeImageFormat
     {

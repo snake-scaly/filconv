@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib;
+using ImageLib.Agat;
 using NDesk.Options;
 
 namespace filconv
