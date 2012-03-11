@@ -28,12 +28,17 @@ namespace FilConvWpf
 
         void Open(string fileName)
         {
-            //try
-            //{
+            try
+            {
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Fil fil = Fil.FromFile(fileName);
                     NativeImage ni = new NativeImage(fil.Data, new FormatHint(".fil"));
+                    left.Image = new NativeImageDisplayAdapter(ni);
+                }
+                else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    NativeImage ni = new NativeImage(File.ReadAllBytes(fileName), new FormatHint(".scr"));
                     left.Image = new NativeImageDisplayAdapter(ni);
                 }
                 else
@@ -41,15 +46,15 @@ namespace FilConvWpf
                     left.Image = new WpfImageDisplayAdapter(new BitmapImage(new Uri(fileName)));
                 }
                 this.fileName = fileName;
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show(
-            //        string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
-            //        "Fil Converter",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Error);
-            //}
+            }
+            catch (NotSupportedException e)
+            {
+                MessageBox.Show(
+                    string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
+                    "Fil Converter",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         void Save(string fileName, Type encoderType)
@@ -99,7 +104,7 @@ namespace FilConvWpf
         private void menuOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = string.Join("|", GetFileFilterList(true, true).Select(ff => ff.Filter));
+            ofd.Filter = string.Join("|", GetFileFilterList(true, true, true).Select(ff => ff.Filter));
             bool? r = ofd.ShowDialog();
             if (r == null || !r.Value)
             {
@@ -112,7 +117,7 @@ namespace FilConvWpf
         private void menuSaveAs_Click(object sender, RoutedEventArgs e)
         {
             var eida = (EncodingImageDisplayAdapter)right.Image;
-            IEnumerable<FileFilter> filters = GetFileFilterList(eida.IsContainerSupported(typeof(Fil)), false);
+            IEnumerable<FileFilter> filters = GetFileFilterList(eida.IsContainerSupported(typeof(Fil)), false, false);
 
             var sfd = new SaveFileDialog();
             sfd.FileName = Path.GetFileNameWithoutExtension(fileName);
@@ -139,9 +144,13 @@ namespace FilConvWpf
             about.ShowDialog();
         }
 
-        IEnumerable<FileFilter> GetFileFilterList(bool includeAgat, bool includeGeneric)
+        IEnumerable<FileFilter> GetFileFilterList(bool includeAgat, bool includeScr, bool includeGeneric)
         {
             IEnumerable<SupportedFile> files = _supportedPcFiles.AsEnumerable();
+            if (includeScr)
+            {
+                files = _supportedScrFiles.Concat(files);
+            }
             if (includeAgat)
             {
                 files = _supportedAgatFiles.Concat(files);
@@ -196,6 +205,11 @@ namespace FilConvWpf
         static readonly SupportedFile[] _supportedAgatFiles =
         {
             new SupportedFile("Fil", new string[] { "*.fil" }, null),
+        };
+
+        static readonly SupportedFile[] _supportedScrFiles =
+        {
+            new SupportedFile("Scr", new string[] { "*.scr" }, null),
         };
 
         static readonly SupportedFile[] _supportedPcFiles =
