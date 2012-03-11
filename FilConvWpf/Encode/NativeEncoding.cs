@@ -23,7 +23,7 @@ namespace FilConvWpf.Encode
 
         public string Name { get; private set; }
 
-        public DisplayImage Encode(BitmapSource original)
+        public DisplayImage Preview(BitmapSource original)
         {
             return new DisplayImage(
                 _format.FromNative(ToNative(original)),
@@ -52,7 +52,7 @@ namespace FilConvWpf.Encode
             return type == typeof(Fil);
         }
 
-        public void FillContainerData(object container, BitmapSource original)
+        public void Encode(BitmapSource original, object container)
         {
             if (container is Fil)
             {

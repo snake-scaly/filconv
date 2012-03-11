@@ -7,7 +7,7 @@ namespace FilConvWpf.Encode
     {
         event EventHandler<EventArgs> EncodingChanged;
         string Name { get; }
-        DisplayImage Encode(BitmapSource original);
+        DisplayImage Preview(BitmapSource original);
 
         /// <summary>
         /// Check whether this encoding can supply data for the given
@@ -18,17 +18,17 @@ namespace FilConvWpf.Encode
         bool IsContainerSupported(Type type);
 
         /// <summary>
-        /// Supply encoded data for the given container.
+        /// Encode a bitmap into the given container.
         /// </summary>
         /// <remarks>
         /// The runtime type of the container must be supported
         /// by this encoding.  To check if the container is supported,
-        /// pass container.GetType() to the <see cref="#IsContainerSupported()"/>
-        /// method.
+        /// pass <code>container.GetType()</code> to the
+        /// <see cref="#IsContainerSupported()"/> method.
         /// </remarks>
         /// <exception cref="NotSupportedException">
         /// if runtime type of the given container is not supported
         /// </exception>
-        void FillContainerData(object container, BitmapSource original);
+        void Encode(BitmapSource original, object container);
     }
 }

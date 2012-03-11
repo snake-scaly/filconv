@@ -23,7 +23,7 @@ namespace FilConvWpf
         public MainWindow()
         {
             InitializeComponent();
-            right.Image = new EncodingImageDisplayAdapter(left);
+            right.ImagePresenter = new EncodingImagePresenter(left);
         }
 
         void Open(string fileName)
@@ -34,16 +34,16 @@ namespace FilConvWpf
                 {
                     Fil fil = Fil.FromFile(fileName);
                     NativeImage ni = new NativeImage(fil.Data, new FormatHint(".fil"));
-                    left.Image = new NativeImageDisplayAdapter(ni);
+                    left.ImagePresenter = new NativeImagePresenter(ni);
                 }
                 else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase))
                 {
                     NativeImage ni = new NativeImage(File.ReadAllBytes(fileName), new FormatHint(".scr"));
-                    left.Image = new NativeImageDisplayAdapter(ni);
+                    left.ImagePresenter = new NativeImagePresenter(ni);
                 }
                 else
                 {
-                    left.Image = new WpfImageDisplayAdapter(new BitmapImage(new Uri(fileName)));
+                    left.ImagePresenter = new WpfImageDisplayAdapter(new BitmapImage(new Uri(fileName)));
                 }
                 this.fileName = fileName;
             }
@@ -71,8 +71,7 @@ namespace FilConvWpf
             else
             {
                 var fil = new Fil(System.IO.Path.GetFileName(fileName));
-                var eida = (EncodingImageDisplayAdapter)right.Image;
-                eida.FillContainerData(fil);
+                ((EncodingImagePresenter)right.ImagePresenter).EncodeInto(fil);
                 using (var fs = new FileStream(fileName, FileMode.Create))
                 {
                     fil.Write(fs);
@@ -116,7 +115,7 @@ namespace FilConvWpf
 
         private void menuSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            var eida = (EncodingImageDisplayAdapter)right.Image;
+            var eida = (EncodingImagePresenter)right.ImagePresenter;
             IEnumerable<FileFilter> filters = GetFileFilterList(eida.IsContainerSupported(typeof(Fil)), false, false);
 
             var sfd = new SaveFileDialog();

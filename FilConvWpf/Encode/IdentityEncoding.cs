@@ -9,7 +9,7 @@ namespace FilConvWpf.Encode
 
         public string Name { get { return "Оригинал"; } }
 
-        public DisplayImage Encode(BitmapSource original)
+        public DisplayImage Preview(BitmapSource original)
         {
             return new DisplayImage(original, 1);
         }
@@ -27,7 +27,7 @@ namespace FilConvWpf.Encode
             return false;
         }
 
-        public void FillContainerData(object container, BitmapSource original)
+        public void Encode(BitmapSource original, object container)
         {
             throw new NotSupportedException("Containers are not supported");
         }

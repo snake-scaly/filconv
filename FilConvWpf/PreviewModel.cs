@@ -14,7 +14,7 @@ namespace FilConvWpf
 
         BitmapSource _displayPicture;
         bool _tvAspect;
-        IImageDisplayAdapter _image;
+        IImagePresenter _imagePresenter;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
 
@@ -26,26 +26,26 @@ namespace FilConvWpf
 
         public string Title { get; set; }
 
-        public IImageDisplayAdapter Image
+        public IImagePresenter ImagePresenter
         {
-            get { return _image; }
+            get { return _imagePresenter; }
             set
             {
-                if (!object.ReferenceEquals(value, _image))
+                if (!object.ReferenceEquals(value, _imagePresenter))
                 {
-                    if (_image != null)
+                    if (_imagePresenter != null)
                     {
-                        _image.DisplayImageChanged -= image_DisplayImageChanged;
-                        _image.RevokeToolbarFragment();
+                        _imagePresenter.DisplayImageChanged -= image_DisplayImageChanged;
+                        _imagePresenter.RevokeToolbarFragment();
                     }
                     Toolbar.Clear();
 
-                    _image = value;
+                    _imagePresenter = value;
 
-                    if (_image != null)
+                    if (_imagePresenter != null)
                     {
-                        _image.DisplayImageChanged += image_DisplayImageChanged;
-                        _image.GrantToolbarFragment(Toolbar);
+                        _imagePresenter.DisplayImageChanged += image_DisplayImageChanged;
+                        _imagePresenter.GrantToolbarFragment(Toolbar);
                     }
 
                     _displayPicture = null;
@@ -60,9 +60,9 @@ namespace FilConvWpf
             {
                 if (_displayPicture == null)
                 {
-                    if (_image != null)
+                    if (_imagePresenter != null)
                     {
-                        _displayPicture = _image.DisplayImage.Bitmap;
+                        _displayPicture = _imagePresenter.DisplayImage.Bitmap;
                     }
                 }
                 return _displayPicture;
@@ -77,7 +77,7 @@ namespace FilConvWpf
 
         public bool TvAspectEnabled
         {
-            get { return _image != null && _image.EnableAspectCorrection; }
+            get { return _imagePresenter != null && _imagePresenter.EnableAspectCorrection; }
         }
 
         public double Aspect
@@ -86,7 +86,7 @@ namespace FilConvWpf
             {
                 if (TvAspect && TvAspectEnabled)
                 {
-                    return _image.DisplayImage.Aspect;
+                    return _imagePresenter.DisplayImage.Aspect;
                 }
                 return 1;
             }
@@ -106,7 +106,7 @@ namespace FilConvWpf
 
         private void image_DisplayImageChanged(object sender, EventArgs e)
         {
-            Debug.Assert(object.ReferenceEquals(sender, _image));
+            Debug.Assert(object.ReferenceEquals(sender, _imagePresenter));
             _displayPicture = null;
             OnDisplayPictureChange();
         }

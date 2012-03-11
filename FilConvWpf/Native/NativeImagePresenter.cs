@@ -8,7 +8,7 @@ using ImageLib.Spectrum;
 
 namespace FilConvWpf.Native
 {
-    class NativeImageDisplayAdapter : IImageDisplayAdapter
+    class NativeImagePresenter : IImagePresenter
     {
         private const int _defaultMode = 1; // MGR
 
@@ -20,7 +20,7 @@ namespace FilConvWpf.Native
 
         public event EventHandler<EventArgs> DisplayImageChanged;
 
-        public NativeImageDisplayAdapter(NativeImage nativeImage)
+        public NativeImagePresenter(NativeImage nativeImage)
         {
             _nativeImage = nativeImage;
             _displayModeCombo = new ComboBox();

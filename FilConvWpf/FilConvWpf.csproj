@@ -60,7 +60,7 @@
     <Compile Include="Encode\NativeEncoding.cs" />
     <Compile Include="Native\AppleDisplayMode.cs" />
     <Compile Include="IToolbarClient.cs" />
-    <Compile Include="Encode\EncodingImageDisplayAdapter.cs" />
+    <Compile Include="Encode\EncodingImagePresenter.cs" />
     <Compile Include="ToolbarFragment.cs" />
     <Compile Include="WpfImageDisplayAdapter.cs" />
     <Page Include="AboutBox.xaml">
@@ -82,9 +82,9 @@
     <Compile Include="Native\INativeDisplayMode.cs" />
     <Compile Include="Native\NativeDisplayMode.cs" />
     <Compile Include="IDisplayImageProvider.cs" />
-    <Compile Include="Native\NativeImageDisplayAdapter.cs" />
+    <Compile Include="Native\NativeImagePresenter.cs" />
     <Compile Include="GrayscaleConverter.cs" />
-    <Compile Include="IImageDisplayAdapter.cs" />
+    <Compile Include="IImagePresenter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

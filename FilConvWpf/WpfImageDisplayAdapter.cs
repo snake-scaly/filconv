@@ -3,7 +3,7 @@ using System.Windows.Media.Imaging;
 
 namespace FilConvWpf
 {
-    class WpfImageDisplayAdapter : IImageDisplayAdapter
+    class WpfImageDisplayAdapter : IImagePresenter
     {
         public event EventHandler<EventArgs> DisplayImageChanged;
 

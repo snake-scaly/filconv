@@ -43,10 +43,10 @@ namespace FilConvWpf
             }
         }
 
-        internal IImageDisplayAdapter Image
+        internal IImagePresenter ImagePresenter
         {
-            get { return model.Image; }
-            set { model.Image = value; }
+            get { return model.ImagePresenter; }
+            set { model.ImagePresenter = value; }
         }
 
         public BitmapSource DisplayPicture

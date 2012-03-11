@@ -5,7 +5,7 @@ using ImageLib.Agat;
 
 namespace FilConvWpf.Encode
 {
-    class EncodingImageDisplayAdapter : IImageDisplayAdapter
+    class EncodingImagePresenter : IImagePresenter
     {
         private const int _defaultEncoding = 2;
 
@@ -16,7 +16,7 @@ namespace FilConvWpf.Encode
 
         public event EventHandler<EventArgs> DisplayImageChanged;
 
-        public EncodingImageDisplayAdapter(Preview sourcePreview)
+        public EncodingImagePresenter(Preview sourcePreview)
         {
             _sourcePreview = sourcePreview;
             _sourcePreview.DisplayPictureChange += sourcePreview_DisplayPictureChange;
@@ -59,9 +59,9 @@ namespace FilConvWpf.Encode
             return _currentEncoding != null && _currentEncoding.IsContainerSupported(type);
         }
 
-        public void FillContainerData(object container)
+        public void EncodeInto(object container)
         {
-            _currentEncoding.FillContainerData(container, _sourcePreview.DisplayPicture);
+            _currentEncoding.Encode(_sourcePreview.DisplayPicture, container);
         }
 
         private void encodingCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -107,7 +107,7 @@ namespace FilConvWpf.Encode
         {
             if (_sourcePreview.DisplayPicture != null)
             {
-                DisplayImage = _currentEncoding.Encode(_sourcePreview.DisplayPicture);
+                DisplayImage = _currentEncoding.Preview(_sourcePreview.DisplayPicture);
             }
             else
             {
