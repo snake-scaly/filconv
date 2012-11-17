@@ -62,6 +62,7 @@
     <Compile Include="IToolbarClient.cs" />
     <Compile Include="Encode\EncodingImagePresenter.cs" />
     <Compile Include="ResourceUtils.cs" />
+    <Compile Include="SettingNames.cs" />
     <Compile Include="ToolbarFragment.cs" />
     <Compile Include="BitmapPresenter.cs" />
     <Page Include="AboutBox.xaml">

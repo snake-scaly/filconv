@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
     
 namespace FilConvWpf.Encode
 {
@@ -34,6 +35,14 @@ namespace FilConvWpf.Encode
         public void Encode(BitmapSource original, object container)
         {
             throw new NotSupportedException("Containers are not supported");
+        }
+
+        public void StoreSettings(IDictionary<string, object> settings)
+        {
+        }
+
+        public void AdoptSettings(IDictionary<string, object> settings)
+        {
         }
     }
 }

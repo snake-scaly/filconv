@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImageLib;
 using ImageLib.Apple;
+using System.Collections.Generic;
 
 namespace FilConvWpf.Native
 {
@@ -14,34 +15,58 @@ namespace FilConvWpf.Native
         private bool _fill;
         private bool _pal;
 
+        private ToggleButton _fillButton;
+        private ToggleButton _palButton;
+
         public AppleDisplayMode()
             : base("Apple ][", new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
+            _fillButton = new ToggleButton();
+            _fillButton.IsChecked = _fill;
+            _fillButton.Content = ResourceUtils.GetResourceImage("fill.png");
+            _fillButton.ToolTip = "Заливка цветов";
+            _fillButton.Checked += fill_Checked;
+            _fillButton.Unchecked += fill_Unchecked;
+
+            _palButton = new ToggleButton();
+            _palButton.IsChecked = _pal;
+            _palButton.Content = ResourceUtils.GetResourceImage("useu.png");
+            _palButton.ToolTip = "Европейская / американская палитра";
+            _palButton.Checked += pal_Checked;
+            _palButton.Unchecked += pal_Unchecked;
         }
 
         public override void GrantToolbarFragment(ToolbarFragment fragment)
         {
             base.GrantToolbarFragment(fragment);
-
-            ToggleButton fill = new ToggleButton();
-            fill.IsChecked = _fill;
-            fill.Content = ResourceUtils.GetResourceImage("fill.png");
-            fill.ToolTip = "Заливка цветов";
-            fill.Checked += fill_Checked;
-            fill.Unchecked += fill_Unchecked;
-            fragment.Add(fill);
-
-            ToggleButton pal = new ToggleButton();
-            pal.IsChecked = _pal;
-            pal.Content = ResourceUtils.GetResourceImage("useu.png");
-            pal.ToolTip = "Европейская / американская палитра";
-            pal.Checked += pal_Checked;
-            pal.Unchecked += pal_Unchecked;
-            fragment.Add(pal);
+            fragment.Add(_fillButton);
+            fragment.Add(_palButton);
         }
 
-        public override void RevokeToolbarFragment()
+        public override void StoreSettings(IDictionary<string, object> settings)
         {
+            base.StoreSettings(settings);
+            settings[SettingNames.AppleFill] = _fill;
+            settings[SettingNames.ApplePalette] = _pal;
+        }
+
+        public override void AdoptSettings(IDictionary<string, object> settings)
+        {
+            base.AdoptSettings(settings);
+
+            object o;
+
+            if (settings.TryGetValue(SettingNames.AppleFill, out o))
+            {
+                _fill = (bool)o;
+                _fillButton.IsChecked = _fill;
+            }
+
+            if (settings.TryGetValue(SettingNames.ApplePalette, out o))
+            {
+                _pal = (bool)o;
+                _palButton.IsChecked = _pal;
+            }
         }
 
         private void fill_Checked(object sender, RoutedEventArgs e)

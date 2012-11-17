@@ -6,6 +6,7 @@ using ImageLib.Agat;
 using ImageLib.Apple;
 using ImageLib.Spectrum;
 using System.Windows.Controls.Primitives;
+using System.Collections.Generic;
 
 namespace FilConvWpf.Native
 {
@@ -19,6 +20,8 @@ namespace FilConvWpf.Native
         private ToolbarFragment _subBar;
         private ComboBox _displayModeCombo;
 
+        private Dictionary<string, object> _settings;
+
         public event EventHandler<EventArgs> DisplayImageChanged;
 
         public NativeImagePresenter(NativeImage nativeImage)
@@ -31,6 +34,8 @@ namespace FilConvWpf.Native
             }
             _displayModeCombo.SelectionChanged += displayModeCombo_SelectionChanged;
             SetMode(_defaultMode);
+
+            _settings = new Dictionary<string, object>();
         }
 
         public AspectBitmap DisplayImage { get; private set; }
@@ -92,6 +97,7 @@ namespace FilConvWpf.Native
             {
                 if (_currentMode != null)
                 {
+                    _currentMode.StoreSettings(_settings);
                     _currentMode.FormatChanged -= currentMode_FormatChanged;
                     _currentMode.RevokeToolbarFragment();
                 }
@@ -99,6 +105,7 @@ namespace FilConvWpf.Native
                 _currentMode.FormatChanged += currentMode_FormatChanged;
                 if (_subBar != null)
                 {
+                    _currentMode.AdoptSettings(_settings);
                     _subBar.Clear();
                     _currentMode.GrantToolbarFragment(_subBar);
                 }

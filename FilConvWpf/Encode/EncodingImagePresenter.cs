@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Controls;
 using ImageLib.Agat;
+using System.Collections.Generic;
 
 namespace FilConvWpf.Encode
 {
@@ -13,6 +14,7 @@ namespace FilConvWpf.Encode
         private ComboBox _encodingCombo;
         private IEncoding _currentEncoding;
         private ToolbarFragment _subBar;
+        private Dictionary<string, object> _settings;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
 
@@ -27,6 +29,8 @@ namespace FilConvWpf.Encode
                 _encodingCombo.Items.Add(e.Name);
             }
             _encodingCombo.SelectionChanged += encodingCombo_SelectionChanged;
+
+            _settings = new Dictionary<string, object>();
 
             SetEncoding(_defaultEncoding);
         }
@@ -88,6 +92,7 @@ namespace FilConvWpf.Encode
             {
                 if (_currentEncoding != null)
                 {
+                    _currentEncoding.StoreSettings(_settings);
                     _currentEncoding.EncodingChanged -= currentEncoding_EncodingChanged;
                     _currentEncoding.RevokeToolbarFragment();
                 }
@@ -95,6 +100,7 @@ namespace FilConvWpf.Encode
                 _currentEncoding.EncodingChanged += currentEncoding_EncodingChanged;
                 if (_subBar != null)
                 {
+                    _currentEncoding.AdoptSettings(_settings);
                     _subBar.Clear();
                     _currentEncoding.GrantToolbarFragment(_subBar);
                 }

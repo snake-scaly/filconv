@@ -10,6 +10,7 @@ namespace FilConvWpf.Native
     {
         private const bool _defaultTvAspect = true;
         private bool _tvAspect;
+        private ToggleButton _aspectButton;
         public event EventHandler<EventArgs> FormatChanged;
 
         public NativeDisplayMode(string name, NativeImageFormat format)
@@ -18,6 +19,16 @@ namespace FilConvWpf.Native
             Format = format;
             _tvAspect = _defaultTvAspect;
             Aspect = _tvAspect ? Format.Aspect : 1;
+
+            if (Format.Aspect != 1)
+            {
+                _aspectButton = new ToggleButton();
+                _aspectButton.IsChecked = _tvAspect;
+                _aspectButton.Content = ResourceUtils.GetResourceImage("television.png");
+                _aspectButton.ToolTip = "Пропорции оригинала";
+                _aspectButton.Checked += aspect_Checked;
+                _aspectButton.Unchecked += aspect_Unchecked;
+            }
         }
 
         public string Name { get; private set; }
@@ -26,20 +37,32 @@ namespace FilConvWpf.Native
 
         public virtual void GrantToolbarFragment(ToolbarFragment fragment)
         {
-            if (Format.Aspect != 1)
+            if (_aspectButton != null)
             {
-                ToggleButton aspect = new ToggleButton();
-                aspect.IsChecked = _tvAspect;
-                aspect.Content = ResourceUtils.GetResourceImage("television.png");
-                aspect.ToolTip = "Пропорции Агата";
-                aspect.Checked += aspect_Checked;
-                aspect.Unchecked += aspect_Unchecked;
-                fragment.Add(aspect);
+                fragment.Add(_aspectButton);
             }
         }
 
         public virtual void RevokeToolbarFragment()
         {
+        }
+
+        public virtual void StoreSettings(IDictionary<string, object> settings)
+        {
+            settings[SettingNames.TvAspect] = _tvAspect;
+        }
+
+        public virtual void AdoptSettings(IDictionary<string, object> settings)
+        {
+            object tvAspect;
+            if (settings.TryGetValue(SettingNames.TvAspect, out tvAspect))
+            {
+                _tvAspect = (bool)tvAspect;
+                if (_aspectButton != null)
+                {
+                    _aspectButton.IsChecked = _tvAspect;
+                }
+            }
         }
 
         private void aspect_Checked(object sender, EventArgs e)
