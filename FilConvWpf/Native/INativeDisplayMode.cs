@@ -7,6 +7,7 @@ namespace FilConvWpf.Native
     {
         string Name { get; }
         NativeImageFormat Format { get; }
+        double Aspect { get; }
         event EventHandler<EventArgs> FormatChanged;
     }
 }

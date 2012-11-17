@@ -84,10 +84,6 @@
                 <ComboBoxItem Content="300%"/>
                 <ComboBoxItem Content="По окну"/>
             </ComboBox>
-            <ToggleButton Name="tvAspectToggle"
-                            ToolTip="Пропорции Агата" Checked="tvAspectToggle_Checked" Unchecked="tvAspectToggle_Unchecked">
-                <Control Template="{StaticResource contentImage}" Tag="{StaticResource aspect}"/>
-            </ToggleButton>
         </ToolBar>
         <Viewbox Name="previewViewBox" Grid.Row="1" SnapsToDevicePixels="False">
             <my:PixelAlignedBitmap x:Name="previewPictureBox" RenderOptions.BitmapScalingMode="NearestNeighbor" AllowDrop="True"/>

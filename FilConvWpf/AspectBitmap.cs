@@ -5,7 +5,7 @@ namespace FilConvWpf
     /// <summary>
     /// An image to be displayed.
     /// </summary>
-    struct AspectBitmap
+    class AspectBitmap
     {
         public BitmapSource Bitmap { get; private set; }
 
@@ -20,7 +20,6 @@ namespace FilConvWpf
         public double Aspect { get; private set; }
 
         public AspectBitmap(BitmapSource bitmap, double aspect)
-            : this()
         {
             Bitmap = bitmap;
             Aspect = aspect;

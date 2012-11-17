@@ -9,27 +9,23 @@ using ImageLib.Apple;
 
 namespace FilConvWpf.Native
 {
-    class AppleDisplayMode : INativeDisplayMode
+    class AppleDisplayMode : NativeDisplayMode
     {
         private bool _fill;
         private bool _pal;
 
-        public event EventHandler<EventArgs> FormatChanged;
-
         public AppleDisplayMode()
+            : base("Apple ][", new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
-            Format = new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European));
         }
 
-        public string Name { get { return "Apple ]["; } }
-
-        public NativeImageFormat Format { get; private set; }
-
-        public void GrantToolbarFragment(ToolbarFragment fragment)
+        public override void GrantToolbarFragment(ToolbarFragment fragment)
         {
+            base.GrantToolbarFragment(fragment);
+
             ToggleButton fill = new ToggleButton();
             fill.IsChecked = _fill;
-            fill.Content = GetResourceImage("fill.png");
+            fill.Content = ResourceUtils.GetResourceImage("fill.png");
             fill.ToolTip = "Заливка цветов";
             fill.Checked += fill_Checked;
             fill.Unchecked += fill_Unchecked;
@@ -37,21 +33,14 @@ namespace FilConvWpf.Native
 
             ToggleButton pal = new ToggleButton();
             pal.IsChecked = _pal;
-            pal.Content = GetResourceImage("useu.png");
-            pal.ToolTip = "Переключение между европейской и американской палитрами";
+            pal.Content = ResourceUtils.GetResourceImage("useu.png");
+            pal.ToolTip = "Европейская / американская палитра";
             pal.Checked += pal_Checked;
             pal.Unchecked += pal_Unchecked;
             fragment.Add(pal);
         }
 
-        private Image GetResourceImage(string fileName)
-        {
-            Image result = new Image();
-            result.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/" + fileName));
-            return result;
-        }
-
-        public void RevokeToolbarFragment()
+        public override void RevokeToolbarFragment()
         {
         }
 
@@ -85,14 +74,6 @@ namespace FilConvWpf.Native
             Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
             Format = new Apple2ImageFormat(tv);
             OnFormatChanged();
-        }
-
-        protected virtual void OnFormatChanged()
-        {
-            if (FormatChanged != null)
-            {
-                FormatChanged(this, EventArgs.Empty);
-            }
         }
     }
 }

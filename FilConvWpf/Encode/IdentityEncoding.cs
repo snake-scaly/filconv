@@ -5,7 +5,11 @@ namespace FilConvWpf.Encode
 {
     class IdentityEncoding : IEncoding
     {
-        public event EventHandler<EventArgs> EncodingChanged;
+        public event EventHandler<EventArgs> EncodingChanged
+        {
+            add { }
+            remove { }
+        }
 
         public string Name { get { return "Оригинал"; } }
 

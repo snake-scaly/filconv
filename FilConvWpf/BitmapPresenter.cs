@@ -5,7 +5,11 @@ namespace FilConvWpf
 {
     class BitmapPresenter : IImagePresenter
     {
-        public event EventHandler<EventArgs> DisplayImageChanged;
+        public event EventHandler<EventArgs> DisplayImageChanged
+        {
+            add { }
+            remove { }
+        }
 
         public BitmapPresenter(BitmapSource bmp)
         {

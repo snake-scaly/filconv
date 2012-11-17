@@ -10,10 +10,8 @@ namespace FilConvWpf
     class PreviewModel
     {
         static readonly PictureScale defaultScale = PictureScale.Double;
-        const bool defaultTvAspect = true;
 
         BitmapSource _displayPicture;
-        bool _tvAspect;
         IImagePresenter _imagePresenter;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
@@ -21,7 +19,6 @@ namespace FilConvWpf
         public PreviewModel()
         {
             Scale = defaultScale;
-            TvAspect = defaultTvAspect;
         }
 
         public string Title { get; set; }
@@ -58,37 +55,19 @@ namespace FilConvWpf
         {
             get
             {
-                if (_displayPicture == null)
+                if (_displayPicture == null && _imagePresenter != null && _imagePresenter.DisplayImage != null)
                 {
-                    if (_imagePresenter != null)
-                    {
-                        _displayPicture = _imagePresenter.DisplayImage.Bitmap;
-                    }
+                    _displayPicture = _imagePresenter.DisplayImage.Bitmap;
                 }
                 return _displayPicture;
             }
-        }
-
-        public bool TvAspect
-        {
-            get { return TvAspectEnabled && _tvAspect; }
-            set { _tvAspect = value; }
-        }
-
-        public bool TvAspectEnabled
-        {
-            get { return _imagePresenter != null && _imagePresenter.EnableAspectCorrection; }
         }
 
         public double Aspect
         {
             get
             {
-                if (TvAspect && TvAspectEnabled)
-                {
-                    return _imagePresenter.DisplayImage.Aspect;
-                }
-                return 1;
+                return _imagePresenter.DisplayImage.Aspect;
             }
         }
 

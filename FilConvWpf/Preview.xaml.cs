@@ -86,8 +86,6 @@ namespace FilConvWpf
                 titleLabel.Content = model.Title;
 
                 scaleComboBox.SelectedIndex = scale[model.Scale];
-                tvAspectToggle.IsChecked = model.TvAspect;
-                tvAspectToggle.IsEnabled = model.TvAspectEnabled;
 
                 BitmapSource bs = model.DisplayPicture;
                 previewPictureBox.Source = bs;
@@ -123,24 +121,6 @@ namespace FilConvWpf
                 };
 
                 model.Scale = scale[scaleComboBox.SelectedIndex];
-                Update();
-            }
-        }
-
-        void tvAspectToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                model.TvAspect = true;
-                Update();
-            }
-        }
-
-        void tvAspectToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                model.TvAspect = false;
                 Update();
             }
         }

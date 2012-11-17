@@ -5,6 +5,7 @@ using ImageLib;
 using ImageLib.Agat;
 using ImageLib.Apple;
 using ImageLib.Spectrum;
+using System.Windows.Controls.Primitives;
 
 namespace FilConvWpf.Native
 {
@@ -39,6 +40,7 @@ namespace FilConvWpf.Native
         {
             _toolbar = fragment;
             _toolbar.Add(_displayModeCombo);
+
             _subBar = _toolbar.GetFragment(_displayModeCombo, null);
             if (_currentMode != null)
             {
@@ -70,7 +72,7 @@ namespace FilConvWpf.Native
 
         private void Convert(NativeImageFormat f)
         {
-            DisplayImage = new AspectBitmap(f.FromNative(_nativeImage), f.Aspect);
+            DisplayImage = new AspectBitmap(f.FromNative(_nativeImage), _currentMode.Aspect);
             OnDisplayImageChanged();
         }
 

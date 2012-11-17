@@ -111,7 +111,7 @@ namespace FilConvWpf.Encode
             }
             else
             {
-                DisplayImage = new AspectBitmap();
+                DisplayImage = null;
             }
             OnDisplayImageChanged();
         }

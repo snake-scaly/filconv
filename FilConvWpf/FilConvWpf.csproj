@@ -61,8 +61,9 @@
     <Compile Include="Native\AppleDisplayMode.cs" />
     <Compile Include="IToolbarClient.cs" />
     <Compile Include="Encode\EncodingImagePresenter.cs" />
+    <Compile Include="ResourceUtils.cs" />
     <Compile Include="ToolbarFragment.cs" />
-    <Compile Include="WpfImageDisplayAdapter.cs" />
+    <Compile Include="BitmapPresenter.cs" />
     <Page Include="AboutBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -78,10 +79,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DisplayImage.cs" />
+    <Compile Include="AspectBitmap.cs" />
     <Compile Include="Native\INativeDisplayMode.cs" />
     <Compile Include="Native\NativeDisplayMode.cs" />
-    <Compile Include="IDisplayImageProvider.cs" />
     <Compile Include="Native\NativeImagePresenter.cs" />
     <Compile Include="GrayscaleConverter.cs" />
     <Compile Include="IImagePresenter.cs" />
