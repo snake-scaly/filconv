@@ -9,9 +9,9 @@ namespace FilConvWpf.Encode
 
         public string Name { get { return "Оригинал"; } }
 
-        public DisplayImage Preview(BitmapSource original)
+        public AspectBitmap Preview(BitmapSource original)
         {
-            return new DisplayImage(original, 1);
+            return new AspectBitmap(original, 1);
         }
 
         public void GrantToolbarFragment(ToolbarFragment fragment)

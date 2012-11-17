@@ -23,9 +23,9 @@ namespace FilConvWpf.Encode
 
         public string Name { get; private set; }
 
-        public DisplayImage Preview(BitmapSource original)
+        public AspectBitmap Preview(BitmapSource original)
         {
-            return new DisplayImage(
+            return new AspectBitmap(
                 _format.FromNative(ToNative(original)),
                 _format.Aspect);
         }

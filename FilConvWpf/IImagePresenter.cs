@@ -1,7 +1,11 @@
-﻿namespace FilConvWpf
+﻿using System;
+
+namespace FilConvWpf
 {
-    interface IImagePresenter : IDisplayImageProvider, IToolbarClient
+    interface IImagePresenter : IToolbarClient
     {
+        event EventHandler<EventArgs> DisplayImageChanged;
+        AspectBitmap DisplayImage { get; }
         bool EnableAspectCorrection { get; }
     }
 }

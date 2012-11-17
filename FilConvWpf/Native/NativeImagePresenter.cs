@@ -32,7 +32,7 @@ namespace FilConvWpf.Native
             SetMode(_defaultMode);
         }
 
-        public DisplayImage DisplayImage { get; private set; }
+        public AspectBitmap DisplayImage { get; private set; }
         public bool EnableAspectCorrection { get { return true; } }
 
         public void GrantToolbarFragment(ToolbarFragment fragment)
@@ -70,7 +70,7 @@ namespace FilConvWpf.Native
 
         private void Convert(NativeImageFormat f)
         {
-            DisplayImage = new DisplayImage(f.FromNative(_nativeImage), f.Aspect);
+            DisplayImage = new AspectBitmap(f.FromNative(_nativeImage), f.Aspect);
             OnDisplayImageChanged();
         }
 

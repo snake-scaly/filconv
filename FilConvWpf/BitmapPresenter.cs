@@ -3,18 +3,18 @@ using System.Windows.Media.Imaging;
 
 namespace FilConvWpf
 {
-    class WpfImageDisplayAdapter : IImagePresenter
+    class BitmapPresenter : IImagePresenter
     {
         public event EventHandler<EventArgs> DisplayImageChanged;
 
-        public WpfImageDisplayAdapter(BitmapSource bmp)
+        public BitmapPresenter(BitmapSource bmp)
         {
-            DisplayImage = new DisplayImage(bmp, 1);
+            DisplayImage = new AspectBitmap(bmp, 1);
         }
 
         public bool EnableAspectCorrection { get { return false; } }
 
-        public DisplayImage DisplayImage { get; private set; }
+        public AspectBitmap DisplayImage { get; private set; }
 
         public void GrantToolbarFragment(ToolbarFragment fragment)
         {

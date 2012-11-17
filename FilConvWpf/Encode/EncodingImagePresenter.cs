@@ -33,7 +33,7 @@ namespace FilConvWpf.Encode
 
         public bool EnableAspectCorrection { get { return true; } }
 
-        public DisplayImage DisplayImage { get; private set; }
+        public AspectBitmap DisplayImage { get; private set; }
 
         public void GrantToolbarFragment(ToolbarFragment fragment)
         {
@@ -111,7 +111,7 @@ namespace FilConvWpf.Encode
             }
             else
             {
-                DisplayImage = new DisplayImage();
+                DisplayImage = new AspectBitmap();
             }
             OnDisplayImageChanged();
         }

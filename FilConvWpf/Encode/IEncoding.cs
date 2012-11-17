@@ -7,7 +7,7 @@ namespace FilConvWpf.Encode
     {
         event EventHandler<EventArgs> EncodingChanged;
         string Name { get; }
-        DisplayImage Preview(BitmapSource original);
+        AspectBitmap Preview(BitmapSource original);
 
         /// <summary>
         /// Check whether this encoding can supply data for the given

@@ -43,7 +43,7 @@ namespace FilConvWpf
                 }
                 else
                 {
-                    left.ImagePresenter = new WpfImageDisplayAdapter(new BitmapImage(new Uri(fileName)));
+                    left.ImagePresenter = new BitmapPresenter(new BitmapImage(new Uri(fileName)));
                 }
                 this.fileName = fileName;
             }
