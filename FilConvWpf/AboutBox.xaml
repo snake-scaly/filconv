@@ -10,7 +10,7 @@
         </Style>
     </Window.Resources>
     <StackPanel>
-        <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Margin="10pt">Fil Converter</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Margin="10pt">Fil Converter 1.5</TextBlock>
         <TextBlock HorizontalAlignment="Center">(c) 2011-2012 Сергей &quot;SnakE&quot; Громов</TextBlock>
         <TextBlock HorizontalAlignment="Center">Разработано для</TextBlock>
         <TextBlock HorizontalAlignment="Center"><Hyperlink NavigateUri="http://deka.ssmu.ru/er/agat" Click="Hyperlink_Click">http://deka.ssmu.ru/er/agat</Hyperlink></TextBlock>
