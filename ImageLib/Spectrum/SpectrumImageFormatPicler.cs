@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ImageLib.Spectrum
 {
-    public class SpectrumImageFormatSpeccy : SpectrumImageFormatAbstr
+    public class SpectrumImageFormatPicler : SpectrumImageFormatAbstr
     {
         protected override int GetLineOffset(int y)
         {

@@ -72,7 +72,7 @@
     <Compile Include="Apple\Apple2SimpleColor.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatAbstr.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatInterleave.cs" />
-    <Compile Include="Spectrum\SpectrumImageFormatSpeccy.cs" />
+    <Compile Include="Spectrum\SpectrumImageFormatPicler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

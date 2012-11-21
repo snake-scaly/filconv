@@ -123,8 +123,8 @@ namespace FilConvWpf.Native
             new NativeDisplayMode("HGR9", new Hgr9ImageFormat()),
             new AppleDisplayMode(),
             new NativeDisplayMode("Apple ][ NTSC", new Apple2ImageFormat(new Apple2NtscTv(Apple2Palettes.American))),
-            new NativeDisplayMode("Spectrum", new SpectrumImageFormatInterleave()),
-            new NativeDisplayMode("Spectrum (Speccy)", new SpectrumImageFormatSpeccy()),
+            new NativeDisplayMode("Picler (bol)", new SpectrumImageFormatPicler()),
+            new NativeDisplayMode("ZX Spectrum", new SpectrumImageFormatInterleave()),
         };
     }
 }
