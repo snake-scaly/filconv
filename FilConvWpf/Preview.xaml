@@ -76,15 +76,21 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ToolBar Name="toolBar" Grid.Row="0">
-            <Label Name="titleLabel" Content="Title"/>
-            <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
-                <ComboBoxItem Content="100%"/>
-                <ComboBoxItem Content="200%"/>
-                <ComboBoxItem Content="300%"/>
-                <ComboBoxItem Content="По окну"/>
-            </ComboBox>
-        </ToolBar>
+        <ToolBarTray Name="toolBarTray">
+            <ToolBar Name="toolBar" Grid.Row="0">
+                <Label Name="titleLabel" Content="Просмотр"/>
+                <ComboBox Name="modeComboBox" SelectionChanged="modeComboBox_SelectedIndexChanged"/>
+                <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
+                    <ComboBoxItem Content="100%"/>
+                    <ComboBoxItem Content="200%"/>
+                    <ComboBoxItem Content="300%"/>
+                    <ComboBoxItem Content="По окну"/>
+                </ComboBox>
+                <ToggleButton Name="nativeAspectToggle" ToolTip="Пропорциональное отображение" Checked="aspectButton_Checked" Unchecked="aspectButton_Unchecked">
+                    <Image Source="Resources/television.png"/>
+                </ToggleButton>
+            </ToolBar>
+        </ToolBarTray>
         <Viewbox Name="previewViewBox" Grid.Row="1" SnapsToDevicePixels="False">
             <my:PixelAlignedBitmap x:Name="previewPictureBox" RenderOptions.BitmapScalingMode="NearestNeighbor" AllowDrop="True"/>
         </Viewbox>

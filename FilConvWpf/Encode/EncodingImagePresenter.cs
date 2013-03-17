@@ -11,9 +11,7 @@ namespace FilConvWpf.Encode
         private const int _defaultEncoding = 2;
 
         private Preview _sourcePreview;
-        private ComboBox _encodingCombo;
         private IEncoding _currentEncoding;
-        private ToolbarFragment _subBar;
         private Dictionary<string, object> _settings;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
@@ -23,39 +21,53 @@ namespace FilConvWpf.Encode
             _sourcePreview = sourcePreview;
             _sourcePreview.DisplayPictureChange += sourcePreview_DisplayPictureChange;
 
-            _encodingCombo = new ComboBox();
+            SupportedPreviewModes = new string[_encodings.Length];
+            int i = 0;
             foreach (IEncoding e in _encodings)
             {
-                _encodingCombo.Items.Add(e.Name);
+                SupportedPreviewModes[i] = e.Name;
+                i++;
             }
-            _encodingCombo.SelectionChanged += encodingCombo_SelectionChanged;
 
             _settings = new Dictionary<string, object>();
 
-            SetEncoding(_defaultEncoding);
+            PreviewMode = _defaultEncoding;
         }
-
-        public bool EnableAspectCorrection { get { return true; } }
 
         public AspectBitmap DisplayImage { get; private set; }
 
-        public void GrantToolbarFragment(ToolbarFragment fragment)
+        public string[] SupportedPreviewModes { get; private set; }
+
+        public int PreviewMode
         {
-            fragment.Add(_encodingCombo);
-            _subBar = fragment.GetFragment(_encodingCombo, null);
-            if (_currentEncoding != null)
+            get
             {
-                _currentEncoding.GrantToolbarFragment(_subBar);
+                return Array.IndexOf(_encodings, _currentEncoding);
+            }
+            set
+            {
+                if (!object.ReferenceEquals(_currentEncoding, _encodings[value]))
+                {
+                    if (_currentEncoding != null)
+                    {
+                        _currentEncoding.StoreSettings(_settings);
+                        _currentEncoding.EncodingChanged -= currentEncoding_EncodingChanged;
+                    }
+                    _currentEncoding = _encodings[value];
+                    _currentEncoding.AdoptSettings(_settings);
+                    _currentEncoding.EncodingChanged += currentEncoding_EncodingChanged;
+
+                    Encode();
+                }
             }
         }
 
-        public void RevokeToolbarFragment()
+        public ToolBar ToolBar
         {
-            if (_currentEncoding != null)
+            get
             {
-                _currentEncoding.RevokeToolbarFragment();
+                return _currentEncoding.ToolBar;
             }
-            _subBar = null;
         }
 
         public bool IsContainerSupported(Type type)
@@ -68,12 +80,6 @@ namespace FilConvWpf.Encode
             _currentEncoding.Encode(_sourcePreview.DisplayPicture, container);
         }
 
-        private void encodingCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Debug.Assert(object.ReferenceEquals(sender, _encodingCombo));
-            SetEncoding(_encodingCombo.SelectedIndex);
-        }
-
         private void currentEncoding_EncodingChanged(object sender, EventArgs e)
         {
             Encode();
@@ -82,31 +88,6 @@ namespace FilConvWpf.Encode
         private void sourcePreview_DisplayPictureChange(object sender, EventArgs e)
         {
             Encode();
-        }
-
-        private void SetEncoding(int encoding)
-        {
-            _encodingCombo.SelectedIndex = encoding;
-
-            if (!object.ReferenceEquals(_currentEncoding, _encodings[encoding]))
-            {
-                if (_currentEncoding != null)
-                {
-                    _currentEncoding.StoreSettings(_settings);
-                    _currentEncoding.EncodingChanged -= currentEncoding_EncodingChanged;
-                    _currentEncoding.RevokeToolbarFragment();
-                }
-                _currentEncoding = _encodings[encoding];
-                _currentEncoding.EncodingChanged += currentEncoding_EncodingChanged;
-                if (_subBar != null)
-                {
-                    _currentEncoding.AdoptSettings(_settings);
-                    _subBar.Clear();
-                    _currentEncoding.GrantToolbarFragment(_subBar);
-                }
-
-                Encode();
-            }
         }
 
         private void Encode()

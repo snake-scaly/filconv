@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
+using System.Windows.Controls;
     
 namespace FilConvWpf.Encode
 {
@@ -19,12 +20,12 @@ namespace FilConvWpf.Encode
             return new AspectBitmap(original, 1);
         }
 
-        public void GrantToolbarFragment(ToolbarFragment fragment)
+        public ToolBar ToolBar
         {
-        }
-
-        public void RevokeToolbarFragment()
-        {
+            get
+            {
+                return null;
+            }
         }
 
         public bool IsContainerSupported(Type type)

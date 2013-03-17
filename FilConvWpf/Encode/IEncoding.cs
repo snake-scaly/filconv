@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace FilConvWpf.Encode
 {
-    interface IEncoding : IToolbarClient
+    interface IEncoding
     {
         event EventHandler<EventArgs> EncodingChanged;
+
         string Name { get; }
+        ToolBar ToolBar { get; }
+
         AspectBitmap Preview(BitmapSource original);
 
         /// <summary>

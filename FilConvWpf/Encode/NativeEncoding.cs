@@ -12,9 +12,7 @@ namespace FilConvWpf.Encode
     class NativeEncoding : IEncoding
     {
         private NativeImageFormat _format;
-        private bool _tvAspect;
         private bool _dither;
-        private ToggleButton _aspectButton;
         private ToggleButton _ditherButton;
 
         public event EventHandler<EventArgs> EncodingChanged;
@@ -23,17 +21,8 @@ namespace FilConvWpf.Encode
         {
             Name = name;
             _format = format;
-            _tvAspect = true;
 
-            if (format.Aspect != 1)
-            {
-                _aspectButton = new ToggleButton();
-                _aspectButton.Content = ResourceUtils.GetResourceImage("television.png");
-                _aspectButton.ToolTip = "Пропорциональное отображение";
-                _aspectButton.IsChecked = _tvAspect;
-                _aspectButton.Checked += aspect_Checked;
-                _aspectButton.Unchecked += aspect_Unchecked;
-            }
+            ToolBar = new ToolBar();
 
             _ditherButton = new ToggleButton();
             _ditherButton.Content = ResourceUtils.GetResourceImage("rainbow.png");
@@ -41,28 +30,18 @@ namespace FilConvWpf.Encode
             _ditherButton.IsChecked = _dither;
             _ditherButton.Checked += dither_Checked;
             _ditherButton.Unchecked += dither_Unchecked;
+            ToolBar.Items.Add(_ditherButton);
         }
 
         public string Name { get; private set; }
+
+        public ToolBar ToolBar { get; private set; }
 
         public AspectBitmap Preview(BitmapSource original)
         {
             return new AspectBitmap(
                 _format.FromNative(ToNative(original)),
-                _tvAspect ? _format.Aspect : 1);
-        }
-
-        public void GrantToolbarFragment(ToolbarFragment fragment)
-        {
-            if (_aspectButton != null)
-            {
-                fragment.Add(_aspectButton);
-            }
-            fragment.Add(_ditherButton);
-        }
-
-        public void RevokeToolbarFragment()
-        {
+                _format.Aspect);
         }
 
         public bool IsContainerSupported(Type type)
@@ -85,22 +64,12 @@ namespace FilConvWpf.Encode
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            settings[SettingNames.OutTvAspect] = _tvAspect;
             settings[SettingNames.Dithering] = _dither;
         }
 
         public void AdoptSettings(IDictionary<string, object> settings)
         {
             object o;
-
-            if (settings.TryGetValue(SettingNames.OutTvAspect, out o))
-            {
-                _tvAspect = (bool)o;
-                if (_aspectButton != null)
-                {
-                    _aspectButton.IsChecked = _tvAspect;
-                }
-            }
 
             if (settings.TryGetValue(SettingNames.Dithering, out o))
             {
@@ -114,24 +83,6 @@ namespace FilConvWpf.Encode
             EncodingOptions options = new EncodingOptions();
             options.Dither = _dither;
             return _format.ToNative(original, options);
-        }
-
-        private void aspect_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!_tvAspect)
-            {
-                _tvAspect = true;
-                OnEncodingChanged();
-            }
-        }
-
-        private void aspect_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (_tvAspect)
-            {
-                _tvAspect = false;
-                OnEncodingChanged();
-            }
         }
 
         private void dither_Checked(object sender, RoutedEventArgs e)

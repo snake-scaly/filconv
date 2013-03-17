@@ -38,6 +38,9 @@
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>FilConvWpf.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -62,11 +65,9 @@
     <Compile Include="Encode\IEncoding.cs" />
     <Compile Include="Encode\NativeEncoding.cs" />
     <Compile Include="Native\AppleDisplayMode.cs" />
-    <Compile Include="IToolbarClient.cs" />
     <Compile Include="Encode\EncodingImagePresenter.cs" />
     <Compile Include="ResourceUtils.cs" />
     <Compile Include="SettingNames.cs" />
-    <Compile Include="ToolbarFragment.cs" />
     <Compile Include="BitmapPresenter.cs" />
     <Page Include="AboutBox.xaml">
       <SubType>Designer</SubType>
@@ -99,7 +100,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PictureAspect.cs" />
     <Compile Include="PictureScale.cs" />
     <Compile Include="PixelAlignedBitmap.cs" />
     <Compile Include="Preview.xaml.cs">

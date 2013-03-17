@@ -16,6 +16,7 @@ namespace FilConvWpf
     {
         PreviewModel model;
         bool updating;
+        ToolBar secondToolbar;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
 
@@ -26,8 +27,8 @@ namespace FilConvWpf
                 InitializeComponent();
 
                 model = new PreviewModel();
+                model.Title = (string) titleLabel.Content;
                 model.DisplayPictureChange += model_DisplayPictureChange;
-                model.Toolbar = new ToolbarFragment(toolBar, toolBar.Items.GetItemAt(toolBar.Items.Count - 1), null);
 
                 Update();
             }
@@ -35,7 +36,10 @@ namespace FilConvWpf
 
         public string Title
         {
-            get { return model.Title; }
+            get
+            {
+                return model.Title;
+            }
             set
             {
                 model.Title = value;
@@ -75,6 +79,25 @@ namespace FilConvWpf
                 }
                 updating = true;
 
+                titleLabel.Content = model.Title;
+
+                if (model.SupportedPreviewModes != null && model.SupportedPreviewModes.Length != 0)
+                {
+                    modeComboBox.Items.Clear();
+                    foreach (string mode in model.SupportedPreviewModes)
+                    {
+                        var item = new ComboBoxItem();
+                        item.Content = mode;
+                        modeComboBox.Items.Add(item);
+                    }
+                    modeComboBox.SelectedIndex = model.PreviewMode;
+                    modeComboBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    modeComboBox.Visibility = Visibility.Collapsed;
+                }
+
                 var scale = new Dictionary<PictureScale, int>
                 {
                     { PictureScale.Single, 0 },
@@ -83,12 +106,26 @@ namespace FilConvWpf
                     { PictureScale.Free, 3 },
                 };
 
-                titleLabel.Content = model.Title;
-
                 scaleComboBox.SelectedIndex = scale[model.Scale];
+
+                nativeAspectToggle.Visibility = model.AspectToggleEnabled ? Visibility.Visible : Visibility.Collapsed;
+                nativeAspectToggle.IsChecked = model.AspectToggleChecked;
 
                 BitmapSource bs = model.DisplayPicture;
                 previewPictureBox.Source = bs;
+
+                if (model.ToolBar != secondToolbar)
+                {
+                    if (secondToolbar != null)
+                    {
+                        toolBarTray.ToolBars.Remove(secondToolbar);
+                    }
+                    secondToolbar = model.ToolBar;
+                    if (secondToolbar != null)
+                    {
+                        toolBarTray.ToolBars.Add(secondToolbar);
+                    }
+                }
 
                 if (bs != null)
                 {
@@ -123,6 +160,26 @@ namespace FilConvWpf
                 model.Scale = scale[scaleComboBox.SelectedIndex];
                 Update();
             }
+        }
+
+        void modeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!IgnoreEvents.Ignore)
+            {
+                model.PreviewMode = modeComboBox.SelectedIndex;
+            }
+        }
+
+        void aspectButton_Checked(object sender, RoutedEventArgs e)
+        {
+            model.AspectToggleChecked = true;
+            Update();
+        }
+
+        void aspectButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            model.AspectToggleChecked = false;
+            Update();
         }
 
         sealed class IgnoreEvents : IDisposable

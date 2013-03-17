@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using ImageLib;
+using System.Windows.Controls;
 
 namespace FilConvWpf
 {
@@ -13,13 +14,15 @@ namespace FilConvWpf
 
         BitmapSource _displayPicture;
         IImagePresenter _imagePresenter;
-
-        public event EventHandler<EventArgs> DisplayPictureChange;
+        bool _aspectToggleChecked;
 
         public PreviewModel()
         {
             Scale = defaultScale;
+            _aspectToggleChecked = true;
         }
+
+        public event EventHandler<EventArgs> DisplayPictureChange;
 
         public string Title { get; set; }
 
@@ -33,16 +36,13 @@ namespace FilConvWpf
                     if (_imagePresenter != null)
                     {
                         _imagePresenter.DisplayImageChanged -= image_DisplayImageChanged;
-                        _imagePresenter.RevokeToolbarFragment();
                     }
-                    Toolbar.Clear();
 
                     _imagePresenter = value;
 
                     if (_imagePresenter != null)
                     {
                         _imagePresenter.DisplayImageChanged += image_DisplayImageChanged;
-                        _imagePresenter.GrantToolbarFragment(Toolbar);
                     }
 
                     _displayPicture = null;
@@ -63,17 +63,63 @@ namespace FilConvWpf
             }
         }
 
+        public bool AspectToggleEnabled
+        {
+            get
+            {
+                return _imagePresenter != null && _imagePresenter.DisplayImage != null && _imagePresenter.DisplayImage.Aspect != 1;
+            }
+        }
+
+        public bool AspectToggleChecked
+        {
+            get
+            {
+                return _aspectToggleChecked;
+            }
+            set
+            {
+                _aspectToggleChecked = value;
+            }
+        }
+
         public double Aspect
         {
             get
             {
-                return _imagePresenter.DisplayImage.Aspect;
+                return AspectToggleEnabled && _aspectToggleChecked ? _imagePresenter.DisplayImage.Aspect : 1;
             }
         }
 
         public PictureScale Scale { get; set; }
 
-        public ToolbarFragment Toolbar { get; set; }
+        public string[] SupportedPreviewModes
+        {
+            get
+            {
+                return _imagePresenter != null ? _imagePresenter.SupportedPreviewModes : null;
+            }
+        }
+
+        public int PreviewMode
+        {
+            get
+            {
+                return _imagePresenter.PreviewMode;
+            }
+            set
+            {
+                _imagePresenter.PreviewMode = value;
+            }
+        }
+
+        public ToolBar ToolBar
+        {
+            get
+            {
+                return _imagePresenter != null ? _imagePresenter.ToolBar : null;
+            }
+        }
 
         protected virtual void OnDisplayPictureChange()
         {

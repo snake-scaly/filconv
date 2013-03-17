@@ -23,8 +23,8 @@
                 <MenuItem Header="_О программе..." Click="menuAbout_Click" />
             </MenuItem>
         </Menu>
-        <z:Preview x:Name="left" Grid.Row="1" Margin="0 0 4pt 0"/>
+        <z:Preview x:Name="left" Grid.Row="1" Margin="0 0 4pt 0" Title="Оригинал"/>
         <GridSplitter Grid.Row="1" Width="4pt"/>
-        <z:Preview x:Name="right" Grid.Row="1" Grid.Column="1"/>
+        <z:Preview x:Name="right" Grid.Row="1" Grid.Column="1" Title="Результат"/>
     </Grid>
 </Window>

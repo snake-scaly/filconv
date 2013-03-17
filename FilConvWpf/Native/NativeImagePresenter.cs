@@ -16,10 +16,6 @@ namespace FilConvWpf.Native
 
         private NativeImage _nativeImage;
         private INativeDisplayMode _currentMode;
-        private ToolbarFragment _toolbar;
-        private ToolbarFragment _subBar;
-        private ComboBox _displayModeCombo;
-
         private Dictionary<string, object> _settings;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
@@ -27,46 +23,58 @@ namespace FilConvWpf.Native
         public NativeImagePresenter(NativeImage nativeImage)
         {
             _nativeImage = nativeImage;
-            _displayModeCombo = new ComboBox();
+            _settings = new Dictionary<string, object>();
+
+            var displayModeNames = new List<string>();
             foreach (INativeDisplayMode m in _displayModes)
             {
-                _displayModeCombo.Items.Add(m.Name);
+                displayModeNames.Add(m.Name);
             }
-            _displayModeCombo.SelectionChanged += displayModeCombo_SelectionChanged;
-            SetMode(_defaultMode);
+            SupportedPreviewModes = displayModeNames.ToArray();
 
-            _settings = new Dictionary<string, object>();
+            PreviewMode = _defaultMode;
         }
 
         public AspectBitmap DisplayImage { get; private set; }
-        public bool EnableAspectCorrection { get { return true; } }
 
-        public void GrantToolbarFragment(ToolbarFragment fragment)
+        public string[] SupportedPreviewModes { get; private set; }
+        
+        public int PreviewMode
         {
-            _toolbar = fragment;
-            _toolbar.Add(_displayModeCombo);
-
-            _subBar = _toolbar.GetFragment(_displayModeCombo, null);
-            if (_currentMode != null)
+            get
             {
-                _currentMode.GrantToolbarFragment(_subBar);
+                return Array.IndexOf(_displayModes, _currentMode);
+            }
+
+            set
+            {
+                if (value < 0 || value >= _displayModes.Length)
+                {
+                    value = _defaultMode;
+                }
+                if (!object.ReferenceEquals(_displayModes[value], _currentMode))
+                {
+                    if (_currentMode != null)
+                    {
+                        _currentMode.StoreSettings(_settings);
+                        _currentMode.FormatChanged -= currentMode_FormatChanged;
+                    }
+                    _currentMode = _displayModes[value];
+                    _currentMode.AdoptSettings(_settings);
+
+                    _currentMode.FormatChanged += currentMode_FormatChanged;
+
+                    Convert(_currentMode.Format);
+                }
             }
         }
 
-        public void RevokeToolbarFragment()
+        public ToolBar ToolBar
         {
-            if (_currentMode != null)
+            get
             {
-                _currentMode.RevokeToolbarFragment();
+                return _currentMode.ToolBar;
             }
-            _toolbar = null;
-            _subBar = null;
-        }
-
-        private void displayModeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Debug.Assert(object.ReferenceEquals(sender, _displayModeCombo));
-            SetMode(_displayModeCombo.SelectedIndex);
         }
 
         private void currentMode_FormatChanged(object sender, EventArgs e)
@@ -86,31 +94,6 @@ namespace FilConvWpf.Native
             if (DisplayImageChanged != null)
             {
                 DisplayImageChanged(this, EventArgs.Empty);
-            }
-        }
-
-        private void SetMode(int mode)
-        {
-            _displayModeCombo.SelectedIndex = mode;
-
-            if (!object.ReferenceEquals(_displayModes[mode], _currentMode))
-            {
-                if (_currentMode != null)
-                {
-                    _currentMode.StoreSettings(_settings);
-                    _currentMode.FormatChanged -= currentMode_FormatChanged;
-                    _currentMode.RevokeToolbarFragment();
-                }
-                _currentMode = _displayModes[mode];
-                _currentMode.FormatChanged += currentMode_FormatChanged;
-                if (_subBar != null)
-                {
-                    _currentMode.AdoptSettings(_settings);
-                    _subBar.Clear();
-                    _currentMode.GrantToolbarFragment(_subBar);
-                }
-
-                Convert(_currentMode.Format);
             }
         }
 

@@ -21,6 +21,11 @@ namespace FilConvWpf.Native
         public AppleDisplayMode()
             : base("Apple ][", new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
+            if (ToolBar == null)
+            {
+                ToolBar = new ToolBar();
+            }
+
             _fillButton = new ToggleButton();
             _fillButton.IsChecked = _fill;
             _fillButton.Content = ResourceUtils.GetResourceImage("fill.png");
@@ -34,13 +39,9 @@ namespace FilConvWpf.Native
             _palButton.ToolTip = "Европейская / американская палитра";
             _palButton.Checked += pal_Checked;
             _palButton.Unchecked += pal_Unchecked;
-        }
 
-        public override void GrantToolbarFragment(ToolbarFragment fragment)
-        {
-            base.GrantToolbarFragment(fragment);
-            fragment.Add(_fillButton);
-            fragment.Add(_palButton);
+            ToolBar.Items.Add(_fillButton);
+            ToolBar.Items.Add(_palButton);
         }
 
         public override void StoreSettings(IDictionary<string, object> settings)

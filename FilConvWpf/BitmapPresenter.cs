@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace FilConvWpf
 {
@@ -16,16 +17,33 @@ namespace FilConvWpf
             DisplayImage = new AspectBitmap(bmp, 1);
         }
 
-        public bool EnableAspectCorrection { get { return false; } }
-
         public AspectBitmap DisplayImage { get; private set; }
 
-        public void GrantToolbarFragment(ToolbarFragment fragment)
+        public string[] SupportedPreviewModes
         {
+            get
+            {
+                return null;
+            }
         }
 
-        public void RevokeToolbarFragment()
+        public int PreviewMode
         {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+            }
+        }
+
+        public ToolBar ToolBar
+        {
+            get
+            {
+                return null;
+            }
         }
     }
 }

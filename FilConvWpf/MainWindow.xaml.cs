@@ -19,11 +19,13 @@ namespace FilConvWpf
     public partial class MainWindow : Window
     {
         private string fileName;
+        private string rawTitle;
 
         public MainWindow()
         {
             InitializeComponent();
             right.ImagePresenter = new EncodingImagePresenter(left);
+            rawTitle = Title;
         }
 
         void Open(string fileName)
@@ -46,6 +48,7 @@ namespace FilConvWpf
                     left.ImagePresenter = new BitmapPresenter(new BitmapImage(new Uri(fileName)));
                 }
                 this.fileName = fileName;
+                Title = Path.GetFileName(fileName) + " - " + rawTitle;
             }
             catch (NotSupportedException e)
             {
