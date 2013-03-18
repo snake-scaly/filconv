@@ -27,7 +27,7 @@ namespace FilLib
 
         public Fil(string name)
         {
-            Name = name;
+            Name = name.Length > MaxNameLength ? name.Substring(0, MaxNameLength) : name;
             Type = FilType.B;
         }
 

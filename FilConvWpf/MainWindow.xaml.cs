@@ -73,7 +73,7 @@ namespace FilConvWpf
             }
             else
             {
-                var fil = new Fil(System.IO.Path.GetFileName(fileName));
+                var fil = new Fil(Path.GetFileNameWithoutExtension(fileName));
                 ((EncodingImagePresenter)right.ImagePresenter).EncodeInto(fil);
                 using (var fs = new FileStream(fileName, FileMode.Create))
                 {
