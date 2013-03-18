@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LeftPreviewDefaultTitle" xml:space="preserve">
-    <value>Original</value>
+    <value>Оригинал</value>
   </data>
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Fil Converter</value>
   </data>
   <data name="MenuFile" xml:space="preserve">
-    <value>_File</value>
+    <value>_Файл</value>
   </data>
   <data name="MenuFileExit" xml:space="preserve">
-    <value>E_xit</value>
+    <value>Вы_ход</value>
   </data>
   <data name="MenuFileOpen" xml:space="preserve">
-    <value>_Open...</value>
+    <value>_Открыть...</value>
   </data>
   <data name="MenuFileSaveAs" xml:space="preserve">
-    <value>Save _As...</value>
+    <value>Сохранить _как...</value>
   </data>
   <data name="MenuHelp" xml:space="preserve">
-    <value>_Help</value>
+    <value>_Справка</value>
   </data>
   <data name="MenuHelpAbout" xml:space="preserve">
-    <value>_About...</value>
+    <value>_О программе...</value>
   </data>
   <data name="RightPreviewDefaultTitle" xml:space="preserve">
-    <value>Preview</value>
+    <value>Результат</value>
   </data>
 </root>

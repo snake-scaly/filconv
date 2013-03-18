@@ -64,6 +64,7 @@
     <Compile Include="Encode\IdentityEncoding.cs" />
     <Compile Include="Encode\IEncoding.cs" />
     <Compile Include="Encode\NativeEncoding.cs" />
+    <Compile Include="L10n\L10n.cs" />
     <Compile Include="Native\AppleDisplayMode.cs" />
     <Compile Include="Encode\EncodingImagePresenter.cs" />
     <Compile Include="ResourceUtils.cs" />
@@ -123,6 +124,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru.resx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
