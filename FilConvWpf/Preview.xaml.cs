@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ImageLib;
+using FilConvWpf.I18n;
 
 namespace FilConvWpf
 {
@@ -87,7 +87,7 @@ namespace FilConvWpf
                     foreach (string mode in model.SupportedPreviewModes)
                     {
                         var item = new ComboBoxItem();
-                        item.Content = mode;
+                        L10n.AddLocalizedProperty(item, ComboBoxItem.ContentProperty, mode).Update();
                         modeComboBox.Items.Add(item);
                     }
                     modeComboBox.SelectedIndex = model.PreviewMode;
@@ -195,7 +195,7 @@ namespace FilConvWpf
 
             ~IgnoreEvents()
             {
-                Debug.Fail("Object weren't disposed");
+                Debug.Fail("Object weren'target disposed");
             }
 
             public void Dispose()

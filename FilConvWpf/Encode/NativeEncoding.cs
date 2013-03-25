@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib;
 using System.Collections.Generic;
+using FilConvWpf.I18n;
 
 namespace FilConvWpf.Encode
 {
@@ -24,9 +25,13 @@ namespace FilConvWpf.Encode
 
             ToolBar = new ToolBar();
 
+            Label label = new Label();
+            L10n.AddLocalizedProperty(label, Label.ContentProperty, "EncodingToolbarTitle").Update();
+            ToolBar.Items.Add(label);
+
             _ditherButton = new ToggleButton();
             _ditherButton.Content = ResourceUtils.GetResourceImage("rainbow.png");
-            _ditherButton.ToolTip = "Улучшенная передача цветов";
+            L10n.AddLocalizedProperty(_ditherButton, ToggleButton.ToolTipProperty, "ColorDitherToggleTooltip").Update();
             _ditherButton.IsChecked = _dither;
             _ditherButton.Checked += dither_Checked;
             _ditherButton.Unchecked += dither_Unchecked;

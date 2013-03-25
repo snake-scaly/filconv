@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Controls;
 using ImageLib.Agat;
 using System.Collections.Generic;
@@ -114,11 +113,11 @@ namespace FilConvWpf.Encode
         private static readonly IEncoding[] _encodings =
         {
             new IdentityEncoding(),
-            new NativeEncoding("GR7", new Gr7ImageFormat()),
-            new NativeEncoding("MGR", new MgrImageFormat()),
-            new NativeEncoding("HGR", new HgrImageFormat()),
-            new NativeEncoding("MGR9", new Mgr9ImageFormat()),
-            new NativeEncoding("HGR9", new Hgr9ImageFormat()),
+            new NativeEncoding("FormatNameGR7", new Gr7ImageFormat()),
+            new NativeEncoding("FormatNameMGR", new MgrImageFormat()),
+            new NativeEncoding("FormatNameHGR", new HgrImageFormat()),
+            new NativeEncoding("FormatNameMGR9", new Mgr9ImageFormat()),
+            new NativeEncoding("FormatNameHGR9", new Hgr9ImageFormat()),
         };
     }
 }

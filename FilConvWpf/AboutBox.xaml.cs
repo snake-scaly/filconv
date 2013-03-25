@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace FilConvWpf
 {
@@ -22,6 +23,8 @@ namespace FilConvWpf
         public AboutBox()
         {
             InitializeComponent();
+            Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            version.Text = string.Format("{0}.{1}", appVersion.Major, appVersion.Minor);
         }
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)

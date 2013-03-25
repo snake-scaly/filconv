@@ -61,7 +61,187 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to © 2011-2013 Sergey “SnakE” Gromov.
+        /// </summary>
+        internal static string AboutBoxCopyright {
+            get {
+                return ResourceManager.GetString("AboutBoxCopyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developed for.
+        /// </summary>
+        internal static string AboutBoxDevelopedFor {
+            get {
+                return ResourceManager.GetString("AboutBoxDevelopedFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This software uses icons by Mark James.
+        /// </summary>
+        internal static string AboutBoxIconsBy {
+            get {
+                return ResourceManager.GetString("AboutBoxIconsBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fil Converter.
+        /// </summary>
+        internal static string AboutBoxProgramTitle {
+            get {
+                return ResourceManager.GetString("AboutBoxProgramTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        internal static string AboutBoxTitle {
+            get {
+                return ResourceManager.GetString("AboutBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill colors.
+        /// </summary>
+        internal static string Apple2ColorFillToggleTooltip {
+            get {
+                return ResourceManager.GetString("Apple2ColorFillToggleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to European (PAL)/American (NTSC) palette.
+        /// </summary>
+        internal static string Apple2PaletteToggleTooltip {
+            get {
+                return ResourceManager.GetString("Apple2PaletteToggleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Native display proportions.
+        /// </summary>
+        internal static string AspectToggleTooltip {
+            get {
+                return ResourceManager.GetString("AspectToggleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color dithering.
+        /// </summary>
+        internal static string ColorDitherToggleTooltip {
+            get {
+                return ResourceManager.GetString("ColorDitherToggleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encoding:.
+        /// </summary>
+        internal static string EncodingToolbarTitle {
+            get {
+                return ResourceManager.GetString("EncodingToolbarTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apple ][.
+        /// </summary>
+        internal static string FormatNameApple2 {
+            get {
+                return ResourceManager.GetString("FormatNameApple2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apple ][ NTSC.
+        /// </summary>
+        internal static string FormatNameApple2NTSC {
+            get {
+                return ResourceManager.GetString("FormatNameApple2NTSC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GR7.
+        /// </summary>
+        internal static string FormatNameGR7 {
+            get {
+                return ResourceManager.GetString("FormatNameGR7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HGR.
+        /// </summary>
+        internal static string FormatNameHGR {
+            get {
+                return ResourceManager.GetString("FormatNameHGR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HGR9.
+        /// </summary>
+        internal static string FormatNameHGR9 {
+            get {
+                return ResourceManager.GetString("FormatNameHGR9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MGR.
+        /// </summary>
+        internal static string FormatNameMGR {
+            get {
+                return ResourceManager.GetString("FormatNameMGR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MGR9.
+        /// </summary>
+        internal static string FormatNameMGR9 {
+            get {
+                return ResourceManager.GetString("FormatNameMGR9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original.
+        /// </summary>
+        internal static string FormatNameOriginal {
+            get {
+                return ResourceManager.GetString("FormatNameOriginal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Picler (bol).
+        /// </summary>
+        internal static string FormatNamePicler {
+            get {
+                return ResourceManager.GetString("FormatNamePicler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ZX Spectrum.
+        /// </summary>
+        internal static string FormatNameSpectrum {
+            get {
+                return ResourceManager.GetString("FormatNameSpectrum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original:.
         /// </summary>
         internal static string LeftPreviewDefaultTitle {
             get {
@@ -133,7 +313,61 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview.
+        ///   Looks up a localized string similar to _Language.
+        /// </summary>
+        internal static string MenuLanguage {
+            get {
+                return ResourceManager.GetString("MenuLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Auto.
+        /// </summary>
+        internal static string MenuLanguageAuto {
+            get {
+                return ResourceManager.GetString("MenuLanguageAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English (_en).
+        /// </summary>
+        internal static string MenuLanguageEnglish {
+            get {
+                return ResourceManager.GetString("MenuLanguageEnglish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Русский (_ru).
+        /// </summary>
+        internal static string MenuLanguageRussian {
+            get {
+                return ResourceManager.GetString("MenuLanguageRussian", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string OkButtonTitle {
+            get {
+                return ResourceManager.GetString("OkButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit window.
+        /// </summary>
+        internal static string PreviewPictureScaleFitWindow {
+            get {
+                return ResourceManager.GetString("PreviewPictureScaleFitWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview:.
         /// </summary>
         internal static string RightPreviewDefaultTitle {
             get {

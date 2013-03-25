@@ -117,31 +117,141 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LeftPreviewDefaultTitle" xml:space="preserve">
+  <data name="AboutBoxCopyright" xml:space="preserve">
+    <value>© 2011-2013 Sergey “SnakE” Gromov</value>
+  </data>
+  <data name="AboutBoxDevelopedFor" xml:space="preserve">
+    <value>Developed for</value>
+  </data>
+  <data name="AboutBoxIconsBy" xml:space="preserve">
+    <value>This software uses icons by Mark James</value>
+  </data>
+  <data name="AboutBoxProgramTitle" xml:space="preserve">
+    <value>Fil Converter</value>
+    <comment>Program name</comment>
+  </data>
+  <data name="AboutBoxTitle" xml:space="preserve">
+    <value>About</value>
+    <comment>About box title</comment>
+  </data>
+  <data name="Apple2ColorFillToggleTooltip" xml:space="preserve">
+    <value>Fill colors</value>
+    <comment>Tooltip for a button that enables filling black pixels with neighbour pixel colors in the Apple II color mode</comment>
+  </data>
+  <data name="Apple2PaletteToggleTooltip" xml:space="preserve">
+    <value>European (PAL)/American (NTSC) palette</value>
+    <comment>Tooltip for a button that switches between a European (PAL) and American (NTSC) palette in the Apple II color mode</comment>
+  </data>
+  <data name="AspectToggleTooltip" xml:space="preserve">
+    <value>Native display proportions</value>
+    <comment>Tooltip for a button that switches between displaying square pixels and native proportions of the original hardware</comment>
+  </data>
+  <data name="ColorDitherToggleTooltip" xml:space="preserve">
+    <value>Color dithering</value>
+    <comment>Tooltip for a button that enables color ditering in encoded images</comment>
+  </data>
+  <data name="EncodingToolbarTitle" xml:space="preserve">
+    <value>Encoding:</value>
+    <comment>Encoding options toolbar title</comment>
+  </data>
+  <data name="FormatNameApple2" xml:space="preserve">
+    <value>Apple ][</value>
+    <comment>Image format combo-box entry for Apple II</comment>
+  </data>
+  <data name="FormatNameApple2NTSC" xml:space="preserve">
+    <value>Apple ][ NTSC</value>
+    <comment>Image format combo-box entry for Apple II with NTSC TV-set imitation</comment>
+  </data>
+  <data name="FormatNameGR7" xml:space="preserve">
+    <value>GR7</value>
+    <comment>Image format combo-box entry for 64x64, 16 colors</comment>
+  </data>
+  <data name="FormatNameHGR" xml:space="preserve">
+    <value>HGR</value>
+    <comment>Image format combo-box entry for 256x256, 2 colors</comment>
+  </data>
+  <data name="FormatNameHGR9" xml:space="preserve">
+    <value>HGR9</value>
+    <comment>Image format combo-box entry for 512x256, 2 colors</comment>
+  </data>
+  <data name="FormatNameMGR" xml:space="preserve">
+    <value>MGR</value>
+    <comment>Image format combo-box entry for 128x128, 16 colors</comment>
+  </data>
+  <data name="FormatNameMGR9" xml:space="preserve">
+    <value>MGR9</value>
+    <comment>Image format combo-box entry for 256x256, 4 colors</comment>
+  </data>
+  <data name="FormatNameOriginal" xml:space="preserve">
     <value>Original</value>
+    <comment>Image format combo-box entry for no conversion</comment>
+  </data>
+  <data name="FormatNamePicler" xml:space="preserve">
+    <value>Picler (bol)</value>
+    <comment>Image format combo-box entry for Picler (ZX Spectrum format with deinterleaved lines)</comment>
+  </data>
+  <data name="FormatNameSpectrum" xml:space="preserve">
+    <value>ZX Spectrum</value>
+    <comment>Image format combo-box entry for ZX Spectrum</comment>
+  </data>
+  <data name="LeftPreviewDefaultTitle" xml:space="preserve">
+    <value>Original:</value>
+    <comment>Title of the left preview</comment>
   </data>
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Fil Converter</value>
+    <comment>Main window title</comment>
   </data>
   <data name="MenuFile" xml:space="preserve">
     <value>_File</value>
+    <comment>Main menu section</comment>
   </data>
   <data name="MenuFileExit" xml:space="preserve">
     <value>E_xit</value>
+    <comment>Main menu item</comment>
   </data>
   <data name="MenuFileOpen" xml:space="preserve">
     <value>_Open...</value>
+    <comment>Main menu item</comment>
   </data>
   <data name="MenuFileSaveAs" xml:space="preserve">
     <value>Save _As...</value>
+    <comment>Main menu item</comment>
   </data>
   <data name="MenuHelp" xml:space="preserve">
     <value>_Help</value>
+    <comment>Main menu section</comment>
   </data>
   <data name="MenuHelpAbout" xml:space="preserve">
     <value>_About...</value>
+    <comment>Main menu item</comment>
+  </data>
+  <data name="MenuLanguage" xml:space="preserve">
+    <value>_Language</value>
+    <comment>Main menu section</comment>
+  </data>
+  <data name="MenuLanguageAuto" xml:space="preserve">
+    <value>_Auto</value>
+    <comment>Language menu item</comment>
+  </data>
+  <data name="MenuLanguageEnglish" xml:space="preserve">
+    <value>English (_en)</value>
+    <comment>Language menu item</comment>
+  </data>
+  <data name="MenuLanguageRussian" xml:space="preserve">
+    <value>Русский (_ru)</value>
+    <comment>Language menu item</comment>
+  </data>
+  <data name="OkButtonTitle" xml:space="preserve">
+    <value>OK</value>
+    <comment>Confirmation button title</comment>
+  </data>
+  <data name="PreviewPictureScaleFitWindow" xml:space="preserve">
+    <value>Fit window</value>
+    <comment>Picture scale combo-box entry</comment>
   </data>
   <data name="RightPreviewDefaultTitle" xml:space="preserve">
-    <value>Preview</value>
+    <value>Preview:</value>
+    <comment>Title of the right preview</comment>
   </data>
 </root>

@@ -4,73 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:FilConvWpf"
+             xmlns:i="clr-namespace:FilConvWpf.I18n"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-
-    <UserControl.Resources>
-        <my:GrayscaleConverter x:Key="grayConv"/>
-        <BitmapImage x:Key="aspect" UriSource="Resources/television.png"/>
-        <BitmapImage x:Key="dither" UriSource="Resources/rainbow.png"/>
-        <ControlTemplate x:Key="imageInside" TargetType="ButtonBase">
-            <Grid>
-                <Image Name="enabled" Source="{TemplateBinding Tag}"/>
-                <Image Name="disabled"
-                    Source="{
-                        Binding Path=Tag,
-                        RelativeSource={RelativeSource TemplatedParent},
-                        Converter={StaticResource grayConv}}"
-                    Opacity="0.5"/>
-            </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsEnabled" Value="True">
-                    <Setter TargetName="enabled" Property="Image.Visibility" Value="Visible"/>
-                    <Setter TargetName="disabled" Property="Image.Visibility" Value="Hidden"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter TargetName="enabled" Property="Image.Visibility" Value="Hidden"/>
-                    <Setter TargetName="disabled" Property="Image.Visibility" Value="Visible"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="contentImage" TargetType="Control">
-            <Grid>
-                <Image Source="{TemplateBinding Control.Tag}">
-                    <Image.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding  Path=IsEnabled, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="True">
-                                    <Setter Property="Image.Visibility" Value="Visible"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding  Path=IsEnabled, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="False">
-                                    <Setter Property="Image.Visibility" Value="Hidden"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-                <Image Name="disabled"
-                        Source="{
-                            Binding Path=Tag,
-                            RelativeSource={RelativeSource TemplatedParent},
-                            Converter={StaticResource grayConv}}"
-                        Opacity="0.5">
-                    <Image.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding  Path=IsEnabled, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="True">
-                                    <Setter Property="Image.Visibility" Value="Hidden"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding  Path=IsEnabled, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="False">
-                                    <Setter Property="Image.Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-            </Grid>
-        </ControlTemplate>
-    </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -78,15 +14,15 @@
         </Grid.RowDefinitions>
         <ToolBarTray Name="toolBarTray">
             <ToolBar Name="toolBar" Grid.Row="0">
-                <Label Name="titleLabel" Content="Просмотр"/>
+                <Label Name="titleLabel"/>
                 <ComboBox Name="modeComboBox" SelectionChanged="modeComboBox_SelectedIndexChanged"/>
                 <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
                     <ComboBoxItem Content="100%"/>
                     <ComboBoxItem Content="200%"/>
                     <ComboBoxItem Content="300%"/>
-                    <ComboBoxItem Content="По окну"/>
+                    <ComboBoxItem Content="{i:L10n PreviewPictureScaleFitWindow}"/>
                 </ComboBox>
-                <ToggleButton Name="nativeAspectToggle" ToolTip="Пропорциональное отображение" Checked="aspectButton_Checked" Unchecked="aspectButton_Unchecked">
+                <ToggleButton Name="nativeAspectToggle" ToolTip="{i:L10n AspectToggleTooltip}" Checked="aspectButton_Checked" Unchecked="aspectButton_Unchecked">
                     <Image Source="Resources/television.png"/>
                 </ToggleButton>
             </ToolBar>

@@ -5,7 +5,6 @@ using ImageLib;
 using ImageLib.Agat;
 using ImageLib.Apple;
 using ImageLib.Spectrum;
-using System.Windows.Controls.Primitives;
 using System.Collections.Generic;
 
 namespace FilConvWpf.Native
@@ -99,15 +98,15 @@ namespace FilConvWpf.Native
 
         private static readonly INativeDisplayMode[] _displayModes =
         {
-            new NativeDisplayMode("GR7", new Gr7ImageFormat()),
-            new NativeDisplayMode("MGR", new MgrImageFormat()),
-            new NativeDisplayMode("HGR", new HgrImageFormat()),
-            new NativeDisplayMode("MGR9", new Mgr9ImageFormat()),
-            new NativeDisplayMode("HGR9", new Hgr9ImageFormat()),
-            new NativeDisplayMode("Picler (bol)", new SpectrumImageFormatPicler()),
+            new NativeDisplayMode("FormatNameGR7", new Gr7ImageFormat()),
+            new NativeDisplayMode("FormatNameMGR", new MgrImageFormat()),
+            new NativeDisplayMode("FormatNameHGR", new HgrImageFormat()),
+            new NativeDisplayMode("FormatNameMGR9", new Mgr9ImageFormat()),
+            new NativeDisplayMode("FormatNameHGR9", new Hgr9ImageFormat()),
+            new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
             new AppleDisplayMode(),
-            new NativeDisplayMode("Apple ][ NTSC", new Apple2ImageFormat(new Apple2NtscTv(Apple2Palettes.American))),
-            new NativeDisplayMode("ZX Spectrum", new SpectrumImageFormatInterleave()),
+            new NativeDisplayMode("FormatNameApple2NTSC", new Apple2ImageFormat(new Apple2NtscTv(Apple2Palettes.American))),
+            new NativeDisplayMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
         };
     }
 }

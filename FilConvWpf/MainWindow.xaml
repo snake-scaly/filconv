@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:z="clr-namespace:FilConvWpf"
-        xmlns:l="clr-namespace:FilConvWpf.L10n"
-        Title="{l:L10n MainWindowTitle}" Height="350" Width="525" AllowDrop="True">
+        xmlns:i="clr-namespace:FilConvWpf.I18n"
+        Title="{i:L10n MainWindowTitle}" Height="480" Width="780" AllowDrop="True">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,18 +14,19 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2">
-            <MenuItem Header="{l:L10n MenuFile}">
-                <MenuItem Header="{l:L10n MenuFileOpen}" Click="menuOpen_Click" />
-                <MenuItem Header="{l:L10n MenuFileSaveAs}" Click="menuSaveAs_Click" />
+            <MenuItem Header="{i:L10n MenuFile}">
+                <MenuItem Header="{i:L10n MenuFileOpen}" Click="menuOpen_Click" />
+                <MenuItem Header="{i:L10n MenuFileSaveAs}" Click="menuSaveAs_Click" />
                 <Separator />
-                <MenuItem Header="{l:L10n MenuFileExit}" Click="menuExit_Click" />
+                <MenuItem Header="{i:L10n MenuFileExit}" Click="menuExit_Click" />
             </MenuItem>
-            <MenuItem Header="{l:L10n MenuHelp}">
-                <MenuItem Header="{l:L10n MenuHelpAbout}" Click="menuAbout_Click" />
+            <MenuItem x:Name="menuLanguage" Header="{i:L10n MenuLanguage}" />
+            <MenuItem Header="{i:L10n MenuHelp}">
+                <MenuItem Header="{i:L10n MenuHelpAbout}" Click="menuAbout_Click" />
             </MenuItem>
         </Menu>
-        <z:Preview x:Name="left" Grid.Row="1" Margin="0 0 4pt 0" Title="{l:L10n LeftPreviewDefaultTitle}"/>
+        <z:Preview x:Name="left" Grid.Row="1" Margin="0 0 4pt 0" Title="{i:L10n LeftPreviewDefaultTitle}"/>
         <GridSplitter Grid.Row="1" Width="4pt"/>
-        <z:Preview x:Name="right" Grid.Row="1" Grid.Column="1" Title="{l:L10n RightPreviewDefaultTitle}"/>
+        <z:Preview x:Name="right" Grid.Row="1" Grid.Column="1" Title="{i:L10n RightPreviewDefaultTitle}"/>
     </Grid>
 </Window>

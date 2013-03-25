@@ -64,7 +64,7 @@
     <Compile Include="Encode\IdentityEncoding.cs" />
     <Compile Include="Encode\IEncoding.cs" />
     <Compile Include="Encode\NativeEncoding.cs" />
-    <Compile Include="L10n\L10n.cs" />
+    <Compile Include="I18n\L10n.cs" />
     <Compile Include="Native\AppleDisplayMode.cs" />
     <Compile Include="Encode\EncodingImagePresenter.cs" />
     <Compile Include="ResourceUtils.cs" />

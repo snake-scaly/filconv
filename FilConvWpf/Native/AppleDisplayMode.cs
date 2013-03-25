@@ -1,12 +1,10 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using ImageLib;
 using ImageLib.Apple;
 using System.Collections.Generic;
+using FilConvWpf.I18n;
 
 namespace FilConvWpf.Native
 {
@@ -19,27 +17,31 @@ namespace FilConvWpf.Native
         private ToggleButton _palButton;
 
         public AppleDisplayMode()
-            : base("Apple ][", new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
+            : base("FormatNameApple2", new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
             if (ToolBar == null)
             {
                 ToolBar = new ToolBar();
             }
 
+            Label toolbarTitle = new Label();
+            L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, "FormatNameApple2").Update();
+
             _fillButton = new ToggleButton();
             _fillButton.IsChecked = _fill;
             _fillButton.Content = ResourceUtils.GetResourceImage("fill.png");
-            _fillButton.ToolTip = "Заливка цветов";
+            L10n.AddLocalizedProperty(_fillButton, ToggleButton.ToolTipProperty, "Apple2ColorFillToggleTooltip").Update();
             _fillButton.Checked += fill_Checked;
             _fillButton.Unchecked += fill_Unchecked;
 
             _palButton = new ToggleButton();
             _palButton.IsChecked = _pal;
             _palButton.Content = ResourceUtils.GetResourceImage("useu.png");
-            _palButton.ToolTip = "Европейская / американская палитра";
+            L10n.AddLocalizedProperty(_palButton, ToggleButton.ToolTipProperty, "Apple2PaletteToggleTooltip").Update();
             _palButton.Checked += pal_Checked;
             _palButton.Unchecked += pal_Unchecked;
 
+            ToolBar.Items.Add(toolbarTitle);
             ToolBar.Items.Add(_fillButton);
             ToolBar.Items.Add(_palButton);
         }

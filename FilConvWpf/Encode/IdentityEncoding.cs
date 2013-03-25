@@ -13,7 +13,7 @@ namespace FilConvWpf.Encode
             remove { }
         }
 
-        public string Name { get { return "Оригинал"; } }
+        public string Name { get { return "FormatNameOriginal"; } }
 
         public AspectBitmap Preview(BitmapSource original)
         {

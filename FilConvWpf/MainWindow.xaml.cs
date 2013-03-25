@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -10,6 +9,9 @@ using FilLib;
 using ImageLib;
 using Microsoft.Win32;
 using FilConvWpf.Encode;
+using System.Globalization;
+using System.Windows.Controls;
+using FilConvWpf.I18n;
 
 namespace FilConvWpf
 {
@@ -26,6 +28,19 @@ namespace FilConvWpf
             InitializeComponent();
             right.ImagePresenter = new EncodingImagePresenter(left);
             rawTitle = Title;
+
+            foreach (SupportedLanguage l in _supportedLanguages)
+            {
+                MenuItem item = new MenuItem();
+                L10n.AddLocalizedProperty(item, MenuItem.HeaderProperty, l.NameKey).Update();
+                item.Tag = l.Culture;
+                item.Click += menuLanguage_Click;
+                if (l.Culture == L10n.Culture)
+                {
+                    item.IsChecked = true;
+                }
+                menuLanguage.Items.Add(item);
+            }
         }
 
         void Open(string fileName)
@@ -146,6 +161,22 @@ namespace FilConvWpf
             about.ShowDialog();
         }
 
+        private void menuLanguage_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (MenuItem item in menuLanguage.Items)
+            {
+                if (Object.ReferenceEquals(item, sender))
+                {
+                    L10n.Culture = (CultureInfo)item.Tag;
+                    item.IsChecked = true;
+                }
+                else
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+
         IEnumerable<FileFilter> GetFileFilterList(bool includeAgat, bool includeScr, bool includeGeneric)
         {
             IEnumerable<SupportedFile> files = _supportedPcFiles.AsEnumerable();
@@ -204,6 +235,18 @@ namespace FilConvWpf
             }
         }
 
+        struct SupportedLanguage
+        {
+            public string NameKey;
+            public CultureInfo Culture;
+
+            public SupportedLanguage(string nameKey, CultureInfo culture)
+            {
+                NameKey = nameKey;
+                Culture = culture;
+            }
+        }
+
         static readonly SupportedFile[] _supportedAgatFiles =
         {
             new SupportedFile("Fil", new string[] { "*.fil" }, null),
@@ -221,6 +264,13 @@ namespace FilConvWpf
             new SupportedFile("Png", new string[] { "*.png" }, typeof(PngBitmapEncoder)),
             new SupportedFile("Gif", new string[] { "*.gif" }, typeof(GifBitmapEncoder)),
             new SupportedFile("Tiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder)),
+        };
+
+        static readonly SupportedLanguage[] _supportedLanguages =
+        {
+            new SupportedLanguage("MenuLanguageAuto", null),
+            new SupportedLanguage("MenuLanguageEnglish", new CultureInfo("en")),
+            new SupportedLanguage("MenuLanguageRussian", new CultureInfo("ru")),
         };
     }
 }
