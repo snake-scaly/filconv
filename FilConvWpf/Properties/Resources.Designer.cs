@@ -61,6 +61,15 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bulgarian translation by sstanev.
+        /// </summary>
+        internal static string AboutBoxBulgarianTranslation {
+            get {
+                return ResourceManager.GetString("AboutBoxBulgarianTranslation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to © 2011-2013 Sergey “SnakE” Gromov.
         /// </summary>
         internal static string AboutBoxCopyright {
@@ -327,6 +336,15 @@ namespace FilConvWpf.Properties {
         internal static string MenuLanguageAuto {
             get {
                 return ResourceManager.GetString("MenuLanguageAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Български (_bg).
+        /// </summary>
+        internal static string MenuLanguageBulgarian {
+            get {
+                return ResourceManager.GetString("MenuLanguageBulgarian", resourceCulture);
             }
         }
         

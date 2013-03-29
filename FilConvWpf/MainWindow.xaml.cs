@@ -271,6 +271,7 @@ namespace FilConvWpf
             new SupportedLanguage("MenuLanguageAuto", null),
             new SupportedLanguage("MenuLanguageEnglish", new CultureInfo("en")),
             new SupportedLanguage("MenuLanguageRussian", new CultureInfo("ru")),
+            new SupportedLanguage("MenuLanguageBulgarian", new CultureInfo("bg")),
         };
     }
 }

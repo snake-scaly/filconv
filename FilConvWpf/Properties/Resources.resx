@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutBoxBulgarianTranslation" xml:space="preserve">
+    <value>Bulgarian translation by sstanev</value>
+  </data>
   <data name="AboutBoxCopyright" xml:space="preserve">
     <value>© 2011-2013 Sergey “SnakE” Gromov</value>
   </data>
@@ -232,6 +235,10 @@
   </data>
   <data name="MenuLanguageAuto" xml:space="preserve">
     <value>_Auto</value>
+    <comment>Language menu item</comment>
+  </data>
+  <data name="MenuLanguageBulgarian" xml:space="preserve">
+    <value>Български (_bg)</value>
     <comment>Language menu item</comment>
   </data>
   <data name="MenuLanguageEnglish" xml:space="preserve">
