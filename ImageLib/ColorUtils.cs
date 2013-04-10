@@ -1,29 +1,29 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
+using System;
 
 namespace ImageLib
 {
     static class ColorUtils
     {
         // YCbCr coefficients
-        private const double Kr = 0.299;
-        private const double Kb = 0.114;
-        private const double Kg = 1 - Kr - Kb;
+        private const float Kr = 0.299f;
+        private const float Kb = 0.114f;
+        private const float Kg = 1 - Kr - Kb;
 
         public static int BestMatch(Color color, IList<Color> palette)
         {
-            double closestMetric = double.PositiveInfinity;
+            float closestMetric = float.PositiveInfinity;
             int closest = -1;
 
             int index = 0;
             foreach (var entry in palette)
             {
-                double dx = (entry.R - color.R) * Kr;
-                double dy = (entry.G - color.G) * Kg;
-                double dz = (entry.B - color.B) * Kb;
+                float dx = (entry.ScR - color.ScR) * Kr;
+                float dy = (entry.ScG - color.ScG) * Kg;
+                float dz = (entry.ScB - color.ScB) * Kb;
 
-                double d = dx * dx + dy * dy + dz * dz;
+                float d = dx * dx + dy * dy + dz * dz;
 
                 if (d < closestMetric)
                 {
@@ -35,6 +35,12 @@ namespace ImageLib
             }
 
             return closest;
+        }
+
+        public static Color Desaturate(Color color)
+        {
+            float gray = Kr * color.ScR + Kg * color.ScG + Kb * color.ScB;
+            return Color.FromScRgb(1, gray, gray, gray);
         }
     }
 }

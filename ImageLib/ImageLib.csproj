@@ -64,6 +64,10 @@
     <Compile Include="Agat\Gr7ImageFormat.cs" />
     <Compile Include="Agat\Hgr9ImageFormat.cs" />
     <Compile Include="Agat\HgrImageFormat.cs" />
+    <Compile Include="Gamut\BlackAndWhiteGamut.cs" />
+    <Compile Include="Gamut\IGamut.cs" />
+    <Compile Include="Gamut\Mgr9BlackGamut.cs" />
+    <Compile Include="Gamut\SrgbGamut.cs" />
     <Compile Include="NativeImage.cs" />
     <Compile Include="NativeImageFormat.cs" />
     <Compile Include="Agat\Mgr9ImageFormat.cs" />
@@ -74,6 +78,7 @@
     <Compile Include="Spectrum\SpectrumImageFormatInterleave.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatPicler.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

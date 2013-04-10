@@ -2,12 +2,20 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : NativeImageFormat
     {
         private const double defaultDpi = 96;
+
+        // Error distribution coefficients by direction: East, South-West, South, South-East
+        // These values distribute error inversely related to pixel distance
+        private const float errDistrE = 0.2929f;
+        private const float errDistrSW = 0.2071f;
+        private const float errDistrS = 0.2929f;
+        private const float errDistrSE = 0.2071f;
 
         public virtual double Aspect
         {
@@ -23,6 +31,7 @@ namespace ImageLib.Agat
         protected abstract int Height { get; }
         protected abstract int BitsPerPixel { get; }
         protected abstract Color[] Palette { get; }
+        protected virtual IGamut Gamut { get { return new SrgbGamut(); } }
 
         protected int PixelsPerByte
         {
@@ -79,9 +88,10 @@ namespace ImageLib.Agat
                     int pixelPos = linePos + x * 4;
                     Color pixel = (x < w && y < h) ? GetBgr32Pixel(pixels, pixelPos) : Colors.Black;
 
-                    double r = 0, g = 0, b = 0;
+                    float r = 0, g = 0, b = 0;
                     if (options.Dither)
                     {
+                        pixel = Gamut.FromSrgb(pixel);
                         r = Clamp(pixel.R + currentLineErrors[x].R);
                         g = Clamp(pixel.G + currentLineErrors[x].G);
                         b = Clamp(pixel.B + currentLineErrors[x].B);
@@ -93,24 +103,24 @@ namespace ImageLib.Agat
                     if (options.Dither)
                     {
                         pixel = GetBgr32Pixel(bytes, x, y);
-                        double re = (r - pixel.R) / 4;
-                        double ge = (g - pixel.G) / 4;
-                        double be = (b - pixel.B) / 4;
+                        float re = r - pixel.R;
+                        float ge = g - pixel.G;
+                        float be = b - pixel.B;
 
                         if (x + 1 < Width)
                         {
-                            AddError(re, ge, be, ref currentLineErrors[x + 1]);
+                            AddError(re * errDistrE, ge * errDistrE, be * errDistrE, ref currentLineErrors[x + 1]);
                         }
                         if (y + 1 < Height)
                         {
-                            AddError(re, ge, be, ref nextLineErrors[x]);
+                            AddError(re * errDistrS, ge * errDistrS, be * errDistrS, ref nextLineErrors[x]);
                             if (x - 1 >= 0)
                             {
-                                AddError(re, ge, be, ref nextLineErrors[x - 1]);
+                                AddError(re * errDistrSW, ge * errDistrSW, be * errDistrSW, ref nextLineErrors[x - 1]);
                             }
                             if (x + 1 < Width)
                             {
-                                AddError(re, ge, be, ref nextLineErrors[x + 1]);
+                                AddError(re * errDistrSE, ge * errDistrSE, be * errDistrSE, ref nextLineErrors[x + 1]);
                             }
                         }
                     }
@@ -170,17 +180,17 @@ namespace ImageLib.Agat
             return Color.FromRgb(bgr32[offset + 2], bgr32[offset + 1], bgr32[offset]);
         }
 
-        static double Clamp(double c)
+        static float Clamp(float c)
         {
             return Math.Min(Math.Max(c, 0), 255);
         }
 
-        static byte Round(double c)
+        static byte Round(float c)
         {
             return (byte)Math.Round(c);
         }
 
-        static void AddError(double re, double ge, double be, ref Error e)
+        static void AddError(float re, float ge, float be, ref Error e)
         {
             e.R += re;
             e.G += ge;
@@ -189,9 +199,9 @@ namespace ImageLib.Agat
 
         struct Error
         {
-            public double R, G, B;
+            public float R, G, B;
 
-            public Error(double r, double g, double b)
+            public Error(float r, float g, float b)
             {
                 R = r;
                 G = g;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
+using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {
@@ -25,6 +26,11 @@ namespace ImageLib.Agat
             get { return _colorPalette; }
         }
 
+        protected override IGamut Gamut
+        {
+            get { return _gamut; }
+        }
+
         protected override int GetLineOffset(int y)
         {
             int bank;
@@ -39,5 +45,7 @@ namespace ImageLib.Agat
             Color.FromRgb(0, 255, 0),
             Color.FromRgb(0, 0, 255),
         };
+
+        private static readonly IGamut _gamut = new Mgr9BlackGamut();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media;
+using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {
@@ -11,7 +12,20 @@ namespace ImageLib.Agat
 
         protected override Color[] Palette
         {
-            get { return new Color[] { Color.FromRgb(0, 0, 0), Color.FromRgb(255, 255, 255) }; }
+            get { return _palette; }
         }
+
+        protected override IGamut Gamut
+        {
+            get { return _gamut; }
+        }
+
+        private static readonly Color[] _palette = new Color[]
+        {
+            Color.FromRgb(0, 0, 0),
+            Color.FromRgb(255, 255, 255)
+        };
+
+        private static readonly IGamut _gamut = new BlackAndWhiteGamut();
     }
 }
