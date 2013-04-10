@@ -261,4 +261,8 @@
     <value>Результат:</value>
     <comment>Заголовок правой картинки</comment>
   </data>
+  <data name="UnableToLoadFileError" xml:space="preserve">
+    <value>Не удалось загрузить изображение [{0}]: {1}</value>
+    <comment>{0} - имя файла, {1} - текст ошибки</comment>
+  </data>
 </root>

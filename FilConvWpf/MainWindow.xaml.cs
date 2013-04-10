@@ -68,7 +68,7 @@ namespace FilConvWpf
             catch (NotSupportedException e)
             {
                 MessageBox.Show(
-                    string.Format("Не удалось загрузить изображение [{0}]: {1}", fileName, e.Message),
+                    string.Format((string)L10n.GetObject("UnableToLoadFileError"), fileName, e.Message),
                     "Fil Converter",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);

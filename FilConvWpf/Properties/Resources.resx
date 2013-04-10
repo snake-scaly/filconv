@@ -261,4 +261,8 @@
     <value>Preview:</value>
     <comment>Title of the right preview</comment>
   </data>
+  <data name="UnableToLoadFileError" xml:space="preserve">
+    <value>Could not load image [{0}]: {1}</value>
+    <comment>{0} - file name, {1} - error message</comment>
+  </data>
 </root>

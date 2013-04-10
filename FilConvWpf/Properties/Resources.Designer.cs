@@ -392,5 +392,14 @@ namespace FilConvWpf.Properties {
                 return ResourceManager.GetString("RightPreviewDefaultTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not load image [{0}]: {1}.
+        /// </summary>
+        internal static string UnableToLoadFileError {
+            get {
+                return ResourceManager.GetString("UnableToLoadFileError", resourceCulture);
+            }
+        }
     }
 }
