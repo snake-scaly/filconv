@@ -45,7 +45,7 @@ namespace FilLib
                 if (ft.Code == code)
                     return ft;
             }
-            throw new Exception("Unknown file type: " + code);
+            throw new NotSupportedException("Unknown file type: " + code);
         }
 
         public static FilType FromName(char name)
@@ -55,7 +55,7 @@ namespace FilLib
                 if (ft.Name == Char.ToUpper(name))
                     return ft;
             }
-            throw new Exception("Unknown file type: " + name);
+            throw new NotSupportedException("Unknown file type: " + name);
         }
 
         public override bool Equals(object obj)
