@@ -16,7 +16,7 @@
         <Menu Grid.ColumnSpan="2">
             <MenuItem Header="{i:L10n MenuFile}">
                 <MenuItem Header="{i:L10n MenuFileOpen}" Click="menuOpen_Click" />
-                <MenuItem Header="{i:L10n MenuFileSaveAs}" Click="menuSaveAs_Click" />
+                <MenuItem x:Name="fileSaveAsMenuItem" IsEnabled="False" Header="{i:L10n MenuFileSaveAs}" Click="menuSaveAs_Click" />
                 <Separator />
                 <MenuItem Header="{i:L10n MenuFileExit}" Click="menuExit_Click" />
             </MenuItem>

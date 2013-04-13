@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Windows.Media.Imaging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
     
 namespace FilConvWpf.Encode
 {
@@ -28,14 +29,9 @@ namespace FilConvWpf.Encode
             }
         }
 
-        public bool IsContainerSupported(Type type)
+        public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource bitmap)
         {
-            return false;
-        }
-
-        public void Encode(BitmapSource original, object container)
-        {
-            throw new NotSupportedException("Containers are not supported");
+            return Enumerable.Empty<ISaveDelegate>();
         }
 
         public void StoreSettings(IDictionary<string, object> settings)

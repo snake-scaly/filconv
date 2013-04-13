@@ -157,6 +157,14 @@
     <value>Опции:</value>
     <comment>Заголовок тулбара опций кодирования</comment>
   </data>
+  <data name="FileFormatNameAll" xml:space="preserve">
+    <value>Все</value>
+    <comment>Название фильтра *.* диалога "Открыть"</comment>
+  </data>
+  <data name="FileFormatNameAllSupported" xml:space="preserve">
+    <value>Все поддерживаемые</value>
+    <comment>Название фильтра всех поддерживаемых типов файлов диалога "Открыть"</comment>
+  </data>
   <data name="FormatNameApple2" xml:space="preserve">
     <value>Apple ][</value>
     <comment>Элемент комбо-бокса выбора формата Apple II</comment>

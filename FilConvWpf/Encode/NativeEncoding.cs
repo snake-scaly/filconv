@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
-using FilLib;
-using ImageLib;
-using System.Collections.Generic;
 using FilConvWpf.I18n;
+using ImageLib;
 
 namespace FilConvWpf.Encode
 {
@@ -42,6 +41,16 @@ namespace FilConvWpf.Encode
 
         public ToolBar ToolBar { get; private set; }
 
+        private EncodingOptions EncodingOptions
+        {
+            get
+            {
+                EncodingOptions options = new EncodingOptions();
+                options.Dither = _dither;
+                return options;
+            }
+        }
+
         public AspectBitmap Preview(BitmapSource original)
         {
             return new AspectBitmap(
@@ -49,22 +58,9 @@ namespace FilConvWpf.Encode
                 _format.Aspect);
         }
 
-        public bool IsContainerSupported(Type type)
+        public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)
         {
-            return type == typeof(Fil);
-        }
-
-        public void Encode(BitmapSource original, object container)
-        {
-            if (container is Fil)
-            {
-                Fil f = (Fil)container;
-                f.Data = ToNative(original).Data;
-            }
-            else
-            {
-                throw new NotSupportedException("Unsupported container type: " + container.GetType());
-            }
+            yield return new FilSaveDelegate(original, _format, EncodingOptions);
         }
 
         public void StoreSettings(IDictionary<string, object> settings)
@@ -85,9 +81,7 @@ namespace FilConvWpf.Encode
 
         private NativeImage ToNative(BitmapSource original)
         {
-            EncodingOptions options = new EncodingOptions();
-            options.Dither = _dither;
-            return _format.ToNative(original, options);
+            return _format.ToNative(original, EncodingOptions);
         }
 
         private void dither_Checked(object sender, RoutedEventArgs e)

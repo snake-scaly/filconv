@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Windows.Controls;
-using ImageLib.Agat;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using ImageLib.Agat;
 
 namespace FilConvWpf.Encode
 {
@@ -69,14 +71,13 @@ namespace FilConvWpf.Encode
             }
         }
 
-        public bool IsContainerSupported(Type type)
+        public IEnumerable<ISaveDelegate> SaveDelegates
         {
-            return _currentEncoding != null && _currentEncoding.IsContainerSupported(type);
-        }
-
-        public void EncodeInto(object container)
-        {
-            _currentEncoding.Encode(_sourcePreview.DisplayPicture, container);
+            get
+            {
+                BitmapSource bitmap = _sourcePreview.DisplayPicture;
+                return _currentEncoding.GetSaveDelegates(bitmap).Concat(GetStandardSaveDelegates());
+            }
         }
 
         private void currentEncoding_EncodingChanged(object sender, EventArgs e)
@@ -102,12 +103,22 @@ namespace FilConvWpf.Encode
             OnDisplayImageChanged();
         }
 
-        private void OnDisplayImageChanged()
+        protected virtual void OnDisplayImageChanged()
         {
             if (DisplayImageChanged != null)
             {
                 DisplayImageChanged(this, EventArgs.Empty);
             }
+        }
+
+        private IEnumerable<ISaveDelegate> GetStandardSaveDelegates()
+        {
+            BitmapSource bitmap = DisplayImage.Bitmap;
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNameBmp", new string[] { "*.bmp" }, typeof(BmpBitmapEncoder));
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNameJpeg", new string[] { "*.jpg", "*,jpeg" }, typeof(JpegBitmapEncoder));
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNamePng", new string[] { "*.png" }, typeof(PngBitmapEncoder));
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNameGif", new string[] { "*.gif" }, typeof(GifBitmapEncoder));
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNameTiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder));
         }
 
         private static readonly IEncoding[] _encodings =

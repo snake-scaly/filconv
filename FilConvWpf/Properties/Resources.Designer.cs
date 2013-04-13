@@ -160,6 +160,87 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string FileFormatNameAll {
+            get {
+                return ResourceManager.GetString("FileFormatNameAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Supported.
+        /// </summary>
+        internal static string FileFormatNameAllSupported {
+            get {
+                return ResourceManager.GetString("FileFormatNameAllSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bmp.
+        /// </summary>
+        internal static string FileFormatNameBmp {
+            get {
+                return ResourceManager.GetString("FileFormatNameBmp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fil.
+        /// </summary>
+        internal static string FileFormatNameFil {
+            get {
+                return ResourceManager.GetString("FileFormatNameFil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gif.
+        /// </summary>
+        internal static string FileFormatNameGif {
+            get {
+                return ResourceManager.GetString("FileFormatNameGif", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jpeg.
+        /// </summary>
+        internal static string FileFormatNameJpeg {
+            get {
+                return ResourceManager.GetString("FileFormatNameJpeg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Png.
+        /// </summary>
+        internal static string FileFormatNamePng {
+            get {
+                return ResourceManager.GetString("FileFormatNamePng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scr.
+        /// </summary>
+        internal static string FileFormatNameScr {
+            get {
+                return ResourceManager.GetString("FileFormatNameScr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tiff.
+        /// </summary>
+        internal static string FileFormatNameTiff {
+            get {
+                return ResourceManager.GetString("FileFormatNameTiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apple ][.
         /// </summary>
         internal static string FormatNameApple2 {

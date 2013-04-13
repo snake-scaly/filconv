@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using FilConvWpf.Encode;
+using FilConvWpf.I18n;
 using FilConvWpf.Native;
 using FilLib;
 using ImageLib;
 using Microsoft.Win32;
-using FilConvWpf.Encode;
-using System.Globalization;
-using System.Windows.Controls;
-using FilConvWpf.I18n;
 
 namespace FilConvWpf
 {
@@ -64,6 +64,8 @@ namespace FilConvWpf
                 }
                 this.fileName = fileName;
                 Title = Path.GetFileName(fileName) + " - " + rawTitle;
+
+                fileSaveAsMenuItem.IsEnabled = true;
             }
             catch (NotSupportedException e)
             {
@@ -72,28 +74,6 @@ namespace FilConvWpf
                     "Fil Converter",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
-            }
-        }
-
-        void Save(string fileName, Type encoderType)
-        {
-            if (encoderType != null)
-            {
-                BitmapEncoder encoder = (BitmapEncoder)Activator.CreateInstance(encoderType);
-                encoder.Frames.Add(BitmapFrame.Create(right.DisplayPicture));
-                using (var fs = new FileStream(fileName, FileMode.Create))
-                {
-                    encoder.Save(fs);
-                }
-            }
-            else
-            {
-                var fil = new Fil(Path.GetFileNameWithoutExtension(fileName));
-                ((EncodingImagePresenter)right.ImagePresenter).EncodeInto(fil);
-                using (var fs = new FileStream(fileName, FileMode.Create))
-                {
-                    fil.Write(fs);
-                }
             }
         }
 
@@ -121,7 +101,7 @@ namespace FilConvWpf
         private void menuOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = string.Join("|", GetFileFilterList(true, true, true).Select(ff => ff.Filter));
+            ofd.Filter = string.Join("|", GetFileFilterList());
             bool? r = ofd.ShowDialog();
             if (r == null || !r.Value)
             {
@@ -133,19 +113,21 @@ namespace FilConvWpf
 
         private void menuSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            var eida = (EncodingImagePresenter)right.ImagePresenter;
-            IEnumerable<FileFilter> filters = GetFileFilterList(eida.IsContainerSupported(typeof(Fil)), false, false);
+            var eip = (EncodingImagePresenter)right.ImagePresenter;
 
             var sfd = new SaveFileDialog();
             sfd.FileName = Path.GetFileNameWithoutExtension(fileName);
-            sfd.Filter = string.Join("|", filters.Select(ff => ff.Filter));
+            sfd.Filter = string.Join("|", eip.SaveDelegates.Select(sd => string.Format(
+                "{0} ({1})|{1}",
+                L10n.GetObject(sd.FormatNameL10nKey),
+                string.Join(";", sd.FileNameMasks))));
             sfd.FilterIndex = 1;
+
             bool? result = sfd.ShowDialog();
+
             if (result != null && result.Value)
             {
-                fileName = sfd.FileName;
-                Type format = filters.Skip(sfd.FilterIndex - 1).First().EncoderType;
-                Save(fileName, format);
+                eip.SaveDelegates.ElementAt(sfd.FilterIndex - 1).SaveAs(sfd.FileName);
             }
         }
 
@@ -177,61 +159,31 @@ namespace FilConvWpf
             }
         }
 
-        IEnumerable<FileFilter> GetFileFilterList(bool includeAgat, bool includeScr, bool includeGeneric)
+        IEnumerable<string> GetFileFilterList()
         {
-            IEnumerable<SupportedFile> files = _supportedPcFiles.AsEnumerable();
-            if (includeScr)
-            {
-                files = _supportedScrFiles.Concat(files);
-            }
-            if (includeAgat)
-            {
-                files = _supportedAgatFiles.Concat(files);
-            }
+            IEnumerable<SupportedFile> files = _supportedFiles.AsEnumerable();
 
-            var types = files.Select(f => Tuple.Create(
-                f.Name,
-                string.Join(";", f.Extensions),
-                f.EncoderType));
+            var types = files.Select(f => Tuple.Create(f.Name, string.Join(";", f.Extensions)));
 
-            if (includeGeneric)
-            {
-                string allExts = string.Join(";", types.Select(t => t.Item2));
-                types = Enumerable
-                    .Repeat(Tuple.Create("Все поддерживаемые", allExts, (Type)null), 1)
-                    .Concat(types)
-                    .Concat(Enumerable.Repeat(Tuple.Create("Все", "*.*", (Type)null), 1));
-            }
+            string allExts = string.Join(";", types.Select(t => t.Item2));
+            types = Enumerable
+                .Repeat(Tuple.Create("FileFormatNameAllSupported", allExts), 1)
+                .Concat(types)
+                .Concat(Enumerable.Repeat(Tuple.Create("FileFormatNameAll", "*.*"), 1));
 
-            return types.Select(t => new FileFilter(
-                string.Format("{0} ({1})|{1}", t.Item1, t.Item2),
-                t.Item3));
+            return types.Select(t => string.Format("{0} ({1})|{1}", L10n.GetObject(t.Item1), t.Item2));
         }
 
         struct SupportedFile
         {
             public string Name;
             public string[] Extensions;
-            public Type EncoderType; // null means FIL
 
-            public SupportedFile(string name, string[] extensions, Type encoderType)
+            public SupportedFile(string name, string[] extensions)
                 : this()
             {
                 Name = name;
                 Extensions = extensions;
-                EncoderType = encoderType;
-            }
-        }
-
-        struct FileFilter
-        {
-            public string Filter;
-            public Type EncoderType;
-
-            public FileFilter(string filter, Type encoderType)
-            {
-                Filter = filter;
-                EncoderType = encoderType;
             }
         }
 
@@ -247,23 +199,15 @@ namespace FilConvWpf
             }
         }
 
-        static readonly SupportedFile[] _supportedAgatFiles =
+        static readonly SupportedFile[] _supportedFiles =
         {
-            new SupportedFile("Fil", new string[] { "*.fil" }, null),
-        };
-
-        static readonly SupportedFile[] _supportedScrFiles =
-        {
-            new SupportedFile("Scr", new string[] { "*.scr" }, null),
-        };
-
-        static readonly SupportedFile[] _supportedPcFiles =
-        {
-            new SupportedFile("Bmp", new string[] { "*.bmp" }, typeof(BmpBitmapEncoder)),
-            new SupportedFile("Jpeg", new string[] { "*.jpg", "*,jpeg" }, typeof(JpegBitmapEncoder)),
-            new SupportedFile("Png", new string[] { "*.png" }, typeof(PngBitmapEncoder)),
-            new SupportedFile("Gif", new string[] { "*.gif" }, typeof(GifBitmapEncoder)),
-            new SupportedFile("Tiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder)),
+            new SupportedFile("FileFormatNameFil", new string[] { "*.fil" }),
+            new SupportedFile("FileFormatNameScr", new string[] { "*.scr" }),
+            new SupportedFile("FileFormatNameBmp", new string[] { "*.bmp" }),
+            new SupportedFile("FileFormatNameJpeg", new string[] { "*.jpg", "*,jpeg" }),
+            new SupportedFile("FileFormatNamePng", new string[] { "*.png" }),
+            new SupportedFile("FileFormatNameGif", new string[] { "*.gif" }),
+            new SupportedFile("FileFormatNameTiff", new string[] { "*.tif", "*.tiff" }),
         };
 
         static readonly SupportedLanguage[] _supportedLanguages =

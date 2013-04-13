@@ -157,6 +157,42 @@
     <value>Encoding:</value>
     <comment>Encoding options toolbar title</comment>
   </data>
+  <data name="FileFormatNameAll" xml:space="preserve">
+    <value>All</value>
+    <comment>Name for a *.* filter in open dialogs</comment>
+  </data>
+  <data name="FileFormatNameAllSupported" xml:space="preserve">
+    <value>All Supported</value>
+    <comment>Name for all supported formats filter in open dialogs</comment>
+  </data>
+  <data name="FileFormatNameBmp" xml:space="preserve">
+    <value>Bmp</value>
+    <comment>BMP format filter name for open/save dialogs</comment>
+  </data>
+  <data name="FileFormatNameFil" xml:space="preserve">
+    <value>Fil</value>
+    <comment>FIL format filter name for open/save dialogs</comment>
+  </data>
+  <data name="FileFormatNameGif" xml:space="preserve">
+    <value>Gif</value>
+    <comment>GIF format filter name for open/save dialogs</comment>
+  </data>
+  <data name="FileFormatNameJpeg" xml:space="preserve">
+    <value>Jpeg</value>
+    <comment>JPEG format filter name for open/save dialogs</comment>
+  </data>
+  <data name="FileFormatNamePng" xml:space="preserve">
+    <value>Png</value>
+    <comment>PNG format filter name for open/save dialogs</comment>
+  </data>
+  <data name="FileFormatNameScr" xml:space="preserve">
+    <value>Scr</value>
+    <comment>SCR format filter name for open/save dialogs</comment>
+  </data>
+  <data name="FileFormatNameTiff" xml:space="preserve">
+    <value>Tiff</value>
+    <comment>TIFF format filter name for open/save dialogs</comment>
+  </data>
   <data name="FormatNameApple2" xml:space="preserve">
     <value>Apple ][</value>
     <comment>Image format combo-box entry for Apple II</comment>
