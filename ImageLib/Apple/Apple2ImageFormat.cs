@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -56,14 +55,6 @@ namespace ImageLib.Apple
             WriteableBitmap result = new WriteableBitmap(width, height, dpi, dpi, PixelFormats.Bgr32, null);
             result.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
             return result;
-        }
-
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
-        {
-            // Encoding is not supported.
-            int nativeStride = width / pixelsPerByte;
-            byte[] pixels = new byte[nativeStride * height];
-            return new NativeImage(pixels, new FormatHint(this));
         }
 
         /// <summary>
@@ -147,6 +138,197 @@ namespace ImageLib.Apple
                 return shiftBit ? Apple2SimpleColor.Orange : Apple2SimpleColor.Violet;
             }
             return shiftBit ? Apple2SimpleColor.Blue : Apple2SimpleColor.Green;
+        }
+
+        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        {
+            var src = new BitmapPixels(bitmap);
+            var dst = new AppleScreen();
+
+            for (int y = 0; y < src.Height; y++)
+            {
+                if (y >= dst.Height)
+                    break;
+
+                dst.MoveTo(0, y);
+                var p1 = new PixelPipe(tvSet);
+                var p2 = new PixelPipe(tvSet);
+
+                for (int x = 0; x < src.Width; x += 7)
+                {
+                    if (x >= dst.Width)
+                        break;
+
+                    p1.ResetError();
+                    p2.ResetError();
+
+                    for (int i = 0; i < 7; i++)
+                    {
+                        Color c = x + i < src.Width ? src.GetPixel(x + i, y) : Colors.Black;
+                        bool isOdd = ((x + i) & 1) != 0;
+                        p1.PutPixel(c, false, isOdd);
+                        p2.PutPixel(c, true, isOdd);
+                    }
+
+                    if (p2.Err < p1.Err)
+                    {
+                        dst.PutByte(p2.Bits | 128);
+                        p1 = new PixelPipe(p2);
+                    }
+                    else
+                    {
+                        dst.PutByte(p1.Bits);
+                        p2 = new PixelPipe(p1);
+                    }
+                }
+            }
+
+            return new NativeImage(dst.Pixels, new FormatHint(this));
+        }
+
+        private class AppleScreen
+        {
+            private byte[] _pixels;
+            private int _bytePos;
+
+            public AppleScreen()
+            {
+                _pixels = new byte[0x2000];
+                _bytePos = 0;
+            }
+
+            public AppleScreen(AppleScreen o)
+            {
+                _pixels = new byte[0x2000];
+                o.Pixels.CopyTo(Pixels, 0);
+                _bytePos = o._bytePos;
+            }
+
+            public int Width
+            {
+                get { return width; }
+            }
+
+            public int Height
+            {
+                get { return height; }
+            }
+
+            public int ByteWidth
+            {
+                get { return width / pixelsPerByte; }
+            }
+
+            public byte[] Pixels
+            {
+                get { return _pixels; }
+            }
+
+            public int GetLineOffset(int lineIndex)
+            {
+                return ((lineIndex & 0x07) << 10) + ((lineIndex & 0x38) << 4) + (lineIndex >> 6) * 40;
+            }
+
+            public void MoveTo(int x, int y)
+            {
+                if (x < 0 || x >= width || y < 0 || y >= height)
+                {
+                    throw new ArgumentException(string.Format("Coordinates ({0}, {1}) outside {2}x{3}", x, y, width, height));
+                }
+
+                _bytePos = GetLineOffset(y);
+            }
+
+            public void PutByte(int b)
+            {
+                _pixels[_bytePos] = (byte)b;
+                _bytePos++;
+            }
+        }
+
+        private class PixelPipe
+        {
+            private Apple2TvSet _tv;
+            private int _bits;
+            private Apple2SimpleColor _prevPixel;
+            private bool _setNext;
+            private double _err;
+
+            public PixelPipe(Apple2TvSet tv)
+            {
+                _tv = tv;
+            }
+
+            public PixelPipe(PixelPipe o)
+            {
+                _tv = o._tv;
+                _bits = o._bits;
+                _prevPixel = o._prevPixel;
+                _setNext = o._setNext;
+            }
+
+            public int Bits
+            {
+                get { return _bits; }
+            }
+
+            public double Err
+            {
+                get { return _err; }
+            }
+
+            public void PutPixel(Color c, bool shiftBit, bool isOdd)
+            {
+                _bits >>= 1;
+
+                Apple2SimpleColor thisPixel = GetPixelColor(true, shiftBit, isOdd);
+                Color thisColor;
+
+                if (_setNext)
+                {
+                    _setNext = false;
+                    _bits |= 0x40;
+                    thisColor = _tv.GetMiddleColor(_prevPixel, thisPixel, Apple2SimpleColor.Black);
+                }
+                else
+                {
+                    Apple2SimpleColor nextPixel = GetPixelColor(true, shiftBit, !isOdd);
+
+                    Color[] palette = new Color[4];
+                    palette[0] = _tv.GetMiddleColor(_prevPixel, Apple2SimpleColor.Black, Apple2SimpleColor.Black);
+                    palette[1] = _tv.GetMiddleColor(_prevPixel, thisPixel, Apple2SimpleColor.Black);
+                    palette[2] = _tv.GetMiddleColor(Apple2SimpleColor.Black, nextPixel, Apple2SimpleColor.Black);
+                    palette[3] = _tv.GetMiddleColor(_prevPixel, thisPixel, nextPixel);
+
+                    int bestMatch = ColorUtils.BestMatch(c, palette);
+                    thisColor = palette[bestMatch];
+
+                    switch (bestMatch)
+                    {
+                        case 0:
+                            thisPixel = Apple2SimpleColor.Black;
+                            break;
+                        case 1:
+                            _bits |= 0x40;
+                            break;
+                        case 2:
+                            thisColor = _tv.GetMiddleColor(_prevPixel, Apple2SimpleColor.Black, nextPixel);
+                            goto case 0;
+                        case 3:
+                            _setNext = true;
+                            goto case 1;
+                    }
+                }
+
+                _prevPixel = thisPixel;
+
+                _err += ColorUtils.GetDistanceSq(c, thisColor);
+            }
+
+            public void ResetError()
+            {
+                _err = 0;
+            }
         }
     }
 }

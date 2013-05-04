@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace ImageLib.Apple
 {
@@ -10,5 +6,7 @@ namespace ImageLib.Apple
     {
         double Aspect { get; }
         Color[][] ProcessColors(Apple2SimpleColor[][] simpleColors);
+        Color GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right);
+        Apple2SimpleColor GetBestMatch(Color color, bool isOdd);
     }
 }

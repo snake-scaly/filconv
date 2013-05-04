@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media;
 
 namespace ImageLib.Apple
@@ -36,6 +33,16 @@ namespace ImageLib.Apple
             }
 
             return result;
+        }
+
+        public Color GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Apple2SimpleColor GetBestMatch(Color color, bool isOdd)
+        {
+            throw new NotImplementedException();
         }
 
         private Color GetPixel(Apple2SimpleColor sc1, Apple2SimpleColor sc2)

@@ -77,6 +77,7 @@
     <Compile Include="Spectrum\SpectrumImageFormatAbstr.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatInterleave.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatPicler.cs" />
+    <Compile Include="Util\BitmapPixels.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

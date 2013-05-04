@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Encode\AppleEncoding.cs" />
     <Compile Include="Encode\FilSaveDelegate.cs" />
     <Compile Include="Encode\IdentityEncoding.cs" />
     <Compile Include="Encode\IEncoding.cs" />

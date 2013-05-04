@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ImageLib.Apple
+﻿namespace ImageLib.Apple
 {
     public enum Apple2SimpleColor
     {
@@ -12,5 +7,6 @@ namespace ImageLib.Apple
         Violet,
         Blue,
         Orange,
+        White,      // Convenience for color matching, never used in actual rasters
     }
 }

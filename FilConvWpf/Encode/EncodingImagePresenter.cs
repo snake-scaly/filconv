@@ -129,6 +129,7 @@ namespace FilConvWpf.Encode
             new NativeEncoding("FormatNameHGR", new HgrImageFormat()),
             new NativeEncoding("FormatNameMGR9", new Mgr9ImageFormat()),
             new NativeEncoding("FormatNameHGR9", new Hgr9ImageFormat()),
+            new AppleEncoding(),
         };
     }
 }

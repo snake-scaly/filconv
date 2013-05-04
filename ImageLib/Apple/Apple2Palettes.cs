@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace ImageLib.Apple
 {
@@ -21,6 +17,7 @@ namespace ImageLib.Apple
             Color.FromRgb(255, 0, 255),
             Color.FromRgb(0, 128, 255),
             Color.FromRgb(255, 128, 0),
+            Color.FromRgb(255, 255, 255),
         };
 
         /// <summary>
@@ -33,6 +30,7 @@ namespace ImageLib.Apple
             Color.FromRgb(255, 0, 255),
             Color.FromRgb(0, 0, 255),
             Color.FromRgb(255, 0, 0),
+            Color.FromRgb(255, 255, 255),
         };
     }
 }

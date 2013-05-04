@@ -68,14 +68,7 @@ namespace ImageLib.Agat
 
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
-            var bgr32 = new FormatConvertedBitmap(bitmap, PixelFormats.Bgr32, null, 0);
-
-            int w = bgr32.PixelWidth;
-            int h = bgr32.PixelHeight;
-            int stride = w * 4;
-
-            byte[] pixels = new byte[h * stride];
-            bgr32.CopyPixels(pixels, stride, 0);
+            var src = new BitmapPixels(bitmap);
 
             var currentLineErrors = new Error[Width];
             var nextLineErrors = new Error[Width];
@@ -83,11 +76,9 @@ namespace ImageLib.Agat
             byte[] bytes = new byte[ImageSizeInBytes];
             for (int y = 0; y < Height; ++y)
             {
-                int linePos = y * stride;
                 for (int x = 0; x < Width; ++x)
                 {
-                    int pixelPos = linePos + x * 4;
-                    Color pixel = (x < w && y < h) ? GetBgr32Pixel(pixels, pixelPos) : Colors.Black;
+                    Color pixel = (x < src.Width && y < src.Height) ? src.GetPixel(x, y) : Colors.Black;
 
                     float r = 0, g = 0, b = 0;
                     if (options.Dither)

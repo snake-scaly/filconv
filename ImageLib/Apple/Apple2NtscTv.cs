@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media;
 
 namespace ImageLib.Apple
@@ -16,6 +13,11 @@ namespace ImageLib.Apple
         public Apple2NtscTv(Color[] palette)
         {
             this.palette = palette;
+        }
+
+        public override Color GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
+        {
+            throw new NotImplementedException();
         }
 
         protected override Color GetPixel(Apple2SimpleColor[][] simpleColors, int x, int y)
