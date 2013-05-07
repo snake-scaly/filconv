@@ -117,148 +117,158 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-<data name="AboutBoxBulgarianTranslation" xml:space="preserve">
- <value>Перевод на български: ССТАНЕВ</value>
-</data>
-<data name="AboutBoxCopyright" xml:space="preserve">
- <value>© 2011-2013 Сергей «SnakE» Громов</value>
-</data>
-<data name="AboutBoxDevelopedFor" xml:space="preserve">
- <value>Разработено за</value>
-</data>
-<data name="AboutBoxIconsBy" xml:space="preserve">
- <value>В интерфейса се използват значета от Марк Джеймс</value>
-</data>
-<data name="AboutBoxProgramTitle" xml:space="preserve">
- <value>Fil Converter</value>
- <comment>Име на приложението</comment>
-</data>
-<data name="AboutBoxTitle" xml:space="preserve">
- <value>За приложението</value>
- <comment>Заглавие на прозореца"За приложението"</comment>
-</data>
-<data name="Apple2ColorFillToggleTooltip" xml:space="preserve">
- <value>Запълване с цвят</value>
- <comment>Подсказка кнопки включения заливки черных столбцов соседними цветами в режиме Apple II</comment>
-</data>
-<data name="Apple2PaletteToggleTooltip" xml:space="preserve">
- <value>Европейска (PAL) / американска (NTSC) палитра</value>
- <comment>Подсказка на копчето за превключване между режимите на Apple II за европейска и американска палитра</comment>
-</data>
-<data name="AspectToggleTooltip" xml:space="preserve">
- <value>Съразмерно изобразяване</value>
- <comment>Подсказка кнопки переключения между отображением квадратных пикселей и пропорциями системы-оригинала</comment>
-</data>
-<data name="ColorDitherToggleTooltip" xml:space="preserve">
- <value>Подобрено предаване на цветовете</value>
- <comment>Подсказка кнопки включения улучшенной передачи цветов (color dithering) при кодировании</comment>
-</data>
-<data name="EncodingToolbarTitle" xml:space="preserve">
- <value>Възможности:</value>
- <comment>Заголовок тулбара опций кодирования</comment>
-</data>
-<data name="FormatNameApple2" xml:space="preserve">
- <value>Apple ][</value>
- <comment>Элемент комбо-бокса выбора формата Apple II</comment>
-</data>
-<data name="FormatNameApple2NTSC" xml:space="preserve">
- <value>Apple ][ NTSC</value>
- <comment>Элемент комбо-бокса выбора формата Apple II с имитацией NTSC телевизора</comment>
-</data>
-<data name="FormatNameGR7" xml:space="preserve">
- <value>GR7</value>
- <comment>Элемент комбо-бокса выбора формата 64x64, 16 цветов</comment>
-</data>
-<data name="FormatNameHGR" xml:space="preserve">
- <value>HGR</value>
- <comment>Элемент комбо-бокса выбора формата 256x256, 2 цвета</comment>
-</data>
-<data name="FormatNameHGR9" xml:space="preserve">
- <value>HGR9</value>
- <comment>Элемент комбо-бокса выбора формата 512x256, 2 цвета</comment>
-</data>
-<data name="FormatNameMGR" xml:space="preserve">
- <value>MGR</value>
- <comment>Элемент комбо-бокса выбора формата 128x128, 16 цветов</comment>
-</data>
-<data name="FormatNameMGR9" xml:space="preserve">
- <value>MGR9</value>
- <comment>Элемент комбо-бокса выбора формата 256x256, 4 цвета</comment>
-</data>
-<data name="FormatNameOriginal" xml:space="preserve">
- <value>Оригинал</value>
- <comment>Элемент комбо-бокса выбора формата без преобразования</comment>
-</data>
-<data name="FormatNamePicler" xml:space="preserve">
- <value>Picler (bol)</value>
- <comment>Элемент комбо-бокса выбора формата Picler (ZX Spectrum с упорядоченными строками)</comment>
-</data>
-<data name="FormatNameSpectrum" xml:space="preserve">
- <value>ZX Spectrum</value>
- <comment>Элемент комбо-бокса выбора формата ZX Spectrum</comment>
-</data>
-<data name="LeftPreviewDefaultTitle" xml:space="preserve">
- <value>Оригинал:</value>
- <comment>Заголовок левой картинки</comment>
-</data>
-<data name="MainWindowTitle" xml:space="preserve">
- <value>Fil Converter</value>
- <comment>Заголовок главного окна</comment>
-</data>
-<data name="MenuFile" xml:space="preserve">
- <value>_Файл</value>
- <comment>Раздел главного меню</comment>
-</data>
-<data name="MenuFileExit" xml:space="preserve">
- <value>Из_ход</value>
- <comment>Пункт главного меню</comment>
-</data>
-<data name="MenuFileOpen" xml:space="preserve">
- <value>_Отваряне...</value>
- <comment>Пункт главного меню</comment>
-</data>
-<data name="MenuFileSaveAs" xml:space="preserve">
- <value>Съхраняване _като...</value>
- <comment>Пункт главного меню</comment>
-</data>
-<data name="MenuHelp" xml:space="preserve">
- <value>Помо_щ</value>
- <comment>Раздел главного меню</comment>
-</data>
-<data name="MenuHelpAbout" xml:space="preserve">
- <value>_За приложението...</value>
- <comment>Пункт главного меню</comment>
-</data>
-<data name="MenuLanguage" xml:space="preserve">
- <value>Език (_Language)</value>
- <comment>Раздел главного меню</comment>
-</data>
-<data name="MenuLanguageAuto" xml:space="preserve">
- <value>_Самоопределяне</value>
- <comment>Пункт меню переключения языков</comment>
-</data>
-<data name="MenuLanguageBulgarian" xml:space="preserve">
- <value>Български (_bg)</value>
- <comment>Пункт меню переключения языков</comment>
-</data>
-<data name="MenuLanguageEnglish" xml:space="preserve">
- <value>English (_en)</value>
- <comment>Пункт меню переключения языков</comment>
-</data>
-<data name="MenuLanguageRussian" xml:space="preserve">
- <value>Русский (_ru)</value>
- <comment>Пункт меню переключения языков</comment>
-</data>
-<data name="OkButtonTitle" xml:space="preserve">
- <value>Добре</value>
- <comment>Текст кнопки подтверждения</comment>
-</data>
-<data name="PreviewPictureScaleFitWindow" xml:space="preserve">
- <value>Вместване</value>
- <comment>Элемент комбо-бокса выбора масштаба</comment>
-</data>
-<data name="RightPreviewDefaultTitle" xml:space="preserve">
- <value>Резултат:</value>
- <comment>Заголовок правой картинки</comment>
-</data>
+  <data name="AboutBoxBulgarianTranslation" xml:space="preserve">
+    <value>Перевод на български: ССТАНЕВ</value>
+  </data>
+  <data name="AboutBoxCopyright" xml:space="preserve">
+    <value>© 2011-2013 Сергей «SnakE» Громов</value>
+  </data>
+  <data name="AboutBoxDevelopedFor" xml:space="preserve">
+    <value>Разработено за</value>
+  </data>
+  <data name="AboutBoxIconsBy" xml:space="preserve">
+    <value>В интерфейса се използват значета от Марк Джеймс</value>
+  </data>
+  <data name="AboutBoxProgramTitle" xml:space="preserve">
+    <value>Fil Converter</value>
+    <comment>Име на приложението</comment>
+  </data>
+  <data name="AboutBoxTitle" xml:space="preserve">
+    <value>За приложението</value>
+    <comment>Заглавие на прозореца"За приложението"</comment>
+  </data>
+  <data name="Apple2ColorFillToggleTooltip" xml:space="preserve">
+    <value>Запълване с цвят</value>
+    <comment>Подсказка кнопки включения заливки черных столбцов соседними цветами в режиме Apple II</comment>
+  </data>
+  <data name="Apple2PaletteToggleTooltip" xml:space="preserve">
+    <value>Европейска (PAL) / американска (NTSC) палитра</value>
+    <comment>Подсказка на копчето за превключване между режимите на Apple II за европейска и американска палитра</comment>
+  </data>
+  <data name="AspectToggleTooltip" xml:space="preserve">
+    <value>Съразмерно изобразяване</value>
+    <comment>Подсказка кнопки переключения между отображением квадратных пикселей и пропорциями системы-оригинала</comment>
+  </data>
+  <data name="ColorDitherToggleTooltip" xml:space="preserve">
+    <value>Подобрено предаване на цветовете</value>
+    <comment>Подсказка кнопки включения улучшенной передачи цветов (color dithering) при кодировании</comment>
+  </data>
+  <data name="EncodingToolbarTitle" xml:space="preserve">
+    <value>Възможности:</value>
+    <comment>Заголовок тулбара опций кодирования</comment>
+  </data>
+  <data name="FileFormatNameAll" xml:space="preserve">
+    <value>Всички файлове</value>
+    <comment>Название фильтра *.* диалога "Открыть"</comment>
+  </data>
+  <data name="FileFormatNameAllSupported" xml:space="preserve">
+    <value>Всички поддържани файлове</value>
+  </data>
+  <data name="FormatNameApple2" xml:space="preserve">
+    <value>Apple ][</value>
+    <comment>Элемент комбо-бокса выбора формата Apple II</comment>
+  </data>
+  <data name="FormatNameApple2NTSC" xml:space="preserve">
+    <value>Apple ][ NTSC</value>
+    <comment>Элемент комбо-бокса выбора формата Apple II с имитацией NTSC телевизора</comment>
+  </data>
+  <data name="FormatNameGR7" xml:space="preserve">
+    <value>GR7</value>
+    <comment>Элемент комбо-бокса выбора формата 64x64, 16 цветов</comment>
+  </data>
+  <data name="FormatNameHGR" xml:space="preserve">
+    <value>HGR</value>
+    <comment>Элемент комбо-бокса выбора формата 256x256, 2 цвета</comment>
+  </data>
+  <data name="FormatNameHGR9" xml:space="preserve">
+    <value>HGR9</value>
+    <comment>Элемент комбо-бокса выбора формата 512x256, 2 цвета</comment>
+  </data>
+  <data name="FormatNameMGR" xml:space="preserve">
+    <value>MGR</value>
+    <comment>Элемент комбо-бокса выбора формата 128x128, 16 цветов</comment>
+  </data>
+  <data name="FormatNameMGR9" xml:space="preserve">
+    <value>MGR9</value>
+    <comment>Элемент комбо-бокса выбора формата 256x256, 4 цвета</comment>
+  </data>
+  <data name="FormatNameOriginal" xml:space="preserve">
+    <value>Оригинал</value>
+    <comment>Элемент комбо-бокса выбора формата без преобразования</comment>
+  </data>
+  <data name="FormatNamePicler" xml:space="preserve">
+    <value>Picler (bol)</value>
+    <comment>Элемент комбо-бокса выбора формата Picler (ZX Spectrum с упорядоченными строками)</comment>
+  </data>
+  <data name="FormatNameSpectrum" xml:space="preserve">
+    <value>ZX Spectrum</value>
+    <comment>Элемент комбо-бокса выбора формата ZX Spectrum</comment>
+  </data>
+  <data name="LeftPreviewDefaultTitle" xml:space="preserve">
+    <value>Оригинал:</value>
+    <comment>Заголовок левой картинки</comment>
+  </data>
+  <data name="MainWindowTitle" xml:space="preserve">
+    <value>Fil Converter</value>
+    <comment>Заголовок главного окна</comment>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>_Файл</value>
+    <comment>Раздел главного меню</comment>
+  </data>
+  <data name="MenuFileExit" xml:space="preserve">
+    <value>Из_ход</value>
+    <comment>Пункт главного меню</comment>
+  </data>
+  <data name="MenuFileOpen" xml:space="preserve">
+    <value>_Отваряне...</value>
+    <comment>Пункт главного меню</comment>
+  </data>
+  <data name="MenuFileSaveAs" xml:space="preserve">
+    <value>Съхраняване _като...</value>
+    <comment>Пункт главного меню</comment>
+  </data>
+  <data name="MenuHelp" xml:space="preserve">
+    <value>Помо_щ</value>
+    <comment>Раздел главного меню</comment>
+  </data>
+  <data name="MenuHelpAbout" xml:space="preserve">
+    <value>_За приложението...</value>
+    <comment>Пункт главного меню</comment>
+  </data>
+  <data name="MenuLanguage" xml:space="preserve">
+    <value>Език (_Language)</value>
+    <comment>Раздел главного меню</comment>
+  </data>
+  <data name="MenuLanguageAuto" xml:space="preserve">
+    <value>_Самоопределяне</value>
+    <comment>Пункт меню переключения языков</comment>
+  </data>
+  <data name="MenuLanguageBulgarian" xml:space="preserve">
+    <value>Български (_bg)</value>
+    <comment>Пункт меню переключения языков</comment>
+  </data>
+  <data name="MenuLanguageEnglish" xml:space="preserve">
+    <value>English (_en)</value>
+    <comment>Пункт меню переключения языков</comment>
+  </data>
+  <data name="MenuLanguageRussian" xml:space="preserve">
+    <value>Русский (_ru)</value>
+    <comment>Пункт меню переключения языков</comment>
+  </data>
+  <data name="OkButtonTitle" xml:space="preserve">
+    <value>Добре</value>
+    <comment>Текст кнопки подтверждения</comment>
+  </data>
+  <data name="PreviewPictureScaleFitWindow" xml:space="preserve">
+    <value>Вместване</value>
+    <comment>Элемент комбо-бокса выбора масштаба</comment>
+  </data>
+  <data name="RightPreviewDefaultTitle" xml:space="preserve">
+    <value>Резултат:</value>
+    <comment>Заголовок правой картинки</comment>
+  </data>
+  <data name="UnableToLoadFileError" xml:space="preserve">
+    <value>Грешка при зареждане на изображение „{0}“: {1}</value>
+  </data>
 </root>
