@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using FilConvWpf.I18n;
-using ImageLib;
 using ImageLib.Apple;
+using System.Collections.Generic;
+using FilConvWpf.I18n;
 
-namespace FilConvWpf.Encode
+namespace FilConvWpf.Native
 {
-    class AppleEncoding : IEncoding
+    class AppleHiResDisplayMode : NativeDisplayMode
     {
         private bool _fill;
         private bool _pal;
@@ -18,11 +16,13 @@ namespace FilConvWpf.Encode
         private ToggleButton _fillButton;
         private ToggleButton _palButton;
 
-        private Apple2ImageFormat _format;
-
-        public AppleEncoding()
+        public AppleHiResDisplayMode()
+            : base("FormatNameApple2", new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
-            ToolBar = new ToolBar();
+            if (ToolBar == null)
+            {
+                ToolBar = new ToolBar();
+            }
 
             Label toolbarTitle = new Label();
             L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, "FormatNameApple2").Update();
@@ -44,38 +44,19 @@ namespace FilConvWpf.Encode
             ToolBar.Items.Add(toolbarTitle);
             ToolBar.Items.Add(_fillButton);
             ToolBar.Items.Add(_palButton);
-            _format = new Apple2ImageFormat(new Apple2SimpleTv(Apple2Palettes.European));
         }
 
-        public event EventHandler<EventArgs> EncodingChanged;
-
-        public string Name
+        public override void StoreSettings(IDictionary<string, object> settings)
         {
-            get { return "FormatNameApple2"; }
-        }
-
-        public System.Windows.Controls.ToolBar ToolBar { get; private set; }
-
-        public AspectBitmap Preview(System.Windows.Media.Imaging.BitmapSource original)
-        {
-            return new AspectBitmap(
-                _format.FromNative(_format.ToNative(original, new EncodingOptions())),
-                _format.Aspect);
-        }
-
-        public IEnumerable<ISaveDelegate> GetSaveDelegates(System.Windows.Media.Imaging.BitmapSource original)
-        {
-            yield return new FilSaveDelegate(original, _format, new EncodingOptions());
-        }
-
-        public void StoreSettings(IDictionary<string, object> settings)
-        {
+            base.StoreSettings(settings);
             settings[SettingNames.AppleFill] = _fill;
             settings[SettingNames.ApplePalette] = _pal;
         }
 
-        public void AdoptSettings(IDictionary<string, object> settings)
+        public override void AdoptSettings(IDictionary<string, object> settings)
         {
+            base.AdoptSettings(settings);
+
             object o;
 
             if (settings.TryGetValue(SettingNames.AppleFill, out o))
@@ -88,14 +69,6 @@ namespace FilConvWpf.Encode
             {
                 _pal = (bool)o;
                 _palButton.IsChecked = _pal;
-            }
-        }
-
-        protected virtual void OnEncodingChanged()
-        {
-            if (EncodingChanged != null)
-            {
-                EncodingChanged(this, EventArgs.Empty);
             }
         }
 
@@ -127,8 +100,8 @@ namespace FilConvWpf.Encode
         {
             Color[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
             Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
-            _format = new Apple2ImageFormat(tv);
-            OnEncodingChanged();
+            Format = new Apple2HiResImageFormat(tv);
+            OnFormatChanged();
         }
     }
 }

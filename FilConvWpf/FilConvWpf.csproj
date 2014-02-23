@@ -61,7 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Encode\AppleEncoding.cs" />
+    <Compile Include="Encode\AppleHiResEncoding.cs" />
+    <Compile Include="Encode\AppleLoResEncoding.cs" />
     <Compile Include="Encode\FilSaveDelegate.cs" />
     <Compile Include="Encode\IdentityEncoding.cs" />
     <Compile Include="Encode\IEncoding.cs" />
@@ -69,8 +70,9 @@
     <Compile Include="Encode\NativeEncoding.cs" />
     <Compile Include="Encode\GdiSaveDelegate.cs" />
     <Compile Include="I18n\L10n.cs" />
-    <Compile Include="Native\AppleDisplayMode.cs" />
+    <Compile Include="Native\AppleHiResDisplayMode.cs" />
     <Compile Include="Encode\EncodingImagePresenter.cs" />
+    <Compile Include="Native\AppleLoResDisplayMode.cs" />
     <Compile Include="ResourceUtils.cs" />
     <Compile Include="SettingNames.cs" />
     <Compile Include="BitmapPresenter.cs" />

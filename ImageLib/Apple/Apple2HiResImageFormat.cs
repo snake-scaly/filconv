@@ -7,7 +7,7 @@ using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
-    public class Apple2ImageFormat : NativeImageFormat
+    public class Apple2HiResImageFormat : NativeImageFormat
     {
         private const int width = 280;
         private const int height = 192;
@@ -22,7 +22,7 @@ namespace ImageLib.Apple
             get { return tvSet.Aspect; }
         }
 
-        public Apple2ImageFormat(Apple2TvSet tvSet)
+        public Apple2HiResImageFormat(Apple2TvSet tvSet)
         {
             this.tvSet = tvSet;
         }
@@ -143,14 +143,15 @@ namespace ImageLib.Apple
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
             var src = new BitmapPixels(bitmap);
-            var dst = new AppleScreen();
+            var dst = new AppleScreenHiRes();
+            var writer = new AppleScreenWriter(dst);
 
             for (int y = 0; y < src.Height; y++)
             {
                 if (y >= dst.Height)
                     break;
 
-                dst.MoveTo(0, y);
+                writer.MoveToLine(y);
                 var p1 = new PixelPipe(tvSet);
                 var p2 = new PixelPipe(tvSet);
 
@@ -172,12 +173,12 @@ namespace ImageLib.Apple
 
                     if (p2.Err < p1.Err)
                     {
-                        dst.PutByte(p2.Bits | 128);
+                        writer.Write(p2.Bits | 128);
                         p1 = new PixelPipe(p2);
                     }
                     else
                     {
-                        dst.PutByte(p1.Bits);
+                        writer.Write(p1.Bits);
                         p2 = new PixelPipe(p1);
                     }
                 }
@@ -186,22 +187,19 @@ namespace ImageLib.Apple
             return new NativeImage(dst.Pixels, new FormatHint(this));
         }
 
-        private class AppleScreen
+        private class AppleScreenHiRes : AppleScreen
         {
             private byte[] _pixels;
-            private int _bytePos;
 
-            public AppleScreen()
+            public AppleScreenHiRes()
             {
                 _pixels = new byte[0x2000];
-                _bytePos = 0;
             }
 
-            public AppleScreen(AppleScreen o)
+            public AppleScreenHiRes(AppleScreenHiRes o)
             {
                 _pixels = new byte[0x2000];
                 o.Pixels.CopyTo(Pixels, 0);
-                _bytePos = o._bytePos;
             }
 
             public int Width
@@ -227,22 +225,6 @@ namespace ImageLib.Apple
             public int GetLineOffset(int lineIndex)
             {
                 return ((lineIndex & 0x07) << 10) + ((lineIndex & 0x38) << 4) + (lineIndex >> 6) * 40;
-            }
-
-            public void MoveTo(int x, int y)
-            {
-                if (x < 0 || x >= width || y < 0 || y >= height)
-                {
-                    throw new ArgumentException(string.Format("Coordinates ({0}, {1}) outside {2}x{3}", x, y, width, height));
-                }
-
-                _bytePos = GetLineOffset(y);
-            }
-
-            public void PutByte(int b)
-            {
-                _pixels[_bytePos] = (byte)b;
-                _bytePos++;
             }
         }
 

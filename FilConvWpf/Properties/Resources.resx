@@ -194,12 +194,16 @@
     <comment>TIFF format filter name for open/save dialogs</comment>
   </data>
   <data name="FormatNameApple2" xml:space="preserve">
-    <value>Apple ][</value>
-    <comment>Image format combo-box entry for Apple II</comment>
+    <value>Apple ][ Hi-Res</value>
+    <comment>Image format combo-box entry for Apple II High Resolution (280x192)</comment>
+  </data>
+  <data name="FormatNameApple2LoRes" xml:space="preserve">
+    <value>Apple ][ Lo-Res</value>
+    <comment>Image format combo-box entry for Apple II Low Resolution (40x48)</comment>
   </data>
   <data name="FormatNameApple2NTSC" xml:space="preserve">
-    <value>Apple ][ NTSC</value>
-    <comment>Image format combo-box entry for Apple II with NTSC TV-set imitation</comment>
+    <value>Apple ][ Hi-Res NTSC</value>
+    <comment>Image format combo-box entry for Apple II High Resolution with NTSC TV-set imitation</comment>
   </data>
   <data name="FormatNameGR7" xml:space="preserve">
     <value>GR7</value>
