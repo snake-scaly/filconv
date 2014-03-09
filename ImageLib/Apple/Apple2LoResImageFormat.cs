@@ -45,12 +45,19 @@ namespace ImageLib.Apple
             for (int y = 0; y < _height; ++y)
             {
                 int inLineOffset = NativeLineOffset(y);
+                if (inLineOffset >= native.Data.Length)
+                    continue;
+
                 int shift = _halfByteShift * (y & _oddMask);
                 int outLineOffset = y * stride;
 
                 for (int x = 0; x < _width; ++x)
                 {
-                    int pixelValue = (native.Data[inLineOffset + x] >> shift) & _halfByteMask;
+                    int inPixelOffset = inLineOffset + x;
+                    if (inPixelOffset >= native.Data.Length)
+                        break;
+
+                    int pixelValue = (native.Data[inPixelOffset] >> shift) & _halfByteMask;
                     Color c = Apple2Palettes.American16[pixelValue];
 
                     int outPixelOffset = outLineOffset + x * _bytesPerPixel;
@@ -76,11 +83,17 @@ namespace ImageLib.Apple
 
             for (int y = 0; y < h; ++y)
             {
+                if (y >= bitmap.Height)
+                    break;
+
                 int nativeLineOffset = NativeLineOffset(y);
                 int shift = _halfByteShift * (y & _oddMask);
 
                 for (int x = 0; x < w; ++x)
                 {
+                    if (x >= bitmap.Width)
+                        break;
+
                     int nativePixelOffset = nativeLineOffset + x;
                     int pixelValue = ColorUtils.BestMatch(src.GetPixel(x, y), Apple2Palettes.American16);
                     nativePixels[nativePixelOffset] |= (byte)(pixelValue << shift);
