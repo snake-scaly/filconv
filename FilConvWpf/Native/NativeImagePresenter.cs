@@ -104,7 +104,7 @@ namespace FilConvWpf.Native
             new NativeDisplayMode("FormatNameMGR9", new Mgr9ImageFormat()),
             new NativeDisplayMode("FormatNameHGR9", new Hgr9ImageFormat()),
             new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
-            new AppleLoResDisplayMode(),
+            new NativeDisplayMode("FormatNameApple2LoRes", new Apple2LoResImageFormat()),
             new AppleHiResDisplayMode(),
             new NativeDisplayMode("FormatNameApple2NTSC", new Apple2HiResImageFormat(new Apple2NtscTv(Apple2Palettes.American))),
             new NativeDisplayMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),

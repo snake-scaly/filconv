@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using ImageLib.Agat;
+using ImageLib.Apple;
 
 namespace FilConvWpf.Encode
 {
@@ -129,7 +130,7 @@ namespace FilConvWpf.Encode
             new NativeEncoding("FormatNameHGR", new HgrImageFormat()),
             new NativeEncoding("FormatNameMGR9", new Mgr9ImageFormat()),
             new NativeEncoding("FormatNameHGR9", new Hgr9ImageFormat()),
-            new AppleLoResEncoding(),
+            new NativeEncoding("FormatNameApple2LoRes", new Apple2DoubleHiResImageFormat()),
             new AppleHiResEncoding(),
         };
     }
