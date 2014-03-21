@@ -224,7 +224,7 @@ namespace ImageLib.Apple
 
             public int GetLineOffset(int lineIndex)
             {
-                return ((lineIndex & 0x07) << 10) + ((lineIndex & 0x38) << 4) + (lineIndex >> 6) * 40;
+                return Apple2Utils.GetHiResLineOffset(lineIndex);
             }
         }
 

@@ -17,24 +17,27 @@ namespace FilConvWpf.Encode
 
         public event EventHandler<EventArgs> EncodingChanged;
 
-        public NativeEncoding(string name, NativeImageFormat format)
+        public NativeEncoding(string name, NativeImageFormat format, bool canDither)
         {
             Name = name;
             _format = format;
 
-            ToolBar = new ToolBar();
+            if (canDither)
+            {
+                ToolBar = new ToolBar();
 
-            Label label = new Label();
-            L10n.AddLocalizedProperty(label, Label.ContentProperty, "EncodingToolbarTitle").Update();
-            ToolBar.Items.Add(label);
+                Label label = new Label();
+                L10n.AddLocalizedProperty(label, Label.ContentProperty, "EncodingToolbarTitle").Update();
+                ToolBar.Items.Add(label);
 
-            _ditherButton = new ToggleButton();
-            _ditherButton.Content = ResourceUtils.GetResourceImage("rainbow.png");
-            L10n.AddLocalizedProperty(_ditherButton, ToggleButton.ToolTipProperty, "ColorDitherToggleTooltip").Update();
-            _ditherButton.IsChecked = _dither;
-            _ditherButton.Checked += dither_Checked;
-            _ditherButton.Unchecked += dither_Unchecked;
-            ToolBar.Items.Add(_ditherButton);
+                _ditherButton = new ToggleButton();
+                _ditherButton.Content = ResourceUtils.GetResourceImage("rainbow.png");
+                L10n.AddLocalizedProperty(_ditherButton, ToggleButton.ToolTipProperty, "ColorDitherToggleTooltip").Update();
+                _ditherButton.IsChecked = _dither;
+                _ditherButton.Checked += dither_Checked;
+                _ditherButton.Unchecked += dither_Unchecked;
+                ToolBar.Items.Add(_ditherButton);
+            }
         }
 
         public string Name { get; private set; }
@@ -72,7 +75,7 @@ namespace FilConvWpf.Encode
         {
             object o;
 
-            if (settings.TryGetValue(SettingNames.Dithering, out o))
+            if (_ditherButton != null && settings.TryGetValue(SettingNames.Dithering, out o))
             {
                 _dither = (bool)o;
                 _ditherButton.IsChecked = _dither;

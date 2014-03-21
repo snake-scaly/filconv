@@ -197,13 +197,13 @@
     <value>Apple ][ Hi-Res</value>
     <comment>Image format combo-box entry for Apple II High Resolution (280x192)</comment>
   </data>
+  <data name="FormatNameApple2DoubleHiRes" xml:space="preserve">
+    <value>Apple ][ Double Hi-Res</value>
+    <comment>Image format combo-box entry for Apple II Double High Resolution (140x192, 16 colors)</comment>
+  </data>
   <data name="FormatNameApple2LoRes" xml:space="preserve">
     <value>Apple ][ Lo-Res</value>
     <comment>Image format combo-box entry for Apple II Low Resolution (40x48)</comment>
-  </data>
-  <data name="FormatNameApple2NTSC" xml:space="preserve">
-    <value>Apple ][ Hi-Res NTSC</value>
-    <comment>Image format combo-box entry for Apple II High Resolution with NTSC TV-set imitation</comment>
   </data>
   <data name="FormatNameGR7" xml:space="preserve">
     <value>GR7</value>

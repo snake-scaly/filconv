@@ -22,7 +22,6 @@ namespace ImageLib.Apple
         private const int _oddMask = 1;
 
         private const int _pixelLinesPerByteLine = 2;
-        private const int _bytesPerByteLine = 40;
         private const int _byteLinesPerBlock = 3;
         private const int _bytesPerBlock = 128;
         private const int _totalBlocks = 8;
@@ -44,7 +43,7 @@ namespace ImageLib.Apple
 
             for (int y = 0; y < _height; ++y)
             {
-                int inLineOffset = NativeLineOffset(y);
+                int inLineOffset = Apple2Utils.GetLoResLineOffset(y);
                 if (inLineOffset >= native.Data.Length)
                     continue;
 
@@ -58,7 +57,7 @@ namespace ImageLib.Apple
                         break;
 
                     int pixelValue = (native.Data[inPixelOffset] >> shift) & _halfByteMask;
-                    Color c = Apple2Palettes.American16[pixelValue];
+                    Color c = Apple2Palettes.LoRes16[pixelValue];
 
                     int outPixelOffset = outLineOffset + x * _bytesPerPixel;
                     pixels[outPixelOffset + _redByteOffset] = c.R;
@@ -83,31 +82,18 @@ namespace ImageLib.Apple
 
             for (int y = 0; y < h; ++y)
             {
-                if (y >= bitmap.Height)
-                    break;
-
-                int nativeLineOffset = NativeLineOffset(y);
+                int nativeLineOffset = Apple2Utils.GetLoResLineOffset(y);
                 int shift = _halfByteShift * (y & _oddMask);
 
                 for (int x = 0; x < w; ++x)
                 {
-                    if (x >= bitmap.Width)
-                        break;
-
                     int nativePixelOffset = nativeLineOffset + x;
-                    int pixelValue = ColorUtils.BestMatch(src.GetPixel(x, y), Apple2Palettes.American16);
+                    int pixelValue = ColorUtils.BestMatch(src.GetPixel(x, y), Apple2Palettes.LoRes16);
                     nativePixels[nativePixelOffset] |= (byte)(pixelValue << shift);
                 }
             }
 
             return new NativeImage(nativePixels, new FormatHint(this));
-        }
-
-        private int NativeLineOffset(int lineIndex)
-        {
-            int block = (lineIndex >> 1) & 7;
-            int lineInBlock = (lineIndex >> 4) & 3;
-            return _bytesPerBlock * block + _bytesPerByteLine * lineInBlock;
         }
     }
 }

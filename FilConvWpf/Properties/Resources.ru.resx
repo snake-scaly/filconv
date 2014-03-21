@@ -173,10 +173,6 @@
     <value>Apple ][ Lo-Res</value>
     <comment>Элемент комбо-бокса выбора формата Apple II Low Resolution</comment>
   </data>
-  <data name="FormatNameApple2NTSC" xml:space="preserve">
-    <value>Apple ][ Hi-Res NTSC</value>
-    <comment>Элемент комбо-бокса выбора формата Apple II с имитацией NTSC телевизора</comment>
-  </data>
   <data name="FormatNameGR7" xml:space="preserve">
     <value>GR7</value>
     <comment>Элемент комбо-бокса выбора формата 64x64, 16 цветов</comment>

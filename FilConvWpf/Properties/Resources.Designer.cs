@@ -250,20 +250,20 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apple ][ Double Hi-Res.
+        /// </summary>
+        internal static string FormatNameApple2DoubleHiRes {
+            get {
+                return ResourceManager.GetString("FormatNameApple2DoubleHiRes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apple ][ Lo-Res.
         /// </summary>
         internal static string FormatNameApple2LoRes {
             get {
                 return ResourceManager.GetString("FormatNameApple2LoRes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Apple ][ Hi-Res NTSC.
-        /// </summary>
-        internal static string FormatNameApple2NTSC {
-            get {
-                return ResourceManager.GetString("FormatNameApple2NTSC", resourceCulture);
             }
         }
         

@@ -48,9 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agat\AgatImageFormatAbstr.cs" />
+    <Compile Include="Apple\Apple2DoubleHiResImageFormat.cs" />
     <Compile Include="Apple\Apple2HiResImageFormat.cs" />
     <Compile Include="Apple\Apple2LoResImageFormat.cs" />
-    <Compile Include="Apple\Apple2NtscTv.cs" />
     <Compile Include="Apple\Apple2DoublePixelTv.cs" />
     <Compile Include="Apple\Apple2Palettes.cs" />
     <Compile Include="Apple\Apple2FillTv.cs" />
@@ -60,9 +60,9 @@
     <Compile Include="Apple\Apple2TvSetUtils.cs" />
     <Compile Include="Agat\BwImageFormatAbstr.cs" />
     <Compile Include="Agat\C16ImageFormatAbstr.cs" />
+    <Compile Include="Apple\Apple2Utils.cs" />
     <Compile Include="Apple\AppleScreen.cs" />
     <Compile Include="Apple\AppleScreenWriter.cs" />
-    <Compile Include="Apple\AppleScreenLoRes.cs" />
     <Compile Include="Util\ColorUtils.cs" />
     <Compile Include="EncodingOptions.cs" />
     <Compile Include="FormatHint.cs" />
@@ -83,7 +83,7 @@
     <Compile Include="Spectrum\SpectrumImageFormatInterleave.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatPicler.cs" />
     <Compile Include="Util\BitmapPixels.cs" />
-    <Compile Include="Util\HSLColor.cs" />
+    <Compile Include="Util\YIQColor.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
