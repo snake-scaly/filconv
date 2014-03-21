@@ -127,7 +127,14 @@ namespace FilConvWpf
 
             if (result != null && result.Value)
             {
-                eip.SaveDelegates.ElementAt(sfd.FilterIndex - 1).SaveAs(sfd.FileName);
+                try
+                {
+                    eip.SaveDelegates.ElementAt(sfd.FilterIndex - 1).SaveAs(sfd.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, (string)L10n.GetObject("ErrorMessageBoxTitle"));
+                }
             }
         }
 

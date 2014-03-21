@@ -165,6 +165,10 @@
     <value>Encoding:</value>
     <comment>Encoding options toolbar title</comment>
   </data>
+  <data name="ErrorMessageBoxTitle" xml:space="preserve">
+    <value>Error</value>
+    <comment>Title of a message box for displaying errors</comment>
+  </data>
   <data name="FileFormatNameAll" xml:space="preserve">
     <value>All</value>
     <comment>Name for a *.* filter in open dialogs</comment>

@@ -178,6 +178,15 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string ErrorMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("ErrorMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         internal static string FileFormatNameAll {

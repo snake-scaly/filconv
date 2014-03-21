@@ -160,6 +160,10 @@
     <value>Опции:</value>
     <comment>Заголовок тулбара опций кодирования</comment>
   </data>
+  <data name="ErrorMessageBoxTitle" xml:space="preserve">
+    <value>Ошибка</value>
+    <comment>Заголовок окна сообщения об ошибке</comment>
+  </data>
   <data name="FileFormatNameAll" xml:space="preserve">
     <value>Все</value>
     <comment>Название фильтра *.* диалога "Открыть"</comment>
