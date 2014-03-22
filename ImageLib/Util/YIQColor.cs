@@ -33,6 +33,23 @@ namespace ImageLib.Util
             return c;
         }
 
+        /// <summary>
+        /// Create a YIQ color using TV-like smoothing of the luma values.
+        /// </summary>
+        /// <remarks>
+        /// <para>This method can be used to produce picture similar to that shown by an NTSC TV.</para>
+        /// <para>Only the 6 least significant bits are used. The order of the bits must match the image order.</para>
+        /// </remarks>
+        /// <param name="bits">bits to convert</param>
+        /// <param name="phase">phase of the least significant bit, see class remarks</param>
+        public static YIQColor From6BitsPerceptual(int bits, int phase)
+        {
+            var c = new YIQColor();
+            c.SetYFrom6BitsPerceptual(bits);
+            c.SetIQFromBits(ApplyPhase(bits >> 1, phase));
+            return c;
+        }
+
         private static int ApplyPhase(int bits, int phase)
         {
             phase &= _twoBitMask;
@@ -80,6 +97,29 @@ namespace ImageLib.Util
         private void SetYFrom4BitsStrict(int bits)
         {
             Y = Math.Pow(_bitCount[bits & _fourBitMask] * 0.25, _yGammaCorrection);
+        }
+
+        /// <summary>
+        /// Set Y value using TV-like smoothing of the luma values.
+        /// </summary>
+        /// <remarks>
+        /// <para>This method can be used to produce picture similar to that shown by an NTSC TV.</para>
+        /// <para>Only the 6 least significant bits are used. The order of the bits must match the image order.</para>
+        /// </remarks>
+        /// <param name="bits">bits to convert</param>
+        private void SetYFrom6BitsPerceptual(int bits)
+        {
+            const double smoothFactor = 0.2;
+            const double smoothFactor2 = 0.6;
+            const double Y0 = smoothFactor;
+            const double Y1 = smoothFactor2;
+            const double Y2 = 1;
+            const double Y3 = 1;
+            const double Y4 = smoothFactor2;
+            const double Y5 = smoothFactor;
+
+            Y = (((bits >> 0) & 1) * Y0 + ((bits >> 1) & 1) * Y1 + ((bits >> 2) & 1) * Y2 + ((bits >> 3) & 1) * Y3 + ((bits >> 4) & 1) * Y4 + ((bits >> 5) & 1) * Y5) / (Y0 + Y1 + Y2 + Y3 + Y4 + Y5);
+            Y = Math.Pow(Y, _yGammaCorrection);
         }
 
         private const int _twoBitMask = 3;

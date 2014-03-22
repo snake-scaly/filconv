@@ -1,14 +1,14 @@
-﻿using System.Windows;
+﻿using FilConvWpf.I18n;
+using ImageLib.Apple;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using ImageLib.Apple;
-using System.Collections.Generic;
-using FilConvWpf.I18n;
 
 namespace FilConvWpf.Native
 {
-    class AppleHiResDisplayMode : NativeDisplayMode
+    class AppleHiResDisplayMode : AppleDisplayModeBase
     {
         private bool _fill;
         private bool _pal;
@@ -19,14 +19,10 @@ namespace FilConvWpf.Native
         public AppleHiResDisplayMode()
             : base("FormatNameApple2", new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
-            if (ToolBar == null)
-            {
-                ToolBar = new ToolBar();
-            }
+        }
 
-            Label toolbarTitle = new Label();
-            L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, "FormatNameApple2").Update();
-
+        protected override void BuildToolBar()
+        {
             _fillButton = new ToggleButton();
             _fillButton.IsChecked = _fill;
             _fillButton.Content = ResourceUtils.GetResourceImage("fill.png");
@@ -41,9 +37,11 @@ namespace FilConvWpf.Native
             _palButton.Checked += pal_Checked;
             _palButton.Unchecked += pal_Unchecked;
 
-            ToolBar.Items.Add(toolbarTitle);
+            CreateToolBarOnce("Apple2ToolBarTitle");
             ToolBar.Items.Add(_fillButton);
             ToolBar.Items.Add(_palButton);
+
+            base.BuildToolBar();
         }
 
         public override void StoreSettings(IDictionary<string, object> settings)
@@ -96,11 +94,18 @@ namespace FilConvWpf.Native
             UpdateFormat();
         }
 
-        private void UpdateFormat()
+        protected override void UpdateFormat()
         {
-            Color[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
-            Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
-            Format = new Apple2HiResImageFormat(tv);
+            if (_ntsc)
+            {
+                Format = new Apple2HiResNtscImageFormat();
+            }
+            else
+            {
+                Color[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
+                Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
+                Format = new Apple2HiResImageFormat(tv);
+            }
             OnFormatChanged();
         }
     }

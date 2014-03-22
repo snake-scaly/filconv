@@ -49,8 +49,11 @@
   <ItemGroup>
     <Compile Include="Agat\AgatImageFormatAbstr.cs" />
     <Compile Include="Apple\Apple2DoubleHiResImageFormat.cs" />
+    <Compile Include="Apple\Apple2DoubleHiResNtscImageFormat.cs" />
     <Compile Include="Apple\Apple2HiResImageFormat.cs" />
+    <Compile Include="Apple\Apple2HiResNtscImageFormat.cs" />
     <Compile Include="Apple\Apple2LoResImageFormat.cs" />
+    <Compile Include="Apple\Apple2LoResNtscImageFormat.cs" />
     <Compile Include="Apple\Apple2DoublePixelTv.cs" />
     <Compile Include="Apple\Apple2Palettes.cs" />
     <Compile Include="Apple\Apple2FillTv.cs" />
@@ -63,6 +66,10 @@
     <Compile Include="Apple\Apple2Utils.cs" />
     <Compile Include="Apple\AppleScreen.cs" />
     <Compile Include="Apple\AppleScreenWriter.cs" />
+    <Compile Include="Apple\BitmapDoubleColorWriter.cs" />
+    <Compile Include="Apple\ColorWriter.cs" />
+    <Compile Include="Apple\NtscPictureBuilder.cs" />
+    <Compile Include="Apple\NtscScanLine.cs" />
     <Compile Include="Util\ColorUtils.cs" />
     <Compile Include="EncodingOptions.cs" />
     <Compile Include="FormatHint.cs" />

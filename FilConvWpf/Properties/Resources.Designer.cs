@@ -124,11 +124,29 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NTSC TV emulation.
+        /// </summary>
+        internal static string Apple2NtscModeToggleTooltip {
+            get {
+                return ResourceManager.GetString("Apple2NtscModeToggleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to European (PAL)/American (NTSC) palette.
         /// </summary>
         internal static string Apple2PaletteToggleTooltip {
             get {
                 return ResourceManager.GetString("Apple2PaletteToggleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apple ][.
+        /// </summary>
+        internal static string Apple2ToolBarTitle {
+            get {
+                return ResourceManager.GetString("Apple2ToolBarTitle", resourceCulture);
             }
         }
         

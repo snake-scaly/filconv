@@ -12,5 +12,6 @@ namespace FilConvWpf
         public static string ApplePalette { get { return "ApplePalette"; } }
         public static string OutTvAspect { get { return "OutTvAspect"; } }
         public static string Dithering { get { return "Dithering"; } }
+        public static string NtscMode { get { return "NtscMode"; } }
     }
 }

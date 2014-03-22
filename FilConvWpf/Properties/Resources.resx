@@ -141,9 +141,17 @@
     <value>Fill colors</value>
     <comment>Tooltip for a button that enables filling black pixels with neighbour pixel colors in the Apple II color mode</comment>
   </data>
+  <data name="Apple2NtscModeToggleTooltip" xml:space="preserve">
+    <value>NTSC TV emulation</value>
+    <comment>Tooltip for a button that switches between digital and NTSC analog image quality</comment>
+  </data>
   <data name="Apple2PaletteToggleTooltip" xml:space="preserve">
     <value>European (PAL)/American (NTSC) palette</value>
     <comment>Tooltip for a button that switches between a European (PAL) and American (NTSC) palette in the Apple II color mode</comment>
+  </data>
+  <data name="Apple2ToolBarTitle" xml:space="preserve">
+    <value>Apple ][</value>
+    <comment>Title of the additional toolbar for Apple modes</comment>
   </data>
   <data name="AspectToggleTooltip" xml:space="preserve">
     <value>Native display proportions</value>

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
+using FilConvWpf.I18n;
 
 namespace FilConvWpf.Native
 {
@@ -26,7 +27,22 @@ namespace FilConvWpf.Native
             }
         }
         public NativeImageFormat Format { get; protected set; }
-        public ToolBar ToolBar { get; protected set; }
+        public ToolBar ToolBar { get; private set; }
+
+        protected void CreateToolBarOnce(string title)
+        {
+            if (ToolBar == null)
+            {
+                ToolBar = new ToolBar();
+
+                if (title != null)
+                {
+                    Label toolbarTitle = new Label();
+                    L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, title).Update();
+                    ToolBar.Items.Add(toolbarTitle);
+                }
+            }
+        }
 
         public virtual void StoreSettings(IDictionary<string, object> settings)
         {

@@ -141,6 +141,9 @@
     <value>Заливка цветов</value>
     <comment>Подсказка кнопки включения заливки черных столбцов соседними цветами в режиме Apple II</comment>
   </data>
+  <data name="Apple2NtscModeToggleTooltip" xml:space="preserve">
+    <value>Эмуляция телевизора NTSC</value>
+  </data>
   <data name="Apple2PaletteToggleTooltip" xml:space="preserve">
     <value>Европейская (PAL) / американская (NTSC) палитра</value>
     <comment>Подсказка кнопки переключения между европейской (PAL) и американской (NTSC) палитрами режима Apple II</comment>

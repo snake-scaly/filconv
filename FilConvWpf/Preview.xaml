@@ -23,7 +23,7 @@
                     <ComboBoxItem Content="{i:L10n PreviewPictureScaleFitWindow}"/>
                 </ComboBox>
                 <ToggleButton Name="nativeAspectToggle" ToolTip="{i:L10n AspectToggleTooltip}" Checked="aspectButton_Checked" Unchecked="aspectButton_Unchecked">
-                    <Image Source="Resources/television.png"/>
+                    4:3
                 </ToggleButton>
             </ToolBar>
         </ToolBarTray>
