@@ -17,5 +17,12 @@ namespace ImageLib
 
         BitmapSource FromNative(NativeImage native);
         NativeImage ToNative(BitmapSource bitmap, EncodingOptions options);
+
+        /// <summary>
+        /// Compute probability of an image to be in this format.
+        /// </summary>
+        /// <param name="native">the image to test</param>
+        /// <returns>Matching score. Higher value means better probability.</returns>
+        int ComputeMatchScore(NativeImage native);
     }
 }

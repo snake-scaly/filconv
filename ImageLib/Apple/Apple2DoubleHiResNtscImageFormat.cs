@@ -8,6 +8,7 @@ namespace ImageLib.Apple
         private const int _lines = 192;
         private const int _width = 560;
         private const int _height = _lines * 3;
+        private const int _bytesPerHalfScreen = 8192;
 
         public double Aspect
         {
@@ -16,7 +17,6 @@ namespace ImageLib.Apple
 
         public BitmapSource FromNative(NativeImage native)
         {
-            const int bytesPerHalfScreen = 8192;
             const int wordsPerLine = 20;
             const int bytesPerWord = 2;
             const int significantBitsPerByte = 7;
@@ -28,7 +28,7 @@ namespace ImageLib.Apple
             for (int y = 0; y < _lines; ++y)
             {
                 int lineOffset = Apple2Utils.GetHiResLineOffset(y);
-                if (lineOffset + bytesPerHalfScreen >= native.Data.Length)
+                if (lineOffset + _bytesPerHalfScreen >= native.Data.Length)
                     continue;
 
                 using (NtscScanLine scanline = builder.GetScanLine(y))
@@ -36,7 +36,7 @@ namespace ImageLib.Apple
                     for (int w = 0; w < wordsPerLine; ++w)
                     {
                         int wordOffsetLo = lineOffset + w * bytesPerWord;
-                        int wordOffsetHi = wordOffsetLo + bytesPerHalfScreen;
+                        int wordOffsetHi = wordOffsetLo + _bytesPerHalfScreen;
                         if (wordOffsetHi + bytesPerWord > native.Data.Length)
                             break;
 
@@ -59,6 +59,11 @@ namespace ImageLib.Apple
         }
 
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ComputeMatchScore(NativeImage native)
         {
             throw new NotImplementedException();
         }

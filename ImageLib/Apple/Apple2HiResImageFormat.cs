@@ -14,6 +14,7 @@ namespace ImageLib.Apple
         private const double dpi = 72;
         private const int pixelsPerByte = 7;
         private const int interleave = 1;
+        private const int totalBytes = 0x2000;
 
         private Apple2TvSet tvSet;
 
@@ -187,18 +188,23 @@ namespace ImageLib.Apple
             return new NativeImage(dst.Pixels, new FormatHint(this));
         }
 
+        public int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, totalBytes);
+        }
+
         private class AppleScreenHiRes : AppleScreen
         {
             private byte[] _pixels;
 
             public AppleScreenHiRes()
             {
-                _pixels = new byte[0x2000];
+                _pixels = new byte[totalBytes];
             }
 
             public AppleScreenHiRes(AppleScreenHiRes o)
             {
-                _pixels = new byte[0x2000];
+                _pixels = new byte[totalBytes];
                 o.Pixels.CopyTo(Pixels, 0);
             }
 

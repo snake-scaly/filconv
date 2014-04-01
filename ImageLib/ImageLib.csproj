@@ -70,6 +70,7 @@
     <Compile Include="Apple\ColorWriter.cs" />
     <Compile Include="Apple\NtscPictureBuilder.cs" />
     <Compile Include="Apple\NtscScanLine.cs" />
+    <Compile Include="NativeImageFormatUtils.cs" />
     <Compile Include="Util\ColorUtils.cs" />
     <Compile Include="EncodingOptions.cs" />
     <Compile Include="FormatHint.cs" />

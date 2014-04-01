@@ -7,14 +7,14 @@ namespace ImageLib.Spectrum
 {
     public class SpectrumImageFormatInterleave : SpectrumImageFormatAbstr
     {
-        private const int _colorLines = 24;
-        private const int _paletteOffset = _height * _bytesPerLine;
-        private const int _paletteSize = _colorLines * _bytesPerLine;
-        private const int _totalBytes = (_height + _colorLines) * _bytesPerLine;
-
         protected override int GetLineOffset(int y)
         {
             return ((y & ~0x3F) << 5) | ((y & 0x07) << 8) | ((y & 0x38) << 2);
+        }
+
+        public override int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, _totalBytes, ".scr");
         }
 
         /// <summary>

@@ -118,5 +118,10 @@ namespace ImageLib.Apple
             int line = (lineIndex >> 6) & 3;
             return block * 1024 + subBlock * 128 + line * 40;
         }
+
+        public int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
+        }
     }
 }

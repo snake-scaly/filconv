@@ -95,5 +95,10 @@ namespace ImageLib.Apple
 
             return new NativeImage(nativePixels, new FormatHint(this));
         }
+
+        public int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, _totalBytes);
+        }
     }
 }

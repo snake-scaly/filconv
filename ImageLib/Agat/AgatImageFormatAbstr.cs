@@ -167,6 +167,11 @@ namespace ImageLib.Agat
                 throw new ArgumentOutOfRangeException("y", y, "Y must be between 0 and " + Height);
         }
 
+        public int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
+        }
+
         static Color GetBgr32Pixel(byte[] bgr32, int offset)
         {
             return Color.FromRgb(bgr32[offset + 2], bgr32[offset + 1], bgr32[offset]);

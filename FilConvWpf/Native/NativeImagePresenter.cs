@@ -32,7 +32,7 @@ namespace FilConvWpf.Native
             }
             SupportedPreviewModes = displayModeNames.ToArray();
 
-            PreviewMode = _defaultMode;
+            GuessPreviewMode();
         }
 
         public AspectBitmap DisplayImage { get; private set; }
@@ -114,6 +114,22 @@ namespace FilConvWpf.Native
             {
                 OriginalChanged(this, EventArgs.Empty);
             }
+        }
+
+        private void GuessPreviewMode()
+        {
+            int bestScore = 0, bestMode = _defaultMode, i = 0;
+            foreach (INativeDisplayMode mode in _displayModes)
+            {
+                int score = mode.Format.ComputeMatchScore(_nativeImage);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestMode = i;
+                }
+                ++i;
+            }
+            PreviewMode = bestMode;
         }
 
         private static readonly INativeDisplayMode[] _displayModes =

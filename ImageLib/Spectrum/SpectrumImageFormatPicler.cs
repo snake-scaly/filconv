@@ -11,5 +11,10 @@ namespace ImageLib.Spectrum
         {
             return y * _bytesPerLine;
         }
+
+        public override int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, _totalBytes, ".bol");
+        }
     }
 }

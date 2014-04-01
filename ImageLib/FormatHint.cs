@@ -8,13 +8,12 @@ namespace ImageLib
     public struct FormatHint
     {
         /// <summary>
-        /// Extension of the file name this image is read from.
+        /// Name of the file name this image is read from.
         /// </summary>
-        /// <para>This field may contain a file extension including
-        /// the leading dot, <see cref="String.Empty"/> if the file did
-        /// not have any extension, or <c>null</c> if this image wasn't
-        /// read from a file.</para>
-        public string FileExtension { get; set; }
+        /// <remarks>
+        /// May be <c>null</c> if this image wasn't read from a file.
+        /// </remarks>
+        public string FileName { get; set; }
 
         /// <summary>
         /// Concrete format of the image.
@@ -23,16 +22,32 @@ namespace ImageLib
         /// not known.</para>
         public NativeImageFormat NativeFormat { get; set; }
 
-        public FormatHint(string extension)
+        public FormatHint(string fileName)
             : this()
         {
-            FileExtension = extension;
+            FileName = fileName;
         }
 
         public FormatHint(NativeImageFormat format)
             : this()
         {
             NativeFormat = format;
+        }
+
+        /// <summary>
+        /// Test whether the file name contains the given string.
+        /// </summary>
+        /// <remarks>
+        /// The comparison is case-insensitive.
+        /// </remarks>
+        /// <param name="str">string to find</param>
+        /// <returns><c>true</c> if the string is found, <c>false</c> if not found
+        /// or if <c>FileName</c> is <c>null</c>.</returns>
+        public bool FileNameContains(string str)
+        {
+            if (FileName == null)
+                return false;
+            return FileName.ToLower().Contains(str.ToLower());
         }
     }
 }

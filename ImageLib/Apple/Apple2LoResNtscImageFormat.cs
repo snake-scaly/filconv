@@ -64,5 +64,10 @@ namespace ImageLib.Apple
         {
             throw new NotImplementedException();
         }
+
+        public int ComputeMatchScore(NativeImage native)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

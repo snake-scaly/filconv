@@ -13,6 +13,10 @@ namespace ImageLib.Spectrum
         protected const int _paletteBytesPerLine = 32;
         protected const int _width = 256;
         protected const int _height = 192;
+        protected const int _colorLines = 24;
+        protected const int _paletteOffset = _height * _bytesPerLine;
+        protected const int _paletteSize = _colorLines * _bytesPerLine;
+        protected const int _totalBytes = (_height + _colorLines) * _bytesPerLine;
 
         public double Aspect
         {
@@ -81,5 +85,7 @@ namespace ImageLib.Spectrum
         {
             throw new NotSupportedException("Conversion to Spectrum format is not supported");
         }
+
+        public abstract int ComputeMatchScore(NativeImage native);
     }
 }
