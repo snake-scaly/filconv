@@ -132,7 +132,7 @@ namespace FilConvWpf.Native
             PreviewMode = bestMode;
         }
 
-        private static readonly INativeDisplayMode[] _displayModes =
+        private readonly INativeDisplayMode[] _displayModes =
         {
             new NativeDisplayMode("FormatNameGR7", new Gr7ImageFormat()),
             new NativeDisplayMode("FormatNameMGR", new MgrImageFormat()),
