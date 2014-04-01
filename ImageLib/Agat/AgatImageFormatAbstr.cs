@@ -46,7 +46,7 @@ namespace ImageLib.Agat
 
         public BitmapSource FromNative(NativeImage native)
         {
-            var bmp = new WriteableBitmap(Width, Height, defaultDpi, defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(Width, Height, defaultDpi / Aspect, defaultDpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
             for (int y = 0; y < Height; ++y)

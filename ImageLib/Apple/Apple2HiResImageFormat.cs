@@ -53,7 +53,7 @@ namespace ImageLib.Apple
                 }
             }
 
-            WriteableBitmap result = new WriteableBitmap(width, height, dpi, dpi, PixelFormats.Bgr32, null);
+            WriteableBitmap result = new WriteableBitmap(width, height, dpi / Aspect, dpi, PixelFormats.Bgr32, null);
             result.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
             return result;
         }

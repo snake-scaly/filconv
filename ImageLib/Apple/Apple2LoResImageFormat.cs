@@ -66,7 +66,7 @@ namespace ImageLib.Apple
                 }
             }
 
-            var bmp = new WriteableBitmap(_width, _height, _dpi, _dpi, _pixelFormat, null);
+            var bmp = new WriteableBitmap(_width, _height, _dpi / Aspect, _dpi, _pixelFormat, null);
             var srcRect = new Int32Rect(0, 0, _width, _height);
             bmp.WritePixels(srcRect, pixels, stride, 0);
             return bmp;

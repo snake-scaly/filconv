@@ -49,7 +49,7 @@ namespace ImageLib.Spectrum
                 }
             }
 
-            var bmp = new WriteableBitmap(_width, _height, _defaultDpi, _defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(_width, _height, _defaultDpi / Aspect, _defaultDpi, PixelFormats.Bgr32, null);
             bmp.WritePixels(new Int32Rect(0, 0, _width, _height), pixels, dstStride, 0);
             return bmp;
         }
