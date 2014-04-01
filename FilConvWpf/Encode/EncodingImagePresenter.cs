@@ -10,7 +10,8 @@ namespace FilConvWpf.Encode
 {
     class EncodingImagePresenter : IImagePresenter
     {
-        private const int _defaultEncoding = 2;
+        private const int _defaultEncoding = 0;
+        private const string _modeSettingsKey = "encodingMode";
 
         private IOriginal _original;
         private IEncoding _currentEncoding;
@@ -40,6 +41,10 @@ namespace FilConvWpf.Encode
             }
             set
             {
+                if (value >= _encodings.Count)
+                {
+                    value = _defaultEncoding;
+                }
                 if (!object.ReferenceEquals(_currentEncoding, _encodings[value]))
                 {
                     if (_currentEncoding != null)
@@ -89,10 +94,6 @@ namespace FilConvWpf.Encode
             int mode = _encodings != null ? PreviewMode : _defaultEncoding;
             _encodings = EncodingResolutionService.GetPossibleEncodings(_original).ToList();
             SupportedPreviewModes = _encodings.Select(x => x.Name).ToArray();
-            if (mode >= _encodings.Count)
-            {
-                mode = _defaultEncoding;
-            }
             PreviewMode = mode;
         }
 
@@ -120,11 +121,29 @@ namespace FilConvWpf.Encode
         private IEnumerable<ISaveDelegate> GetStandardSaveDelegates()
         {
             BitmapSource bitmap = DisplayImage.Bitmap;
-            yield return new GdiSaveDelegate(bitmap, "FileFormatNameBmp", new string[] { "*.bmp" }, typeof(BmpBitmapEncoder));
-            yield return new GdiSaveDelegate(bitmap, "FileFormatNameJpeg", new string[] { "*.jpg", "*,jpeg" }, typeof(JpegBitmapEncoder));
             yield return new GdiSaveDelegate(bitmap, "FileFormatNamePng", new string[] { "*.png" }, typeof(PngBitmapEncoder));
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNameJpeg", new string[] { "*.jpg", "*,jpeg" }, typeof(JpegBitmapEncoder));
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameGif", new string[] { "*.gif" }, typeof(GifBitmapEncoder));
+            yield return new GdiSaveDelegate(bitmap, "FileFormatNameBmp", new string[] { "*.bmp" }, typeof(BmpBitmapEncoder));
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameTiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder));
+        }
+
+        public void StoreSettings(IDictionary<string, object> settings)
+        {
+            if (_currentEncoding != null)
+            {
+                _currentEncoding.StoreSettings(settings);
+            }
+            settings[_modeSettingsKey] = PreviewMode;
+        }
+
+        public void AdoptSettings(IDictionary<string, object> settings)
+        {
+            _settings = new Dictionary<string, object>(settings);
+            if (settings.ContainsKey(_modeSettingsKey))
+            {
+                PreviewMode = (int)settings[_modeSettingsKey];
+            }
         }
     }
 }

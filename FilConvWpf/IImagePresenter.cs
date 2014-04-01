@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace FilConvWpf
@@ -28,5 +29,8 @@ namespace FilConvWpf
         /// Toolbar can change when the DisplayImage changes. ToolBar can be null
         /// in which case it is not displayed.
         ToolBar ToolBar { get; }
+
+        void StoreSettings(IDictionary<string, object> settings);
+        void AdoptSettings(IDictionary<string, object> settings);
     }
 }

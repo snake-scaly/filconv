@@ -56,5 +56,13 @@ namespace FilConvWpf
         {
             get { return DisplayImage.Bitmap; }
         }
+
+        public void StoreSettings(System.Collections.Generic.IDictionary<string, object> settings)
+        {
+        }
+
+        public void AdoptSettings(System.Collections.Generic.IDictionary<string, object> settings)
+        {
+        }
     }
 }

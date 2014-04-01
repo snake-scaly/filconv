@@ -6,16 +6,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Linq;
 
 namespace FilConvWpf.Native
 {
     class NativeImagePresenter : IImagePresenter, INativeOriginal
     {
         private const int _defaultMode = 1; // MGR
+        private const string _modeSettingsKey = "previewMode";
 
         private NativeImage _nativeImage;
         private INativeDisplayMode _currentMode;
         private Dictionary<string, object> _settings;
+        private int _preferredMode;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
         public event EventHandler<EventArgs> OriginalChanged;
@@ -24,6 +27,8 @@ namespace FilConvWpf.Native
         {
             _nativeImage = nativeImage;
             _settings = new Dictionary<string, object>();
+
+            _preferredMode = _defaultMode;
 
             var displayModeNames = new List<string>();
             foreach (INativeDisplayMode m in _displayModes)
@@ -67,6 +72,7 @@ namespace FilConvWpf.Native
                 {
                     value = _defaultMode;
                 }
+
                 if (!object.ReferenceEquals(_displayModes[value], _currentMode))
                 {
                     if (_currentMode != null)
@@ -75,12 +81,11 @@ namespace FilConvWpf.Native
                         _currentMode.FormatChanged -= currentMode_FormatChanged;
                     }
                     _currentMode = _displayModes[value];
-                    _currentMode.AdoptSettings(_settings);
-
                     _currentMode.FormatChanged += currentMode_FormatChanged;
-
-                    Convert(_currentMode.Format);
                 }
+
+                _currentMode.AdoptSettings(_settings);
+                Convert(_currentMode.Format);
             }
         }
 
@@ -118,7 +123,10 @@ namespace FilConvWpf.Native
 
         private void GuessPreviewMode()
         {
-            int bestScore = 0, bestMode = _defaultMode, i = 0;
+            int bestMode = _preferredMode;
+            int bestScore = _displayModes[bestMode].Format.ComputeMatchScore(_nativeImage);
+            int i = 0;
+
             foreach (INativeDisplayMode mode in _displayModes)
             {
                 int score = mode.Format.ComputeMatchScore(_nativeImage);
@@ -129,7 +137,27 @@ namespace FilConvWpf.Native
                 }
                 ++i;
             }
+
             PreviewMode = bestMode;
+        }
+
+        public void StoreSettings(IDictionary<string, object> settings)
+        {
+            if (_currentMode != null)
+            {
+                _currentMode.StoreSettings(settings);
+            }
+            settings[_modeSettingsKey] = PreviewMode;
+        }
+
+        public void AdoptSettings(IDictionary<string, object> settings)
+        {
+            _settings = new Dictionary<string, object>(settings);
+            if (settings.ContainsKey(_modeSettingsKey))
+            {
+                _preferredMode = (int)settings[_modeSettingsKey];
+                GuessPreviewMode();
+            }
         }
 
         private readonly INativeDisplayMode[] _displayModes =

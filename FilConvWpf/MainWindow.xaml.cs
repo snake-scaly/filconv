@@ -22,6 +22,8 @@ namespace FilConvWpf
     {
         private string fileName;
         private string rawTitle;
+        private readonly Dictionary<string, object> leftSettings;
+        private readonly Dictionary<string, object> rightSettings;
 
         public MainWindow()
         {
@@ -40,12 +42,20 @@ namespace FilConvWpf
                 }
                 menuLanguage.Items.Add(item);
             }
+
+            leftSettings = new Dictionary<string, object>();
+            rightSettings = new Dictionary<string, object>();
         }
 
         void Open(string fileName)
         {
             try
             {
+                if (left.ImagePresenter != null)
+                {
+                    left.ImagePresenter.StoreSettings(leftSettings);
+                }
+
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Fil fil = Fil.FromFile(fileName);
@@ -62,8 +72,14 @@ namespace FilConvWpf
                 {
                     left.ImagePresenter = new BitmapPresenter(new BitmapImage(new Uri(fileName)));
                 }
+                left.ImagePresenter.AdoptSettings(leftSettings);
 
+                if (right.ImagePresenter != null)
+                {
+                    right.ImagePresenter.StoreSettings(rightSettings);
+                }
                 right.ImagePresenter = new EncodingImagePresenter((IOriginal)left.ImagePresenter);
+                right.ImagePresenter.AdoptSettings(rightSettings);
 
                 this.fileName = fileName;
                 Title = Path.GetFileName(fileName) + " - " + rawTitle;

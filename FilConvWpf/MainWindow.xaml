@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:z="clr-namespace:FilConvWpf"
         xmlns:i="clr-namespace:FilConvWpf.I18n"
-        Title="{i:L10n MainWindowTitle}" Height="480" Width="780" AllowDrop="True">
+        Title="{i:L10n MainWindowTitle}" Height="500" Width="900" AllowDrop="True">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
