@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Windows.Media.Imaging;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace FilConvWpf
 {
-    class BitmapPresenter : IImagePresenter
+    class BitmapPresenter : IImagePresenter, IOriginal
     {
         public event EventHandler<EventArgs> DisplayImageChanged
         {
@@ -44,6 +44,17 @@ namespace FilConvWpf
             {
                 return null;
             }
+        }
+
+        public event EventHandler<EventArgs> OriginalChanged
+        {
+            add { }
+            remove { }
+        }
+
+        public BitmapSource OriginalBitmap
+        {
+            get { return DisplayImage.Bitmap; }
         }
     }
 }

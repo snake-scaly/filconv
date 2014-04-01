@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ImageLib.Agat;
+using ImageLib.Apple;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using ImageLib.Agat;
-using ImageLib.Apple;
 
 namespace FilConvWpf.Encode
 {
@@ -12,28 +12,20 @@ namespace FilConvWpf.Encode
     {
         private const int _defaultEncoding = 2;
 
-        private Preview _sourcePreview;
+        private IOriginal _original;
         private IEncoding _currentEncoding;
         private Dictionary<string, object> _settings;
+        private IList<IEncoding> _encodings;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
 
-        public EncodingImagePresenter(Preview sourcePreview)
+        public EncodingImagePresenter(IOriginal original)
         {
-            _sourcePreview = sourcePreview;
-            _sourcePreview.DisplayPictureChange += sourcePreview_DisplayPictureChange;
-
-            SupportedPreviewModes = new string[_encodings.Length];
-            int i = 0;
-            foreach (IEncoding e in _encodings)
-            {
-                SupportedPreviewModes[i] = e.Name;
-                i++;
-            }
+            _original = original;
+            _original.OriginalChanged += original_OriginalChanged;
 
             _settings = new Dictionary<string, object>();
-
-            PreviewMode = _defaultEncoding;
+            UpdateEncodings();
         }
 
         public AspectBitmap DisplayImage { get; private set; }
@@ -44,7 +36,7 @@ namespace FilConvWpf.Encode
         {
             get
             {
-                return Array.IndexOf(_encodings, _currentEncoding);
+                return _encodings.IndexOf(_currentEncoding);
             }
             set
             {
@@ -76,7 +68,7 @@ namespace FilConvWpf.Encode
         {
             get
             {
-                BitmapSource bitmap = _sourcePreview.DisplayPicture;
+                BitmapSource bitmap = _original.OriginalBitmap;
                 return _currentEncoding.GetSaveDelegates(bitmap).Concat(GetStandardSaveDelegates());
             }
         }
@@ -86,16 +78,29 @@ namespace FilConvWpf.Encode
             Encode();
         }
 
-        private void sourcePreview_DisplayPictureChange(object sender, EventArgs e)
+        private void original_OriginalChanged(object sender, EventArgs e)
         {
+            UpdateEncodings();
             Encode();
+        }
+
+        private void UpdateEncodings()
+        {
+            int mode = _encodings != null ? PreviewMode : _defaultEncoding;
+            _encodings = EncodingResolutionService.GetPossibleEncodings(_original).ToList();
+            SupportedPreviewModes = _encodings.Select(x => x.Name).ToArray();
+            if (mode >= _encodings.Count)
+            {
+                mode = _defaultEncoding;
+            }
+            PreviewMode = mode;
         }
 
         private void Encode()
         {
-            if (_sourcePreview.DisplayPicture != null)
+            if (_original.OriginalBitmap != null)
             {
-                DisplayImage = _currentEncoding.Preview(_sourcePreview.DisplayPicture);
+                DisplayImage = _currentEncoding.Preview(_original.OriginalBitmap);
             }
             else
             {
@@ -121,18 +126,5 @@ namespace FilConvWpf.Encode
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameGif", new string[] { "*.gif" }, typeof(GifBitmapEncoder));
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameTiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder));
         }
-
-        private static readonly IEncoding[] _encodings =
-        {
-            new IdentityEncoding(),
-            new NativeEncoding("FormatNameGR7", new Gr7ImageFormat(), true),
-            new NativeEncoding("FormatNameMGR", new MgrImageFormat(), true),
-            new NativeEncoding("FormatNameHGR", new HgrImageFormat(), true),
-            new NativeEncoding("FormatNameMGR9", new Mgr9ImageFormat(), true),
-            new NativeEncoding("FormatNameHGR9", new Hgr9ImageFormat(), true),
-            new NativeEncoding("FormatNameApple2LoRes", new Apple2LoResImageFormat(), false),
-            new AppleHiResEncoding(),
-            new NativeEncoding("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat(), false),
-        };
     }
 }

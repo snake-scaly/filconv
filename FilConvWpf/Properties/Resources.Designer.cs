@@ -241,6 +241,15 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Picler.
+        /// </summary>
+        internal static string FileFormatNamePicler {
+            get {
+                return ResourceManager.GetString("FileFormatNamePicler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Png.
         /// </summary>
         internal static string FileFormatNamePng {

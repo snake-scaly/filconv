@@ -193,6 +193,10 @@
     <value>Jpeg</value>
     <comment>JPEG format filter name for open/save dialogs</comment>
   </data>
+  <data name="FileFormatNamePicler" xml:space="preserve">
+    <value>Picler</value>
+    <comment>Picler format filter name for open/save dialogs</comment>
+  </data>
   <data name="FileFormatNamePng" xml:space="preserve">
     <value>Png</value>
     <comment>PNG format filter name for open/save dialogs</comment>

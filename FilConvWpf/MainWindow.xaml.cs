@@ -26,7 +26,6 @@ namespace FilConvWpf
         public MainWindow()
         {
             InitializeComponent();
-            right.ImagePresenter = new EncodingImagePresenter(left);
             rawTitle = Title;
 
             foreach (SupportedLanguage l in _supportedLanguages)
@@ -50,18 +49,22 @@ namespace FilConvWpf
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Fil fil = Fil.FromFile(fileName);
-                    NativeImage ni = new NativeImage(fil.Data, new FormatHint(".fil"));
+                    NativeImage ni = new NativeImage(fil.Data, new FormatHint(fileName));
                     left.ImagePresenter = new NativeImagePresenter(ni);
                 }
-                else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase))
+                else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase) ||
+                    fileName.EndsWith(".bol", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    NativeImage ni = new NativeImage(File.ReadAllBytes(fileName), new FormatHint(".scr"));
+                    NativeImage ni = new NativeImage(File.ReadAllBytes(fileName), new FormatHint(fileName));
                     left.ImagePresenter = new NativeImagePresenter(ni);
                 }
                 else
                 {
                     left.ImagePresenter = new BitmapPresenter(new BitmapImage(new Uri(fileName)));
                 }
+
+                right.ImagePresenter = new EncodingImagePresenter((IOriginal)left.ImagePresenter);
+
                 this.fileName = fileName;
                 Title = Path.GetFileName(fileName) + " - " + rawTitle;
 
@@ -210,6 +213,7 @@ namespace FilConvWpf
         {
             new SupportedFile("FileFormatNameFil", new string[] { "*.fil" }),
             new SupportedFile("FileFormatNameScr", new string[] { "*.scr" }),
+            new SupportedFile("FileFormatNamePicler", new string[] { "*.bol" }),
             new SupportedFile("FileFormatNameBmp", new string[] { "*.bmp" }),
             new SupportedFile("FileFormatNameJpeg", new string[] { "*.jpg", "*,jpeg" }),
             new SupportedFile("FileFormatNamePng", new string[] { "*.png" }),

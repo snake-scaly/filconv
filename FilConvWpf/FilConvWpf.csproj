@@ -62,13 +62,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Encode\AppleHiResEncoding.cs" />
+    <Compile Include="Encode\EncodingResolutionService.cs" />
     <Compile Include="Encode\FilSaveDelegate.cs" />
     <Compile Include="Encode\IdentityEncoding.cs" />
     <Compile Include="Encode\IEncoding.cs" />
     <Compile Include="Encode\ISaveDelegate.cs" />
     <Compile Include="Encode\NativeEncoding.cs" />
     <Compile Include="Encode\GdiSaveDelegate.cs" />
+    <Compile Include="Encode\SimpleSaveDelegate.cs" />
+    <Compile Include="Encode\Transcoding.cs" />
     <Compile Include="I18n\L10n.cs" />
+    <Compile Include="INativeOriginal.cs" />
+    <Compile Include="IOriginal.cs" />
     <Compile Include="Native\AppleDisplayModeBase.cs" />
     <Compile Include="Native\AppleDoubleHiResDisplayMode.cs" />
     <Compile Include="Native\AppleHiResDisplayMode.cs" />

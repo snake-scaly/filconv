@@ -1,15 +1,15 @@
-﻿using System;
+﻿using ImageLib;
+using ImageLib.Agat;
+using ImageLib.Spectrum;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Controls;
-using ImageLib;
-using ImageLib.Agat;
-using ImageLib.Apple;
-using ImageLib.Spectrum;
-using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace FilConvWpf.Native
 {
-    class NativeImagePresenter : IImagePresenter
+    class NativeImagePresenter : IImagePresenter, INativeOriginal
     {
         private const int _defaultMode = 1; // MGR
 
@@ -18,6 +18,7 @@ namespace FilConvWpf.Native
         private Dictionary<string, object> _settings;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
+        public event EventHandler<EventArgs> OriginalChanged;
 
         public NativeImagePresenter(NativeImage nativeImage)
         {
@@ -35,6 +36,21 @@ namespace FilConvWpf.Native
         }
 
         public AspectBitmap DisplayImage { get; private set; }
+
+        public BitmapSource OriginalBitmap
+        {
+            get { return DisplayImage != null ? DisplayImage.Bitmap : null; }
+        }
+
+        public NativeImage NativeImage
+        {
+            get { return _nativeImage; }
+        }
+
+        public NativeImageFormat NativeImageFormat
+        {
+            get { return _currentMode != null ? _currentMode.Format : null; }
+        }
 
         public string[] SupportedPreviewModes { get; private set; }
         
@@ -93,6 +109,10 @@ namespace FilConvWpf.Native
             if (DisplayImageChanged != null)
             {
                 DisplayImageChanged(this, EventArgs.Empty);
+            }
+            if (OriginalChanged != null)
+            {
+                OriginalChanged(this, EventArgs.Empty);
             }
         }
 
