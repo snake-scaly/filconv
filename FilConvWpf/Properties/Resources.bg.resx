@@ -141,6 +141,9 @@
     <value>Запълване с цвят</value>
     <comment>Подсказка кнопки включения заливки черных столбцов соседними цветами в режиме Apple II</comment>
   </data>
+  <data name="Apple2NtscModeToggleTooltip" xml:space="preserve">
+    <value>Наподобяване на телевизор на NTSC</value>
+  </data>
   <data name="Apple2PaletteToggleTooltip" xml:space="preserve">
     <value>Европейска (PAL) / американска (NTSC) палитра</value>
     <comment>Подсказка на копчето за превключване между режимите на Apple II за европейска и американска палитра</comment>
@@ -156,6 +159,9 @@
   <data name="EncodingToolbarTitle" xml:space="preserve">
     <value>Възможности:</value>
     <comment>Заголовок тулбара опций кодирования</comment>
+  </data>
+  <data name="ErrorMessageBoxTitle" xml:space="preserve">
+    <value>Грешка</value>
   </data>
   <data name="FileFormatNameAll" xml:space="preserve">
     <value>Всички файлове</value>
