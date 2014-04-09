@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace FilConvWpf.Encode
 {
-    class SimpleSaveDelegate : ISaveDelegate
+    class SimpleSaveDelegate : SaveDelegateAbstr
     {
         private byte[] _data;
+        private string _name;
         private string _fileNameMask;
 
         public SimpleSaveDelegate(byte[] data, string formatNameL10nKey, string fileNameMask)
         {
             _data = data;
-            FormatNameL10nKey = formatNameL10nKey;
+            _name = formatNameL10nKey;
             _fileNameMask = fileNameMask;
         }
 
-        public string FormatNameL10nKey { get; private set; }
+        public override string FormatNameL10nKey { get { return _name; } }
 
-        public IEnumerable<string> FileNameMasks
+        public override IEnumerable<string> FileNameMasks
         {
             get { yield return _fileNameMask; }
         }
 
-        public void SaveAs(string fileName)
+        public override void SaveAs(string fileName)
         {
             File.WriteAllBytes(fileName, _data);
         }

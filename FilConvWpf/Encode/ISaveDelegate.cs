@@ -9,6 +9,7 @@ namespace FilConvWpf.Encode
     {
         string FormatNameL10nKey { get; }
         IEnumerable<string> FileNameMasks { get; }
+        string DeriveOutputFileName(string inputFileName);
         void SaveAs(string fileName);
     }
 }

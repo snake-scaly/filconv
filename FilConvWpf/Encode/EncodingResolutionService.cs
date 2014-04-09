@@ -28,7 +28,7 @@ namespace FilConvWpf.Encode
                 if (nativeOriginal.NativeImageFormat is SpectrumImageFormatInterleave)
                 {
                     NativeImage piclerImage = new SpectrumImageFormatInterleave().Deinterleave(nativeOriginal.NativeImage);
-                    var saveDelegate = new SimpleSaveDelegate(piclerImage.Data, "FileFormatNamePicler", "*.bol");
+                    var saveDelegate = new FilSaveDelegate(piclerImage.Data, ".bol");
                     yield return new Transcoding(piclerImage, new SpectrumImageFormatPicler(), "FormatNamePicler", new ISaveDelegate[] { saveDelegate });
                 }
                 else if (nativeOriginal.NativeImageFormat is SpectrumImageFormatPicler)
