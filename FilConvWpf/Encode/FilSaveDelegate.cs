@@ -11,12 +11,18 @@ namespace FilConvWpf.Encode
         private BitmapSource _bitmap;
         private NativeImageFormat _format;
         private EncodingOptions _options;
+        private byte[] _data;
 
         public FilSaveDelegate(BitmapSource bitmap, NativeImageFormat format, EncodingOptions options)
         {
             _bitmap = bitmap;
             _format = format;
             _options = options;
+        }
+
+        public FilSaveDelegate(byte[] data)
+        {
+            _data = data;
         }
 
         public string FormatNameL10nKey
@@ -35,7 +41,7 @@ namespace FilConvWpf.Encode
         public void SaveAs(string fileName)
         {
             var fil = new Fil(Path.GetFileNameWithoutExtension(fileName));
-            fil.Data = _format.ToNative(_bitmap, _options).Data;
+            fil.Data = _data ?? _format.ToNative(_bitmap, _options).Data;
             using (var fs = new FileStream(fileName, FileMode.Create))
             {
                 fil.Write(fs);

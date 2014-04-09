@@ -135,7 +135,7 @@ namespace FilConvWpf
             var eip = (EncodingImagePresenter)right.ImagePresenter;
 
             var sfd = new SaveFileDialog();
-            sfd.FileName = Path.GetFileNameWithoutExtension(fileName);
+            sfd.FileName = eip.DeriveOutputFileName(fileName);
             sfd.Filter = string.Join("|", eip.SaveDelegates.Select(sd => string.Format(
                 "{0} ({1})|{1}",
                 L10n.GetObject(sd.FormatNameL10nKey),
