@@ -2,7 +2,6 @@
 using ImageLib.Apple;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -127,13 +126,6 @@ namespace FilConvWpf.Encode
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameGif", new string[] { "*.gif" }, typeof(GifBitmapEncoder));
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameBmp", new string[] { "*.bmp" }, typeof(BmpBitmapEncoder));
             yield return new GdiSaveDelegate(bitmap, "FileFormatNameTiff", new string[] { "*.tif", "*.tiff" }, typeof(TiffBitmapEncoder));
-        }
-
-        public string DeriveOutputFileName(string inputFileName)
-        {
-            if (_currentEncoding != null)
-                return _currentEncoding.DeriveOutputFileName(inputFileName);
-            return Path.GetFileNameWithoutExtension(inputFileName);
         }
 
         public void StoreSettings(IDictionary<string, object> settings)

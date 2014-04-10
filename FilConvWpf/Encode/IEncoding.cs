@@ -14,7 +14,6 @@ namespace FilConvWpf.Encode
 
         AspectBitmap Preview(BitmapSource original);
         IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original);
-        string DeriveOutputFileName(string inputFileName);
 
         void StoreSettings(IDictionary<string, object> settings);
         void AdoptSettings(IDictionary<string, object> settings);

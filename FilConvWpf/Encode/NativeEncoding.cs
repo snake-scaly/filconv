@@ -1,12 +1,11 @@
-﻿using FilConvWpf.I18n;
-using ImageLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
+using FilConvWpf.I18n;
+using ImageLib;
 
 namespace FilConvWpf.Encode
 {
@@ -65,11 +64,6 @@ namespace FilConvWpf.Encode
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)
         {
             yield return new FilSaveDelegate(original, _format, EncodingOptions);
-        }
-
-        public string DeriveOutputFileName(string inputFileName)
-        {
-            return Path.GetFileNameWithoutExtension(inputFileName);
         }
 
         public void StoreSettings(IDictionary<string, object> settings)

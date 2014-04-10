@@ -1,7 +1,6 @@
 ﻿using ImageLib;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
@@ -36,10 +35,6 @@ namespace FilConvWpf.Encode
             get { return null; }
         }
 
-        public string OutputFileNameAddSuffix { get; set; }
-
-        public string OutputFileNameStripSuffix { get; set; }
-
         public AspectBitmap Preview(BitmapSource original)
         {
             return new AspectBitmap(_format.FromNative(_nativeImage), _format.Aspect);
@@ -48,20 +43,6 @@ namespace FilConvWpf.Encode
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)
         {
             return _saveDelegates;
-        }
-
-        public string DeriveOutputFileName(string inputFileName)
-        {
-            string name = Path.GetFileNameWithoutExtension(inputFileName);
-            if (OutputFileNameStripSuffix != null && name.EndsWith(OutputFileNameStripSuffix))
-            {
-                name = name.Substring(0, name.Length - OutputFileNameStripSuffix.Length);
-            }
-            if (OutputFileNameAddSuffix != null)
-            {
-                name += OutputFileNameAddSuffix;
-            }
-            return name;
         }
 
         public void StoreSettings(IDictionary<string, object> settings)

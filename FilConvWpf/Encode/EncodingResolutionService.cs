@@ -28,19 +28,15 @@ namespace FilConvWpf.Encode
                 if (nativeOriginal.NativeImageFormat is SpectrumImageFormatInterleave)
                 {
                     NativeImage piclerImage = new SpectrumImageFormatInterleave().Deinterleave(nativeOriginal.NativeImage);
-                    var saveDelegate = new FilSaveDelegate(piclerImage.Data);
-                    var encoding = new Transcoding(piclerImage, new SpectrumImageFormatPicler(), "FormatNamePicler", new ISaveDelegate[] { saveDelegate });
-                    encoding.OutputFileNameAddSuffix = ".bol";
-                    yield return encoding;
+                    var saveDelegate = new SimpleSaveDelegate(piclerImage.Data, "FileFormatNamePicler", "*.bol");
+                    yield return new Transcoding(piclerImage, new SpectrumImageFormatPicler(), "FormatNamePicler", new ISaveDelegate[] { saveDelegate });
                 }
                 else if (nativeOriginal.NativeImageFormat is SpectrumImageFormatPicler)
                 {
                     var format = new SpectrumImageFormatInterleave();
                     NativeImage spectrumImage = format.Interleave(nativeOriginal.NativeImage);
                     var saveDelegate = new SimpleSaveDelegate(spectrumImage.Data, "FileFormatNameScr", "*.scr");
-                    var encoding = new Transcoding(spectrumImage, format, "FormatNameSpectrum", new ISaveDelegate[] { saveDelegate });
-                    encoding.OutputFileNameStripSuffix = ".bol";
-                    yield return encoding;
+                    yield return new Transcoding(spectrumImage, format, "FormatNameSpectrum", new ISaveDelegate[] { saveDelegate });
                 }
             }
         }

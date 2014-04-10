@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -33,11 +32,6 @@ namespace FilConvWpf.Encode
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource bitmap)
         {
             return Enumerable.Empty<ISaveDelegate>();
-        }
-
-        public string DeriveOutputFileName(string inputFileName)
-        {
-            return Path.GetFileNameWithoutExtension(inputFileName);
         }
 
         public void StoreSettings(IDictionary<string, object> settings)
