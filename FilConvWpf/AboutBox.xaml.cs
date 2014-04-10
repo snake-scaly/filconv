@@ -24,7 +24,7 @@ namespace FilConvWpf
         {
             InitializeComponent();
             Version appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            version.Text = string.Format("{0}.{1}", appVersion.Major, appVersion.Minor);
+            version.Text = string.Format("{0}.{1}.{2}", appVersion.Major, appVersion.Minor, appVersion.Build, appVersion.Revision);
         }
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
