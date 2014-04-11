@@ -10,6 +10,7 @@ namespace FilLib
     public class Fil
     {
         public const int MaxNameLength = 30;
+        public const int DefauldLoadingAddress = 0x2000;
 
         /// <summary>
         /// Decoded name of the file
@@ -23,15 +24,24 @@ namespace FilLib
 
         public FilType Type { get; set; }
 
+        public UInt16 StartAddress { get; set; }
+
         public byte[] Data { get; set; }
 
+        private Fil()
+        {
+            StartAddress = DefauldLoadingAddress;
+        }
+
         public Fil(string name)
+            : this()
         {
             Name = name.Length > MaxNameLength ? name.Substring(0, MaxNameLength) : name;
             Type = FilType.B;
         }
 
         private Fil(byte[] originalName)
+            : this()
         {
             OriginalName = originalName;
             Name = AgatEncoding.Decode(originalName).Trim();
@@ -49,7 +59,13 @@ namespace FilLib
             int t = binaryReader.ReadByte();
             fil.Type = FilType.FromCode(t);
 
-            fil.Type.SkipHeader(input);
+            int sizeLimit = -1;
+
+            if (fil.Type == FilType.B)
+            {
+                fil.StartAddress = binaryReader.ReadUInt16();
+                sizeLimit = binaryReader.ReadUInt16();
+            }
             
             var ms = new MemoryStream();
             byte[] buf = new byte[8192];
@@ -59,6 +75,13 @@ namespace FilLib
                 ms.Write(buf, 0, count);
             }
             fil.Data = ms.ToArray();
+
+            if (sizeLimit != -1 && fil.Data.Length > sizeLimit)
+            {
+                var sub = new byte[sizeLimit];
+                Array.Copy(fil.Data, sub, sizeLimit);
+                fil.Data = sub;
+            }
             
             return fil;
         }
@@ -76,7 +99,12 @@ namespace FilLib
 
             binaryWriter.Seek(9, SeekOrigin.Current);
             binaryWriter.Write((byte)Type.Code);
-            Type.WriteDefaultHeader(output);
+
+            if (Type == FilType.B)
+            {
+                binaryWriter.Write(StartAddress);
+                binaryWriter.Write((UInt16)Data.Length);
+            }
 
             binaryWriter.Write(Data);
         }

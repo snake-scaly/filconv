@@ -9,32 +9,19 @@ namespace FilLib
     public struct FilType : IEquatable<FilType>
     {
         public static readonly FilType T = new FilType('T', 0);
-        public static readonly FilType B = new FilType('B', 4, new byte[] { 0, 32, 0, 32 });
+        public static readonly FilType B = new FilType('B', 4);
         public static readonly FilType K = new FilType('K', 32);
 
         static readonly FilType[] _allTypes = { T, B, K };
 
-        byte[] _header;
-
         public char Name { get; private set; }
         public int Code { get; private set; }
 
-        FilType(char name, int code, byte[] header = null)
+        FilType(char name, int code)
             : this()
         {
             Name = name;
             Code = code;
-            _header = header != null ? header : new byte[0];
-        }
-
-        public void SkipHeader(Stream stream)
-        {
-            stream.Seek(_header.Length, SeekOrigin.Current);
-        }
-
-        public void WriteDefaultHeader(Stream output)
-        {
-            output.Write(_header, 0, _header.Length);
         }
 
         public static FilType FromCode(int code)
