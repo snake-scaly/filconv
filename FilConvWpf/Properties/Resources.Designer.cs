@@ -70,7 +70,7 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © 2011-2013 Sergey “SnakE” Gromov.
+        ///   Looks up a localized string similar to © 2011-2014 Sergey “SnakE” Gromov.
         /// </summary>
         internal static string AboutBoxCopyright {
             get {
