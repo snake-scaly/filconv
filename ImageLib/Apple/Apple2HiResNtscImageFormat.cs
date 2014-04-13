@@ -15,18 +15,17 @@ namespace ImageLib.Apple
 
         public BitmapSource FromNative(NativeImage native)
         {
-            const int width = 560;
             const int height = 192;
-            const int firstBitPhase = 1;
+            const int firstBitPhase = 2;
             const int bytesPerLine = 40;
+            const int pixelBitsCount = 7;
+            const int pixelBitsMask = (1 << pixelBitsCount) - 1;
 
-            var builder = new NtscPictureBuilder(width, height, firstBitPhase);
+            var builder = new NtscPictureBuilder(firstBitPhase);
 
             for (int y = 0; y < height; ++y)
             {
                 int lineOffset = Apple2Utils.GetHiResLineOffset(y);
-                bool previousShift = false;
-
                 if (lineOffset >= native.Data.Length)
                     continue;
 
@@ -38,32 +37,17 @@ namespace ImageLib.Apple
                         if (bitsOffset > native.Data.Length)
                             break;
 
-                        int bits = native.Data[bitsOffset];
-                        bool skipBit = false;
-
-                        bool shift = (bits & 0x80) == 0; // zero bit 7 means 90 degree phase shift
-                        if (shift && !previousShift)
+                        int palette = native.Data[bitsOffset] >> pixelBitsCount;
+                        int bits = native.Data[bitsOffset] & pixelBitsMask;
+                        if (i + 1 < bytesPerLine)
                         {
-                            scanline.Write(0);
+                            bits |= (native.Data[bitsOffset + 1] & pixelBitsMask) << pixelBitsCount;
                         }
-                        else if (!shift && previousShift)
-                        {
-                            skipBit = true;
-                        }
-                        previousShift = shift;
 
-                        for (int b = 0; b < 7; ++b)
+                        for (int tick = 0; tick < 14; ++tick)
                         {
-                            if (skipBit)
-                            {
-                                skipBit = false;
-                            }
-                            else
-                            {
-                                scanline.Write(bits);
-                            }
-                            scanline.Write(bits);
-                            bits >>= 1;
+                            int shift = (tick + palette) >> 1;
+                            scanline.Write(bits >> shift);
                         }
                     }
                 }

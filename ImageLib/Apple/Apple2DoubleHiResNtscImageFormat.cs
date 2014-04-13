@@ -6,7 +6,6 @@ namespace ImageLib.Apple
     public class Apple2DoubleHiResNtscImageFormat : NativeImageFormat
     {
         private const int _lines = 192;
-        private const int _width = 560;
         private const int _height = _lines * 3;
         private const int _bytesPerHalfScreen = 8192;
 
@@ -23,7 +22,7 @@ namespace ImageLib.Apple
             const int significantBitsMask = (1 << significantBitsPerByte) - 1;
             const int initialPhase = 1;
 
-            var builder = new NtscPictureBuilder(_width, _lines, initialPhase);
+            var builder = new NtscPictureBuilder(initialPhase);
 
             for (int y = 0; y < _lines; ++y)
             {

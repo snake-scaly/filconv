@@ -28,28 +28,29 @@ namespace ImageLib.Apple
     /// </remarks>
     public class NtscPictureBuilder
     {
+        private const int _width = 560;
+        private const int _height = 192;
         private const int _linesPerScanline = 3;
         private const int _scanlineBufferSize = 6;
 
-        private int _height;
         private int _phase;
         private WriteableBitmap _bitmap;
 
         /// <summary>
         /// Create a builder instance.
         /// </summary>
-        /// <param name="width">width of the Apple graphics, in bits</param>
-        /// <param name="height">height of the Apple graphics, in scanlines</param>
+        /// <remarks>
+        /// The NTSC picture is always 560x192 bits in size.
+        /// </remarks>
         /// <param name="phase">phase of the first bit in each scanline. See <see cref="YIQColor"/> for more detail</param>
-        public NtscPictureBuilder(int width, int height, int phase)
+        public NtscPictureBuilder(int phase)
         {
-            _height = height;
             _phase = phase;
 
             const double dpi = 96;
 
-            int widthWithOverdraw = width + _scanlineBufferSize;
-            _bitmap = new WriteableBitmap(widthWithOverdraw, height * _linesPerScanline, dpi / PixelAspect, dpi, PixelFormats.Bgr32, null);
+            int widthWithOverdraw = _width + _scanlineBufferSize;
+            _bitmap = new WriteableBitmap(widthWithOverdraw, _height * _linesPerScanline, dpi / PixelAspect, dpi, PixelFormats.Bgr32, null);
         }
 
         /// <summary>

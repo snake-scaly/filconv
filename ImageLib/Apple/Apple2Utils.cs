@@ -9,20 +9,24 @@ namespace ImageLib.Apple
     {
         public static int GetHiResLineOffset(int lineIndex)
         {
-            int block = lineIndex & 7;
-            int subBlock = (lineIndex >> 3) & 7;
-            int line = (lineIndex >> 6) & 3;
-            return block * 1024 + subBlock * 128 + line * 40;
+            const int bytesPerSuperblock = 1024;
+            const int bytesPerBlock = 128;
+            const int bytesPerLine = 40;
+
+            int superblock = lineIndex & 7;
+            int block = (lineIndex >> 3) & 7;
+            int lineInBlock = (lineIndex >> 6) & 3;
+            return bytesPerSuperblock * superblock + bytesPerBlock * block + bytesPerLine * lineInBlock;
         }
 
         public static int GetLoResLineOffset(int lineIndex)
         {
-            const int _bytesPerByteLine = 40;
-            const int _bytesPerBlock = 128;
+            const int bytesPerBlock = 128;
+            const int bytesPerLine = 40;
 
             int block = (lineIndex >> 1) & 7;
             int lineInBlock = (lineIndex >> 4) & 3;
-            return _bytesPerBlock * block + _bytesPerByteLine * lineInBlock;
+            return bytesPerBlock * block + bytesPerLine * lineInBlock;
         }
     }
 }
