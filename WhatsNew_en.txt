@@ -1,5 +1,12 @@
 What's New in This Version:
 
+1.8.3
+
+* Fixed vertical color bars appearing in some Apple Hi-Res pictures
+  in solid white areas when simulating NTSC.
+* Apple Lo-Res pictures now have the same size as any other Apple
+  mode when simulating NTSC.
+
 1.8.2
 
 * Write BOL files such that Dos33 recognizes them.
