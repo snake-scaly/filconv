@@ -70,7 +70,14 @@ namespace FilConvWpf
                 }
                 else
                 {
-                    left.ImagePresenter = new BitmapPresenter(new BitmapImage(new Uri(fileName)));
+                    // Avoid locking the file
+                    var bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+                    bmp.UriSource = new Uri(fileName);
+                    bmp.EndInit();
+
+                    left.ImagePresenter = new BitmapPresenter(bmp);
                 }
                 left.ImagePresenter.AdoptSettings(leftSettings);
 
