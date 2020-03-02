@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FilConvWpf")]
-[assembly: AssemblyCopyright("Copyright © 2011-2013 Sergey 'SnakE' Gromov")]
+[assembly: AssemblyCopyright("Copyright © 2011 Sergey 'SnakE' Gromov")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
