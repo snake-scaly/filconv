@@ -217,6 +217,9 @@
     <value>Apple ][ Double Hi-Res</value>
     <comment>Image format combo-box entry for Apple II Double High Resolution (140x192, 16 colors)</comment>
   </data>
+  <data name="FormatNameApple2DoubleLoRes" xml:space="preserve">
+    <value>Apple ][ Double Lo-Res</value>
+  </data>
   <data name="FormatNameApple2LoRes" xml:space="preserve">
     <value>Apple ][ Lo-Res</value>
     <comment>Image format combo-box entry for Apple II Low Resolution (40x48)</comment>

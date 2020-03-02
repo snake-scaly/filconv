@@ -13,11 +13,12 @@ namespace FilConvWpf.Native
         private readonly NativeImageFormat _pixelated;
         private readonly NativeImageFormat _perceptual;
         
-        public AppleLoResDisplayMode()
-            : base("FormatNameApple2LoRes", new Apple2LoResImageFormat())
+        public AppleLoResDisplayMode(bool doubleResolution)
+            : base(doubleResolution ? "FormatNameApple2DoubleLoRes" : "FormatNameApple2LoRes",
+                   new Apple2LoResImageFormat(doubleResolution))
         {
             _pixelated = Format;
-            _perceptual = new Apple2LoResNtscImageFormat();
+            _perceptual = new Apple2LoResNtscImageFormat(doubleResolution);
         }
 
         protected override void UpdateFormat()

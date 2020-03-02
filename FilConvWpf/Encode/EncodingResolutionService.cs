@@ -52,7 +52,8 @@ namespace FilConvWpf.Encode
             new NativeEncoding("FormatNameHGR", new HgrImageFormat(), true),
             new NativeEncoding("FormatNameMGR9", new Mgr9ImageFormat(), true),
             new NativeEncoding("FormatNameHGR9", new Hgr9ImageFormat(), true),
-            new NativeEncoding("FormatNameApple2LoRes", new Apple2LoResImageFormat(), false),
+            new NativeEncoding("FormatNameApple2LoRes", new Apple2LoResImageFormat(false), false),
+            new NativeEncoding("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true), false),
             new AppleHiResEncoding(),
             new NativeEncoding("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat(), false),
         };

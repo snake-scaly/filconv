@@ -19,13 +19,13 @@ namespace ImageLib.Apple
             return bytesPerSuperblock * superblock + bytesPerBlock * block + bytesPerLine * lineInBlock;
         }
 
-        public static int GetLoResLineOffset(int lineIndex)
+        public static int GetTextLineOffset(int lineIndex)
         {
             const int bytesPerBlock = 128;
             const int bytesPerLine = 40;
 
-            int block = (lineIndex >> 1) & 7;
-            int lineInBlock = (lineIndex >> 4) & 3;
+            int block = lineIndex & 7;
+            int lineInBlock = (lineIndex >> 3) & 3;
             return bytesPerBlock * block + bytesPerLine * lineInBlock;
         }
     }
