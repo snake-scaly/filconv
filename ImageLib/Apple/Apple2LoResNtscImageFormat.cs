@@ -51,14 +51,15 @@ namespace ImageLib.Apple
 
                         if (inPixelOffset >= native.Data.Length)
                             break;
-                        WritePixelColumn(native.Data[inPixelOffset], scanlines, pixelWidth, ref tick);
 
                         if (_doubleResolution)
                         {
-                            inPixelOffset += pageSize;
-                            int value = inPixelOffset < native.Data.Length ? native.Data[inPixelOffset] : 0;
+                            int inPixelOffsetEven = inPixelOffset + pageSize;
+                            int value = inPixelOffsetEven < native.Data.Length ? native.Data[inPixelOffsetEven] : 0;
                             WritePixelColumn(value, scanlines, pixelWidth, ref tick);
                         }
+
+                        WritePixelColumn(native.Data[inPixelOffset], scanlines, pixelWidth, ref tick);
                     }
                 }
             }

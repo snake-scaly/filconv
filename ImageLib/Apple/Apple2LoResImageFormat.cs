@@ -62,11 +62,17 @@ namespace ImageLib.Apple
 
                     if (inPixelOffset >= native.Data.Length)
                         break;
-                    PutPixels(native.Data[inPixelOffset], pixels, outPixelOffset, bmpStride);
 
-                    if (!_doubleResolution || inPixelOffset + _nativePage >= native.Data.Length)
-                        continue;
-                    PutPixels(native.Data[inPixelOffset + _nativePage], pixels, outPixelOffset + bmpBPP, bmpStride);
+                    if (_doubleResolution)
+                    {
+                        PutPixels(native.Data[inPixelOffset], pixels, outPixelOffset + bmpBPP, bmpStride);
+                        if (inPixelOffset + _nativePage < native.Data.Length)
+                            PutPixels(native.Data[inPixelOffset + _nativePage], pixels, outPixelOffset, bmpStride);
+                    }
+                    else
+                    {
+                        PutPixels(native.Data[inPixelOffset], pixels, outPixelOffset, bmpStride);
+                    }
                 }
             }
 
@@ -91,9 +97,16 @@ namespace ImageLib.Apple
                 for (int x = 0; x < w; x += _bmpBlockWidth)
                 {
                     int nativePixelOffset = nativeLineOffset + x / _bmpBlockWidth;
-                    nativePixels[nativePixelOffset] = GetPixels(src, x, y);
-                    if (_doubleResolution && x + 1 < w)
-                        nativePixels[nativePixelOffset + _nativePage] = GetPixels(src, x + 1, y);
+                    if (_doubleResolution)
+                    {
+                        nativePixels[nativePixelOffset + _nativePage] = GetPixels(src, x, y);
+                        if (x + 1 < w)
+                            nativePixels[nativePixelOffset] = GetPixels(src, x + 1, y);
+                    }
+                    else
+                    {
+                        nativePixels[nativePixelOffset] = GetPixels(src, x, y);
+                    }
                 }
             }
 
