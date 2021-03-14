@@ -72,7 +72,7 @@ namespace filconv
                 return 1;
             }
 
-            NativeImageFormat filFormat = GetFormatByName(filFormatName);
+            INativeImageFormat filFormat = GetFormatByName(filFormatName);
 
             string src = positional[0];
             string dst = positional[1];
@@ -103,7 +103,7 @@ namespace filconv
             return 0;
         }
 
-        static void FromFil(string from, string to, NativeImageFormat formatFrom, Type formatTo)
+        static void FromFil(string from, string to, INativeImageFormat formatFrom, Type formatTo)
         {
             Fil fil = Fil.FromFile(from);
             NativeImage ni = new NativeImage(fil.Data, new FormatHint(Path.GetExtension(from)));
@@ -117,7 +117,7 @@ namespace filconv
             }
         }
 
-        static void ToFil(string from, string to, NativeImageFormat format, FilType type, bool dither)
+        static void ToFil(string from, string to, INativeImageFormat format, FilType type, bool dither)
         {
             BitmapImage bmp = new BitmapImage(new Uri(from, UriKind.Relative));
             EncodingOptions options = new EncodingOptions();
@@ -141,7 +141,7 @@ namespace filconv
             options.WriteOptionDescriptions(System.Console.Out);
         }
 
-        static NativeImageFormat GetFormatByName(string name)
+        static INativeImageFormat GetFormatByName(string name)
         {
             foreach (var f in _agatFormats)
             {
@@ -153,13 +153,13 @@ namespace filconv
             return null;
         }
 
-        static readonly Tuple<NativeImageFormat, string>[] _agatFormats =
+        static readonly Tuple<INativeImageFormat, string>[] _agatFormats =
         {
-            Tuple.Create((NativeImageFormat)new Gr7ImageFormat(), "GR7"),
-            Tuple.Create((NativeImageFormat)new MgrImageFormat(), "MGR"),
-            Tuple.Create((NativeImageFormat)new HgrImageFormat(), "HGR"),
-            Tuple.Create((NativeImageFormat)new Mgr9ImageFormat(), "MGR9"),
-            Tuple.Create((NativeImageFormat)new Hgr9ImageFormat(), "HGR9"),
+            Tuple.Create((INativeImageFormat)new Gr7ImageFormat(), "GR7"),
+            Tuple.Create((INativeImageFormat)new MgrImageFormat(), "MGR"),
+            Tuple.Create((INativeImageFormat)new HgrImageFormat(), "HGR"),
+            Tuple.Create((INativeImageFormat)new Mgr9ImageFormat(), "MGR9"),
+            Tuple.Create((INativeImageFormat)new Hgr9ImageFormat(), "HGR9"),
         };
 
         static readonly Dictionary<string, Type> _extToFormat =

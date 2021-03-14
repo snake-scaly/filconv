@@ -3,7 +3,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
 {
-    public class Apple2DoubleHiResNtscImageFormat : NativeImageFormat
+    public class Apple2DoubleHiResNtscImageFormat : INativeImageFormat
     {
         private const int _lines = 192;
         private const int _height = _lines * 3;

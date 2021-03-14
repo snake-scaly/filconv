@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
 {
-    public class Apple2LoResImageFormat : NativeImageFormat
+    public class Apple2LoResImageFormat : INativeImageFormat
     {
         // Lo-res mode is always 40x24 blocks. Each block is either 1x2 pixels,
         // or 2x2 pixels in double lo-res.

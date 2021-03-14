@@ -8,7 +8,7 @@ namespace FilConvWpf.Native
     interface INativeDisplayMode
     {
         string Name { get; }
-        NativeImageFormat Format { get; }
+        INativeImageFormat Format { get; }
         double Aspect { get; }
         event EventHandler<EventArgs> FormatChanged;
         ToolBar ToolBar { get; }

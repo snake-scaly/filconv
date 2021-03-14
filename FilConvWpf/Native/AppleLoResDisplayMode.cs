@@ -10,8 +10,8 @@ namespace FilConvWpf.Native
 {
     class AppleLoResDisplayMode : AppleDisplayModeBase
     {
-        private readonly NativeImageFormat _pixelated;
-        private readonly NativeImageFormat _perceptual;
+        private readonly INativeImageFormat _pixelated;
+        private readonly INativeImageFormat _perceptual;
         
         public AppleLoResDisplayMode(bool doubleResolution)
             : base(doubleResolution ? "FormatNameApple2DoubleLoRes" : "FormatNameApple2LoRes",

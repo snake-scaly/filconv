@@ -52,7 +52,7 @@ namespace FilConvWpf.Native
             get { return _nativeImage; }
         }
 
-        public NativeImageFormat NativeImageFormat
+        public INativeImageFormat NativeImageFormat
         {
             get { return _currentMode != null ? _currentMode.Format : null; }
         }
@@ -103,7 +103,7 @@ namespace FilConvWpf.Native
             Convert(_currentMode.Format);
         }
 
-        private void Convert(NativeImageFormat f)
+        private void Convert(INativeImageFormat f)
         {
             DisplayImage = new AspectBitmap(f.FromNative(_nativeImage), _currentMode.Aspect);
             OnDisplayImageChanged();

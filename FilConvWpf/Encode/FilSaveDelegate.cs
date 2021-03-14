@@ -10,7 +10,7 @@ namespace FilConvWpf.Encode
     class FilSaveDelegate : SaveDelegateAbstr
     {
         private BitmapSource _bitmap;
-        private NativeImageFormat _format;
+        private INativeImageFormat _format;
         private EncodingOptions _options;
         private byte[] _data;
         private string _fileNameSuffix;
@@ -20,7 +20,7 @@ namespace FilConvWpf.Encode
             StartAddress = Fil.DefauldLoadingAddress;
         }
 
-        public FilSaveDelegate(BitmapSource bitmap, NativeImageFormat format, EncodingOptions options)
+        public FilSaveDelegate(BitmapSource bitmap, INativeImageFormat format, EncodingOptions options)
             : this()
         {
             _bitmap = bitmap;

@@ -7,7 +7,7 @@ using ImageLib.Util;
 
 namespace ImageLib.Agat
 {
-    public abstract class AgatImageFormatAbstr : NativeImageFormat
+    public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
         private const double defaultDpi = 96;
 

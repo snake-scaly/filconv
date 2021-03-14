@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
 {
-    public class Apple2DoubleHiResImageFormat : NativeImageFormat
+    public class Apple2DoubleHiResImageFormat : INativeImageFormat
     {
         private const int _bytesPerHalfScreen = 8192;
         private const int _pixelsPerWord = 7;

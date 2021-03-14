@@ -5,6 +5,6 @@ namespace FilConvWpf
     interface INativeOriginal : IOriginal
     {
         NativeImage NativeImage { get; }
-        NativeImageFormat NativeImageFormat { get; }
+        INativeImageFormat NativeImageFormat { get; }
     }
 }

@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace ImageLib.Spectrum
 {
-    public abstract class SpectrumImageFormatAbstr : NativeImageFormat
+    public abstract class SpectrumImageFormatAbstr : INativeImageFormat
     {
         private const double _defaultDpi = 96;
 

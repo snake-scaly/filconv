@@ -82,7 +82,7 @@
     <Compile Include="Gamut\Mgr9BlackGamut.cs" />
     <Compile Include="Gamut\SrgbGamut.cs" />
     <Compile Include="NativeImage.cs" />
-    <Compile Include="NativeImageFormat.cs" />
+    <Compile Include="INativeImageFormat.cs" />
     <Compile Include="Agat\Mgr9ImageFormat.cs" />
     <Compile Include="Agat\MgrImageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

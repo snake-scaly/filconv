@@ -12,7 +12,7 @@ namespace FilConvWpf.Native
 
         private ToggleButton _ntscButton;
 
-        public AppleDisplayModeBase(string name, NativeImageFormat format)
+        public AppleDisplayModeBase(string name, INativeImageFormat format)
             : base(name, format)
         {
             BuildToolBar();

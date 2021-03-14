@@ -12,7 +12,7 @@ namespace FilConvWpf.Native
     {
         public event EventHandler<EventArgs> FormatChanged;
 
-        public NativeDisplayMode(string name, NativeImageFormat format)
+        public NativeDisplayMode(string name, INativeImageFormat format)
         {
             Name = name;
             Format = format;
@@ -26,7 +26,7 @@ namespace FilConvWpf.Native
                 return Format.Aspect;
             }
         }
-        public NativeImageFormat Format { get; protected set; }
+        public INativeImageFormat Format { get; protected set; }
         public ToolBar ToolBar { get; private set; }
 
         protected void CreateToolBarOnce(string title)

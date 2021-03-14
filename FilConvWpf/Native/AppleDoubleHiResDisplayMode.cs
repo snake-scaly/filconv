@@ -5,8 +5,8 @@ namespace FilConvWpf.Native
 {
     class AppleDoubleHiResDisplayMode : AppleDisplayModeBase
     {
-        private readonly NativeImageFormat _pixelated;
-        private readonly NativeImageFormat _perceptual;
+        private readonly INativeImageFormat _pixelated;
+        private readonly INativeImageFormat _perceptual;
 
         public AppleDoubleHiResDisplayMode()
             : base("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat())

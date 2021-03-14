@@ -20,7 +20,7 @@ namespace ImageLib
         /// </summary>
         /// <para>This property may contain <c>null</c> if the format is
         /// not known.</para>
-        public NativeImageFormat NativeFormat { get; set; }
+        public INativeImageFormat NativeFormat { get; set; }
 
         public FormatHint(string fileName)
             : this()
@@ -28,7 +28,7 @@ namespace ImageLib
             FileName = fileName;
         }
 
-        public FormatHint(NativeImageFormat format)
+        public FormatHint(INativeImageFormat format)
             : this()
         {
             NativeFormat = format;

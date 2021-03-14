@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
 {
-    public class Apple2HiResNtscImageFormat : NativeImageFormat
+    public class Apple2HiResNtscImageFormat : INativeImageFormat
     {
         public double Aspect
         {

@@ -11,13 +11,13 @@ namespace FilConvWpf.Encode
 {
     class NativeEncoding : IEncoding
     {
-        private NativeImageFormat _format;
+        private INativeImageFormat _format;
         private bool _dither;
         private ToggleButton _ditherButton;
 
         public event EventHandler<EventArgs> EncodingChanged;
 
-        public NativeEncoding(string name, NativeImageFormat format, bool canDither)
+        public NativeEncoding(string name, INativeImageFormat format, bool canDither)
         {
             Name = name;
             _format = format;

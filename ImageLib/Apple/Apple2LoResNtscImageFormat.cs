@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
 {
-    public class Apple2LoResNtscImageFormat : NativeImageFormat
+    public class Apple2LoResNtscImageFormat : INativeImageFormat
     {
         private readonly bool _doubleResolution;
 

@@ -11,10 +11,10 @@ namespace FilConvWpf.Encode
     class Transcoding : IEncoding
     {
         private NativeImage _nativeImage;
-        private NativeImageFormat _format;
+        private INativeImageFormat _format;
         private IEnumerable<ISaveDelegate> _saveDelegates;
 
-        public Transcoding(NativeImage nativeImage, NativeImageFormat format, string nameL10nKey, IEnumerable<ISaveDelegate> saveDelegates)
+        public Transcoding(NativeImage nativeImage, INativeImageFormat format, string nameL10nKey, IEnumerable<ISaveDelegate> saveDelegates)
         {
             _nativeImage = nativeImage;
             _format = format;

@@ -7,7 +7,7 @@ using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
-    public class Apple2HiResImageFormat : NativeImageFormat
+    public class Apple2HiResImageFormat : INativeImageFormat
     {
         private const int width = 280;
         private const int height = 192;
