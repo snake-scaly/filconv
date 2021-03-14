@@ -17,7 +17,7 @@
             <TextBlock TextAlignment="Center" Margin="0 14pt 0 0">
                 <Run Text="{i:L10n AboutBoxCopyright}" /><LineBreak />
                 <Run Text="{i:L10n AboutBoxDevelopedFor}" /><LineBreak />
-                <Hyperlink NavigateUri="http://deka.ssmu.ru/er/agat" Click="Hyperlink_Click">http://deka.ssmu.ru/er/agat</Hyperlink>
+                <Hyperlink NavigateUri="http://agatcomp.ru/agat/" Click="Hyperlink_Click">http://agatcomp.ru/agat/</Hyperlink>
             </TextBlock>
             <TextBlock TextAlignment="Center" Margin="0 10pt 0 0">
                 <Run Text="{i:L10n AboutBoxIconsBy}" /><LineBreak />
