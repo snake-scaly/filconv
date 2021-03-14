@@ -224,6 +224,10 @@
     <value>Apple ][ Lo-Res</value>
     <comment>Image format combo-box entry for Apple II Low Resolution (40x48)</comment>
   </data>
+  <data name="FormatNameDMGR" xml:space="preserve">
+    <value>DMGR 128x256x16</value>
+    <comment>Image format entry for the non-standard 128x256x16 colors mode</comment>
+  </data>
   <data name="FormatNameGR7" xml:space="preserve">
     <value>GR7</value>
     <comment>Image format combo-box entry for 64x64, 16 colors</comment>

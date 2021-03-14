@@ -313,6 +313,15 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DMGR 128x256x16.
+        /// </summary>
+        internal static string FormatNameDMGR {
+            get {
+                return ResourceManager.GetString("FormatNameDMGR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GR7.
         /// </summary>
         internal static string FormatNameGR7 {
