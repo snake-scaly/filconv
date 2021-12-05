@@ -106,7 +106,7 @@ namespace filconv
         static void FromFil(string from, string to, INativeImageFormat formatFrom, Type formatTo)
         {
             Fil fil = Fil.FromFile(from);
-            NativeImage ni = new NativeImage(fil.Data, new FormatHint(Path.GetExtension(from)));
+            NativeImage ni = new NativeImage(fil.GetData(), new FormatHint(Path.GetExtension(from)));
             BitmapSource bmp = formatFrom.FromNative(ni);
 
             BitmapEncoder enc = (BitmapEncoder)Activator.CreateInstance(formatTo);
@@ -123,9 +123,8 @@ namespace filconv
             EncodingOptions options = new EncodingOptions();
             options.Dither = dither;
             byte[] pixels = format.ToNative(bmp, options).Data;
-            var fil = new Fil(Path.GetFileNameWithoutExtension(to));
-            fil.Type = type;
-            fil.Data = pixels;
+            var fil = new Fil { Name = Path.GetFileNameWithoutExtension(to), Type = type };
+            fil.SetData(pixels);
             using (var fs = new FileStream(to, FileMode.Create))
             {
                 fil.Write(fs);

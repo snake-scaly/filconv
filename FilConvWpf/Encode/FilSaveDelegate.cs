@@ -17,7 +17,7 @@ namespace FilConvWpf.Encode
 
         private FilSaveDelegate()
         {
-            StartAddress = Fil.DefauldLoadingAddress;
+            LoadAddress = Fil.DefaultLoadAddress;
         }
 
         public FilSaveDelegate(BitmapSource bitmap, INativeImageFormat format, EncodingOptions options)
@@ -48,13 +48,13 @@ namespace FilConvWpf.Encode
             }
         }
 
-        public UInt16 StartAddress { get; set; }
+        public UInt16 LoadAddress { get; set; }
 
         public override void SaveAs(string fileName)
         {
-            var fil = new Fil(Path.GetFileNameWithoutExtension(fileName));
-            fil.Data = _data ?? _format.ToNative(_bitmap, _options).Data;
-            fil.StartAddress = StartAddress;
+            var fil = new Fil { Name = Path.GetFileNameWithoutExtension(fileName), Type = new FilType(0x84) };
+            fil.SetData(_data ?? _format.ToNative(_bitmap, _options).Data);
+            fil.LoadAddress = LoadAddress;
             using (var fs = new FileStream(fileName, FileMode.Create))
             {
                 fil.Write(fs);

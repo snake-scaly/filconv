@@ -1,75 +1,68 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 
 namespace FilLib
 {
-    public struct FilType : IEquatable<FilType>
+    public class FilType : IEquatable<FilType>
     {
-        public static readonly FilType T = new FilType('T', 0);
-        public static readonly FilType B = new FilType('B', 4);
-        public static readonly FilType K = new FilType('K', 32);
+        private readonly int _typeIndex;
 
-        static readonly FilType[] _allTypes = { T, B, K };
-
-        public char Name { get; private set; }
-        public int Code { get; private set; }
-
-        FilType(char name, int code)
-            : this()
+        public FilType(byte code)
         {
-            Name = name;
             Code = code;
+            _typeIndex = CalculateTypeIndex(code);
         }
 
-        public static FilType FromCode(int code)
+        public byte Code { get; }
+
+        public bool HasAddrSize => _typeIndex == 3;
+
+        public static FilType FromName(char name, bool protect = false)
         {
-            code &= 0x7F; // bit 7 is a weird flag bit
-            foreach (FilType ft in _allTypes)
-            {
-                if (ft.Code == code)
-                    return ft;
-            }
-            throw new NotSupportedException("Unknown file type: " + code);
+            var typeCode = NameToCode(name) | (protect ? 0x80 : 0);
+            return new FilType((byte)typeCode);
         }
 
-        public static FilType FromName(char name)
-        {
-            foreach (FilType ft in _allTypes)
-            {
-                if (ft.Name == Char.ToUpper(name))
-                    return ft;
-            }
-            throw new NotSupportedException("Unknown file type: " + name);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is FilType)
-                return Equals((FilType)obj);
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return Code.GetHashCode();
-        }
-
-        public bool Equals(FilType other)
-        {
-            return Code == other.Code;
-        }
+        public override bool Equals(object obj) => obj is FilType other && Equals(other);
+        public bool Equals(FilType other) => Code == other?.Code;
+        public override int GetHashCode() => Code.GetHashCode();
 
         public static bool operator ==(FilType a, FilType b)
         {
-            return a.Code == b.Code;
+            if (a is null)
+                return b is null;
+            return a.Equals(b);
         }
 
-        public static bool operator !=(FilType a, FilType b)
+        public static bool operator !=(FilType a, FilType b) => !(a == b);
+
+        // Calculate type index like Apple DOS does:
+        // 1. Ignore the most significant write-protect bit.
+        // 2. Find the most significant non-zero bit.
+        // 3. If found, return its one-based index in the byte.
+        // 4. If not found, return zero which is type T.
+        private static int CalculateTypeIndex(int code)
         {
-            return a.Code != b.Code;
+            for (int mask = 0x40, i = 7; mask != 0; mask >>= 1, i--)
+                if ((code & mask) != 0)
+                    return i;
+            return 0;
+        }
+
+        private static int NameToCode(char name)
+        {
+            switch (name)
+            {
+                case 'T': return 0;
+                case 'I': return 1;
+                case 'A': return 2;
+                case 'B': return 4;
+                case 'S': return 8;
+                case 'R': return 16;
+                case 'П': return 16;
+                case 'К': return 32;
+                case 'Д': return 64;
+                default: throw new NotSupportedException("Unknown file type: " + name);
+            }
         }
     }
 }

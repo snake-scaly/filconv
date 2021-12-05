@@ -31,7 +31,7 @@ namespace FilConvWpf.Encode
                 {
                     NativeImage piclerImage = new SpectrumImageFormatInterleave().Deinterleave(nativeOriginal.NativeImage);
                     var saveDelegate = new FilSaveDelegate(piclerImage.Data, ".bol");
-                    saveDelegate.StartAddress = UncompressedBolStartAddress;
+                    saveDelegate.LoadAddress = UncompressedBolStartAddress;
                     yield return new Transcoding(piclerImage, new SpectrumImageFormatPicler(), "FormatNamePicler", new ISaveDelegate[] { saveDelegate });
                 }
                 else if (nativeOriginal.NativeImageFormat is SpectrumImageFormatPicler)
