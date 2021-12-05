@@ -43,6 +43,7 @@
     <Compile Include="AgatEncoding.cs" />
     <Compile Include="Fil.cs" />
     <Compile Include="FilType.cs" />
+    <Compile Include="ImageMeta.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
