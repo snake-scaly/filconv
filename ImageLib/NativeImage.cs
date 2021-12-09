@@ -16,11 +16,5 @@
         /// Hint about the possible data format.
         /// </summary>
         public FormatHint FormatHint { get; set; }
-
-        public NativeImage(byte[] data, FormatHint hint)
-        {
-            Data = data;
-            FormatHint = hint;
-        }
     }
 }

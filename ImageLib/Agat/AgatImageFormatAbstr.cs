@@ -9,44 +9,28 @@ namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
-        private const double defaultDpi = 96;
+        const double _defaultDpi = 96;
 
         // Error distribution coefficients by direction: East, South-West, South, South-East
         // These values distribute error inversely related to pixel distance
-        private const float errDistrE = 0.2929f;
-        private const float errDistrSW = 0.2071f;
-        private const float errDistrS = 0.2929f;
-        private const float errDistrSE = 0.2071f;
+        const float _errDistrE = 0.2929f;
+        const float _errDistrSw = 0.2071f;
+        const float _errDistrS = 0.2929f;
+        const float _errDistrSe = 0.2071f;
 
-        public virtual double Aspect
-        {
-            get { return 4.0 / 3.0; }
-        }
-
-        public int ImageSizeInBytes
-        {
-            get { return BytesPerScanline * Height; }
-        }
-
+        public virtual double Aspect => 4.0 / 3.0;
+        public int ImageSizeInBytes => BytesPerScanline * Height;
         protected abstract int Width { get; }
         protected abstract int Height { get; }
         protected abstract int BitsPerPixel { get; }
         protected abstract Color[] Palette { get; }
-        protected virtual IGamut Gamut { get { return new SrgbGamut(); } }
-
-        protected int PixelsPerByte
-        {
-            get { return 8 / BitsPerPixel; }
-        }
-
-        protected int BytesPerScanline
-        {
-            get { return Width / PixelsPerByte; }
-        }
+        protected virtual IGamut Gamut { get; } = new SrgbGamut();
+        protected int PixelsPerByte => 8 / BitsPerPixel;
+        protected int BytesPerScanline => Width / PixelsPerByte;
 
         public BitmapSource FromNative(NativeImage native)
         {
-            var bmp = new WriteableBitmap(Width, Height, defaultDpi / Aspect, defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(Width, Height, _defaultDpi / Aspect, _defaultDpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
             for (int y = 0; y < Height; ++y)
@@ -101,18 +85,18 @@ namespace ImageLib.Agat
 
                         if (x + 1 < Width)
                         {
-                            AddError(re * errDistrE, ge * errDistrE, be * errDistrE, ref currentLineErrors[x + 1]);
+                            AddError(re * _errDistrE, ge * _errDistrE, be * _errDistrE, ref currentLineErrors[x + 1]);
                         }
                         if (y + 1 < Height)
                         {
-                            AddError(re * errDistrS, ge * errDistrS, be * errDistrS, ref nextLineErrors[x]);
+                            AddError(re * _errDistrS, ge * _errDistrS, be * _errDistrS, ref nextLineErrors[x]);
                             if (x - 1 >= 0)
                             {
-                                AddError(re * errDistrSW, ge * errDistrSW, be * errDistrSW, ref nextLineErrors[x - 1]);
+                                AddError(re * _errDistrSw, ge * _errDistrSw, be * _errDistrSw, ref nextLineErrors[x - 1]);
                             }
                             if (x + 1 < Width)
                             {
-                                AddError(re * errDistrSE, ge * errDistrSE, be * errDistrSE, ref nextLineErrors[x + 1]);
+                                AddError(re * _errDistrSe, ge * _errDistrSe, be * _errDistrSe, ref nextLineErrors[x + 1]);
                             }
                         }
                     }
@@ -122,7 +106,7 @@ namespace ImageLib.Agat
                 nextLineErrors = new Error[Width];
             }
 
-            return new NativeImage(bytes, new FormatHint(this));
+            return new NativeImage { Data = bytes, FormatHint = new FormatHint(this) };
         }
 
         Color GetBgr32Pixel(byte[] pixels, int x, int y)
@@ -172,11 +156,6 @@ namespace ImageLib.Agat
             return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
         }
 
-        static Color GetBgr32Pixel(byte[] bgr32, int offset)
-        {
-            return Color.FromRgb(bgr32[offset + 2], bgr32[offset + 1], bgr32[offset]);
-        }
-
         static float Clamp(float c)
         {
             return Math.Min(Math.Max(c, 0), 255);
@@ -197,13 +176,6 @@ namespace ImageLib.Agat
         struct Error
         {
             public float R, G, B;
-
-            public Error(float r, float g, float b)
-            {
-                R = r;
-                G = g;
-                B = b;
-            }
         }
     }
 }

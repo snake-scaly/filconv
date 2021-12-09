@@ -59,13 +59,17 @@ namespace FilConvWpf
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Fil fil = Fil.FromFile(fileName);
-                    NativeImage ni = new NativeImage(fil.GetData(), new FormatHint(fileName));
+                    NativeImage ni = new NativeImage { Data = fil.GetData(), FormatHint = new FormatHint(fileName) };
                     left.ImagePresenter = new NativeImagePresenter(ni);
                 }
                 else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase) ||
                     fileName.EndsWith(".bol", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    NativeImage ni = new NativeImage(File.ReadAllBytes(fileName), new FormatHint(fileName));
+                    NativeImage ni = new NativeImage
+                    {
+                        Data = File.ReadAllBytes(fileName),
+                        FormatHint = new FormatHint(fileName)
+                    };
                     left.ImagePresenter = new NativeImagePresenter(ni);
                 }
                 else

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ImageLib.Spectrum
 {
@@ -37,7 +34,7 @@ namespace ImageLib.Spectrum
                 Array.Copy(sequential.Data, srcOffset, interleaved, GetLineOffset(y), _bytesPerLine);
             }
 
-            return new NativeImage(interleaved, new FormatHint(this));
+            return new NativeImage { Data = interleaved, FormatHint = new FormatHint(this) };
         }
 
         /// <summary>
@@ -60,7 +57,7 @@ namespace ImageLib.Spectrum
                 Array.Copy(interleaved.Data, GetLineOffset(y), sequential, dstOffset, _bytesPerLine);
             }
 
-            return new NativeImage(sequential, new FormatHint(new SpectrumImageFormatPicler()));
+            return new NativeImage { Data = sequential, FormatHint = new FormatHint(new SpectrumImageFormatPicler()) };
         }
     }
 }

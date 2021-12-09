@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ImageLib
 {
@@ -13,10 +10,10 @@ namespace ImageLib
         public static int ComputeMatch(NativeImage native, int expectedSize, string nameFragment = null)
         {
             int score = BestSizeMatchScore - Math.Abs(native.Data.Length - expectedSize);
-            if (nameFragment != null)
-            {
-                score += native.FormatHint.FileNameContains(nameFragment) ? NameMatchScore : 0;
-            }
+
+            if (nameFragment != null && native.FormatHint.FileName?.ContainsIgnoreCase(nameFragment) == true)
+                score += NameMatchScore;
+
             return score;
         }
     }

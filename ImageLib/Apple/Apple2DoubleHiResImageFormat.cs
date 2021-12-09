@@ -18,10 +18,7 @@ namespace ImageLib.Apple
         private const int _width = 140;
         private const int _height = 192;
 
-        public double Aspect
-        {
-            get { return (double)(_height * 4) / (_width * 3); }
-        }
+        public double Aspect => (double)(_height * 4) / (_width * 3);
 
         public BitmapSource FromNative(NativeImage native)
         {
@@ -108,7 +105,7 @@ namespace ImageLib.Apple
                 }
             }
 
-            return new NativeImage(data, new FormatHint(this));
+            return new NativeImage { Data = data, FormatHint = new FormatHint(this) };
         }
 
         private int GetLineOffset(int lineIndex)

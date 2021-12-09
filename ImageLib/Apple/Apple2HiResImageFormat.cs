@@ -185,7 +185,7 @@ namespace ImageLib.Apple
                 }
             }
 
-            return new NativeImage(dst.Pixels, new FormatHint(this));
+            return new NativeImage { Data = dst.Pixels, FormatHint = new FormatHint(this) };
         }
 
         public int ComputeMatchScore(NativeImage native)
