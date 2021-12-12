@@ -58,8 +58,14 @@ namespace FilConvWpf
 
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Fil fil = Fil.FromFile(fileName);
-                    NativeImage ni = new NativeImage { Data = fil.GetData(), FormatHint = new FormatHint(fileName) };
+                    var fil = Fil.FromFile(fileName);
+                    ImageMeta.TryParse(fil, out var metadata);
+                    var ni = new NativeImage
+                    {
+                        Data = fil.GetData(),
+                        Metadata = metadata,
+                        FormatHint = new FormatHint(fileName),
+                    };
                     left.ImagePresenter = new NativeImagePresenter(ni);
                 }
                 else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase) ||

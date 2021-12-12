@@ -1,4 +1,6 @@
-﻿namespace ImageLib
+﻿using FilLib;
+
+namespace ImageLib
 {
     /// <summary>
     /// Image in its native representation.
@@ -16,5 +18,10 @@
         /// Hint about the possible data format.
         /// </summary>
         public FormatHint FormatHint { get; set; }
+
+        /// <summary>
+        /// Optional image metadata.
+        /// </summary>
+        public ImageMeta Metadata { get; set; }
     }
 }

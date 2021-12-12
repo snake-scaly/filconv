@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using FilLib;
 using ImageLib.Util;
 
 namespace ImageLib.Apple
@@ -190,6 +191,8 @@ namespace ImageLib.Apple
 
         public int ComputeMatchScore(NativeImage native)
         {
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_280_192_HiRes)
+                return NativeImageFormatUtils.MetaMatchScore;
             return NativeImageFormatUtils.ComputeMatch(native, totalBytes);
         }
 

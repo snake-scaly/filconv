@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using FilLib;
 
 namespace ImageLib.Apple
 {
@@ -118,6 +119,8 @@ namespace ImageLib.Apple
 
         public int ComputeMatchScore(NativeImage native)
         {
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_140_192_DoubleHiResColor)
+                return NativeImageFormatUtils.MetaMatchScore;
             return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
         }
     }

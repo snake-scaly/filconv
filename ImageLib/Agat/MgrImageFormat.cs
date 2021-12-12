@@ -1,15 +1,17 @@
-﻿namespace ImageLib.Agat
+﻿using FilLib;
+
+namespace ImageLib.Agat
 {
     public class MgrImageFormat : C16ImageFormatAbstr
     {
-        protected override int Width
+        public override int ComputeMatchScore(NativeImage native)
         {
-            get { return 128; }
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_128_128_Pal16)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return base.ComputeMatchScore(native);
         }
 
-        protected override int Height
-        {
-            get { return 128; }
-        }
+        protected override int Width => 128;
+        protected override int Height => 128;
     }
 }

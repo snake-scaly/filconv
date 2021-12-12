@@ -151,7 +151,7 @@ namespace ImageLib.Agat
                 throw new ArgumentOutOfRangeException("y", y, "Y must be between 0 and " + Height);
         }
 
-        public int ComputeMatchScore(NativeImage native)
+        public virtual int ComputeMatchScore(NativeImage native)
         {
             return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
         }

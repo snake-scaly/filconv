@@ -1,23 +1,21 @@
 ﻿using System;
+using FilLib;
 
 namespace ImageLib.Agat
 {
     public class Hgr9ImageFormat : BwImageFormatAbstr
     {
-        protected override int Width
+        public override double Aspect => 2.0 / 3.0;
+
+        public override int ComputeMatchScore(NativeImage native)
         {
-            get { return 512; }
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_512_256_Mono)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return base.ComputeMatchScore(native);
         }
 
-        protected override int Height
-        {
-            get { return 256; }
-        }
-
-        public override double Aspect
-        {
-            get { return 2.0 / 3.0; }
-        }
+        protected override int Width => 512;
+        protected override int Height => 256;
 
         protected override int GetLineOffset(int y)
         {

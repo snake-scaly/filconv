@@ -95,7 +95,12 @@
     <Compile Include="Util\BitmapPixels.cs" />
     <Compile Include="Util\YIQColor.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\FilLib\FilLib.csproj">
+      <Project>{fb0cf20f-2915-4bd1-9ca0-0b853738a04a}</Project>
+      <Name>FilLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

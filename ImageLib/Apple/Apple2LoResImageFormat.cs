@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using FilLib;
 
 namespace ImageLib.Apple
 {
@@ -115,6 +116,11 @@ namespace ImageLib.Apple
 
         public int ComputeMatchScore(NativeImage native)
         {
+            var preferredMode = _doubleResolution
+                ? ImageMeta.Mode.Apple_80_48_DoubleLoRes
+                : ImageMeta.Mode.Apple_40_48_LoRes;
+            if (native.Metadata?.DisplayMode == preferredMode)
+                return NativeImageFormatUtils.MetaMatchScore;
             return NativeImageFormatUtils.ComputeMatch(native, _totalBytes);
         }
 

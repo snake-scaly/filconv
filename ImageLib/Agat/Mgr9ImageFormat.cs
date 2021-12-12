@@ -1,40 +1,28 @@
 ﻿using System;
 using System.Windows.Media;
+using FilLib;
 using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {
     public class Mgr9ImageFormat : AgatImageFormatAbstr
     {
-        protected override int Width
+        public override int ComputeMatchScore(NativeImage native)
         {
-            get { return 256; }
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_256_256_Pal4)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return base.ComputeMatchScore(native);
         }
 
-        protected override int Height
-        {
-            get { return 256; }
-        }
-
-        protected override int BitsPerPixel
-        {
-            get { return 2; }
-        }
-
-        protected override Color[] Palette
-        {
-            get { return _colorPalette; }
-        }
-
-        protected override IGamut Gamut
-        {
-            get { return _gamut; }
-        }
+        protected override int Width => 256;
+        protected override int Height => 256;
+        protected override int BitsPerPixel => 2;
+        protected override Color[] Palette => _colorPalette;
+        protected override IGamut Gamut { get; } = new Mgr9BlackGamut();
 
         protected override int GetLineOffset(int y)
         {
-            int bank;
-            int line = Math.DivRem(y, 2, out bank);
+            int line = Math.DivRem(y, 2, out var bank);
             return (line + Height / 2 * bank) * BytesPerScanline;
         }
 
@@ -45,7 +33,5 @@ namespace ImageLib.Agat
             Color.FromRgb(0, 255, 0),
             Color.FromRgb(0, 0, 255),
         };
-
-        private static readonly IGamut _gamut = new Mgr9BlackGamut();
     }
 }
