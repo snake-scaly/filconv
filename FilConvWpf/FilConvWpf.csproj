@@ -1,184 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4707962D-EE99-4C50-AB11-2BFE9965A340}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FilConvWpf</RootNamespace>
     <AssemblyName>FilConvWpf</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>net40</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>FilConvWpf.App</StartupObject>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <ProjectReference Include="..\FilLib\FilLib.csproj" />
+    <ProjectReference Include="..\ImageLib\ImageLib.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Encode\AppleHiResEncoding.cs" />
-    <Compile Include="Encode\SaveDelegateAbstr.cs" />
-    <Compile Include="Encode\EncodingResolutionService.cs" />
-    <Compile Include="Encode\FilSaveDelegate.cs" />
-    <Compile Include="Encode\IdentityEncoding.cs" />
-    <Compile Include="Encode\IEncoding.cs" />
-    <Compile Include="Encode\ISaveDelegate.cs" />
-    <Compile Include="Encode\NativeEncoding.cs" />
-    <Compile Include="Encode\GdiSaveDelegate.cs" />
-    <Compile Include="Encode\SimpleSaveDelegate.cs" />
-    <Compile Include="Encode\Transcoding.cs" />
-    <Compile Include="I18n\L10n.cs" />
-    <Compile Include="INativeOriginal.cs" />
-    <Compile Include="IOriginal.cs" />
-    <Compile Include="Native\AppleDisplayModeBase.cs" />
-    <Compile Include="Native\AppleDoubleHiResDisplayMode.cs" />
-    <Compile Include="Native\AppleHiResDisplayMode.cs" />
-    <Compile Include="Encode\EncodingImagePresenter.cs" />
-    <Compile Include="Native\AppleLoResDisplayMode.cs" />
-    <Compile Include="ResourceUtils.cs" />
-    <Compile Include="SettingNames.cs" />
-    <Compile Include="BitmapPresenter.cs" />
-    <Page Include="AboutBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="AboutBox.xaml.cs">
-      <DependentUpon>AboutBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AspectBitmap.cs" />
-    <Compile Include="Native\INativeDisplayMode.cs" />
-    <Compile Include="Native\NativeDisplayMode.cs" />
-    <Compile Include="Native\NativeImagePresenter.cs" />
-    <Compile Include="GrayscaleConverter.cs" />
-    <Compile Include="IImagePresenter.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Preview.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PictureScale.cs" />
-    <Compile Include="PixelAlignedBitmap.cs" />
-    <Compile Include="Preview.xaml.cs">
-      <DependentUpon>Preview.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PreviewModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.bg.resx">
-      <DependentUpon>Resources.resx</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ru.resx">
-      <DependentUpon>Resources.resx</DependentUpon>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Remove="Resources\fill.png" />
+    <Resource Include="Resources\fill.png" />
+    <None Remove="Resources\rainbow.png" />
     <Resource Include="Resources\rainbow.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Remove="Resources\television.png" />
     <Resource Include="Resources\television.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FilLib\FilLib.csproj">
-      <Project>{FB0CF20F-2915-4BD1-9CA0-0B853738A04A}</Project>
-      <Name>FilLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ImageLib\ImageLib.csproj">
-      <Project>{D920C1B3-0F11-4021-9C7C-E36A3AE5C3DC}</Project>
-      <Name>ImageLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <None Remove="Resources\useu.png" />
     <Resource Include="Resources\useu.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\fill.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icon.ico" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
