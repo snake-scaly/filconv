@@ -1,17 +1,23 @@
 ﻿using System.Windows.Media;
+using FilLib;
 
 namespace ImageLib.Agat
 {
     public abstract class C16ImageFormatAbstr : AgatImageFormatAbstr
     {
-        protected override int BitsPerPixel
-        {
-            get { return 4; }
-        }
+        protected override int BitsPerPixel => 4;
 
-        protected override Color[] Palette
+        protected override Color[] GetStandardPalette(ImageMeta.Palette variant)
         {
-            get { return _colorPalette; }
+            switch (variant)
+            {
+                case ImageMeta.Palette.Agat_1_Gray:
+                case ImageMeta.Palette.Agat_2_Gray:
+                case ImageMeta.Palette.Agat_3_Gray:
+                case ImageMeta.Palette.Agat_4_Gray:
+                    return _bwPalette;
+            }
+            return _colorPalette;
         }
 
         static readonly Color[] _colorPalette =

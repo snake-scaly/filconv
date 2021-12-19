@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using FilLib;
 using ImageLib.Gamut;
 using ImageLib.Util;
 
@@ -23,7 +25,6 @@ namespace ImageLib.Agat
         protected abstract int Width { get; }
         protected abstract int Height { get; }
         protected abstract int BitsPerPixel { get; }
-        protected abstract Color[] Palette { get; }
         protected virtual IGamut Gamut { get; } = new SrgbGamut();
         protected int PixelsPerByte => 8 / BitsPerPixel;
         protected int BytesPerScanline => Width / PixelsPerByte;
@@ -33,13 +34,20 @@ namespace ImageLib.Agat
             var bmp = new WriteableBitmap(Width, Height, _defaultDpi / Aspect, _defaultDpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
+
+            Color[] palette;
+            if (native.Metadata?.PaletteType == ImageMeta.Palette.Custom)
+                palette = native.Metadata.CustomPalette.Select(ArgbToColor).ToArray();
+            else
+                palette = GetStandardPalette(native.Metadata?.PaletteType ?? ImageMeta.Palette.Unknown);
+
             for (int y = 0; y < Height; ++y)
             {
                 int line = y * stride;
                 for (int x = 0; x < Width; ++x)
                 {
                     int pixel = line + x * 4;
-                    Color c = GetBgr32Pixel(native.Data, x, y);
+                    Color c = GetBgr32Pixel(native.Data, palette, x, y);
                     pixels[pixel] = c.B;
                     pixels[pixel + 1] = c.G;
                     pixels[pixel + 2] = c.R;
@@ -56,6 +64,8 @@ namespace ImageLib.Agat
 
             var currentLineErrors = new Error[Width];
             var nextLineErrors = new Error[Width];
+
+            var palette = GetStandardPalette(ImageMeta.Palette.Unknown);
 
             byte[] bytes = new byte[ImageSizeInBytes];
             for (int y = 0; y < Height; ++y)
@@ -74,11 +84,11 @@ namespace ImageLib.Agat
                         pixel = Color.FromRgb(Round(r), Round(g), Round(b));
                     }
 
-                    SetPixel(bytes, x, y, pixel);
+                    SetPixel(bytes, palette, x, y, pixel);
 
                     if (options.Dither)
                     {
-                        pixel = GetBgr32Pixel(bytes, x, y);
+                        pixel = GetBgr32Pixel(bytes, palette, x, y);
                         float re = r - pixel.R;
                         float ge = g - pixel.G;
                         float be = b - pixel.B;
@@ -109,7 +119,20 @@ namespace ImageLib.Agat
             return new NativeImage { Data = bytes, FormatHint = new FormatHint(this) };
         }
 
-        Color GetBgr32Pixel(byte[] pixels, int x, int y)
+        public virtual int ComputeMatchScore(NativeImage native)
+        {
+            return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
+        }
+
+        protected virtual int GetLineOffset(int y)
+        {
+            return y * BytesPerScanline;
+        }
+
+        // Get a palette variant for a mode. Unknown should retrieve the default palette.
+        protected abstract Color[] GetStandardPalette(ImageMeta.Palette variant);
+
+        Color GetBgr32Pixel(byte[] pixels, Color[] palette, int x, int y)
         {
             ValidateCoordinates(x, y);
             int pixelIndex;
@@ -118,10 +141,10 @@ namespace ImageLib.Agat
             int b = offset < pixels.Length ? pixels[offset] : 0;
             b >>= (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
             b &= (1 << BitsPerPixel) - 1;
-            return Palette[b];
+            return palette[b];
         }
 
-        void SetPixel(byte[] pixels, int x, int y, Color color)
+        void SetPixel(byte[] pixels, Color[] palette, int x, int y, Color color)
         {
             ValidateCoordinates(x, y);
             int pixelIndex;
@@ -132,15 +155,10 @@ namespace ImageLib.Agat
                 int b = pixels[offset];
                 int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
                 int mask = ((1 << BitsPerPixel) - 1) << shift;
-                int index = ColorUtils.BestMatch(color, Palette) << shift;
+                int index = ColorUtils.BestMatch(color, palette) << shift;
                 b = b & ~mask | index;
                 pixels[offset] = (byte)b;
             }
-        }
-
-        protected virtual int GetLineOffset(int y)
-        {
-            return y * BytesPerScanline;
         }
 
         void ValidateCoordinates(int x, int y)
@@ -149,11 +167,6 @@ namespace ImageLib.Agat
                 throw new ArgumentOutOfRangeException("x", x, "X must be between 0 and " + Width);
             if (y < 0 || y >= Height)
                 throw new ArgumentOutOfRangeException("y", y, "Y must be between 0 and " + Height);
-        }
-
-        public virtual int ComputeMatchScore(NativeImage native)
-        {
-            return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
         }
 
         static float Clamp(float c)
@@ -171,6 +184,15 @@ namespace ImageLib.Agat
             e.R += re;
             e.G += ge;
             e.B += be;
+        }
+
+        static Color ArgbToColor(uint i)
+        {
+            var a = (byte)(i >> 24);
+            var r = (byte)(i >> 16);
+            var g = (byte)(i >> 8);
+            var b = (byte)(i >> 0);
+            return Color.FromArgb(a, r, g, b);
         }
 
         struct Error

@@ -17,7 +17,6 @@ namespace ImageLib.Agat
         protected override int Width => 256;
         protected override int Height => 256;
         protected override int BitsPerPixel => 2;
-        protected override Color[] Palette => _colorPalette;
         protected override IGamut Gamut { get; } = new Mgr9BlackGamut();
 
         protected override int GetLineOffset(int y)
@@ -25,6 +24,8 @@ namespace ImageLib.Agat
             int line = Math.DivRem(y, 2, out var bank);
             return (line + Height / 2 * bank) * BytesPerScanline;
         }
+
+        protected override Color[] GetStandardPalette(ImageMeta.Palette variant) => _colorPalette;
 
         private static readonly Color[] _colorPalette =
         {
