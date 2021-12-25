@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Media;
 using FilLib;
 using ImageLib.Gamut;
 
@@ -25,14 +24,17 @@ namespace ImageLib.Agat
             return (line + Height / 2 * bank) * BytesPerScanline;
         }
 
-        protected override Color[] GetStandardPalette(ImageMeta.Palette variant) => _colorPalette;
-
-        private static readonly Color[] _colorPalette =
+        protected override int MapColorIndexNativeToStandard(int index, int palette)
         {
-            Color.FromRgb(0, 0, 0),
-            Color.FromRgb(255, 0, 0),
-            Color.FromRgb(0, 255, 0),
-            Color.FromRgb(0, 0, 255),
+            return _nativeToStandardColorMap[palette][index];
+        }
+
+        private static readonly int[][] _nativeToStandardColorMap =
+        {
+            new[] { 0, 1, 2, 4 },
+            new[] { 15, 1, 2, 4 },
+            new[] { 0, 0, 2, 4 },
+            new[] { 0, 1, 0, 4 },
         };
     }
 }

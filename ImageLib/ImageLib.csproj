@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agat\AgatImageFormatAbstr.cs" />
+    <Compile Include="Agat\AgatPalette.cs" />
     <Compile Include="Agat\DmgrImageFormat.cs" />
     <Compile Include="Apple\Apple2DoubleHiResImageFormat.cs" />
     <Compile Include="Apple\Apple2DoubleHiResNtscImageFormat.cs" />

@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-using FilLib;
-using ImageLib.Gamut;
+﻿using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {
@@ -10,12 +8,17 @@ namespace ImageLib.Agat
 
         protected override IGamut Gamut { get; } = new BlackAndWhiteGamut();
 
-        protected override Color[] GetStandardPalette(ImageMeta.Palette variant) => _palette;
-
-        private static readonly Color[] _palette =
+        protected override int MapColorIndexNativeToStandard(int index, int palette)
         {
-            Color.FromRgb(0, 0, 0),
-            Color.FromRgb(255, 255, 255)
+            return _nativeToStandardColorMap[palette][index];
+        }
+
+        private static readonly int[][] _nativeToStandardColorMap =
+        {
+            new[] { 0, 15 },
+            new[] { 15, 0 },
+            new[] { 0, 2 },
+            new[] { 2, 0 },
         };
     }
 }
