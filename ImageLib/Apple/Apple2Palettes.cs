@@ -1,22 +1,21 @@
 ﻿using ImageLib.Util;
-using System.Windows.Media;
 
 namespace ImageLib.Apple
 {
     public static class Apple2Palettes
     {
-        public static Color[] American { get { return americanPalette; } }
-        public static Color[] European { get { return europeanPalette; } }
-        public static Color[] LoRes16 { get { return loRes16Palette; } }
-        public static Color[] DoubleHiRes16 { get { return doubleHiRes16Palette; } }
+        public static Rgb[] American { get { return americanPalette; } }
+        public static Rgb[] European { get { return europeanPalette; } }
+        public static Rgb[] LoRes16 { get { return loRes16Palette; } }
+        public static Rgb[] DoubleHiRes16 { get { return doubleHiRes16Palette; } }
 
         /// <summary>
         /// Construct all Apple's NTSC colors.
         /// </summary>
         /// <returns></returns>
-        private static Color[] BuildAmerican16Palette(int phase)
+        private static Rgb[] BuildAmerican16Palette(int phase)
         {
-            var result = new Color[16];
+            var result = new Rgb[16];
             for (int i = 0; i < 16; i++)
             {
                 result[i] = YIQColor.From4BitsStrict(i, phase).ToColor();
@@ -27,7 +26,7 @@ namespace ImageLib.Apple
         /// <summary>
         /// RGB colors corresponding to simple colors for American Apples
         /// </summary>
-        private static readonly Color[] americanPalette =
+        private static readonly Rgb[] americanPalette =
         {
             YIQColor.From4BitsStrict(0x0, 0).ToColor(),
             YIQColor.From4BitsStrict(0xC, 0).ToColor(),
@@ -40,17 +39,17 @@ namespace ImageLib.Apple
         /// <summary>
         /// RGB colors corresponding to simple colors for European Apples
         /// </summary>
-        private static readonly Color[] europeanPalette =
+        private static readonly Rgb[] europeanPalette =
         {
-            Color.FromRgb(0, 0, 0),
-            Color.FromRgb(0, 255, 0),
-            Color.FromRgb(255, 0, 255),
-            Color.FromRgb(0, 0, 255),
-            Color.FromRgb(255, 0, 0),
-            Color.FromRgb(255, 255, 255),
+            Rgb.FromRgb(0, 0, 0),
+            Rgb.FromRgb(0, 255, 0),
+            Rgb.FromRgb(255, 0, 255),
+            Rgb.FromRgb(0, 0, 255),
+            Rgb.FromRgb(255, 0, 0),
+            Rgb.FromRgb(255, 255, 255),
         };
 
-        private static readonly Color[] loRes16Palette = BuildAmerican16Palette(0);
-        private static readonly Color[] doubleHiRes16Palette = BuildAmerican16Palette(1);
+        private static readonly Rgb[] loRes16Palette = BuildAmerican16Palette(0);
+        private static readonly Rgb[] doubleHiRes16Palette = BuildAmerican16Palette(1);
     }
 }

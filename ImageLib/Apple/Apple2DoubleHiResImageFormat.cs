@@ -52,7 +52,7 @@ namespace ImageLib.Apple
                     for (int i = 0; i < _pixelsPerWord; ++i)
                     {
                         int pixelValue = (word >> (i * _bitsPerApplePixel)) & applePixelMask;
-                        Color c = Apple2Palettes.DoubleHiRes16[pixelValue];
+                        Rgb c = Apple2Palettes.DoubleHiRes16[pixelValue];
 
                         int dstPixelOffset = y * stride + (w * _pixelsPerWord + i) * bytesPerBmpPixel;
                         pixels[dstPixelOffset + 2] = c.R;

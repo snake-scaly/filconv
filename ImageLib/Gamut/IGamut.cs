@@ -1,4 +1,4 @@
-﻿using System.Windows.Media;
+﻿using ImageLib.Util;
 
 namespace ImageLib.Gamut
 {
@@ -11,7 +11,7 @@ namespace ImageLib.Gamut
         /// Conversion may include clamping, scaling and other color transformations.
         /// </remarks>
         /// <param name="color">sRGB color to convert</param>
-        /// <returns>Color inside this gamut.</returns>
-        Color FromSrgb(Color c);
+        /// <returns>Rgb inside this gamut.</returns>
+        Rgb FromSrgb(Rgb c);
     }
 }

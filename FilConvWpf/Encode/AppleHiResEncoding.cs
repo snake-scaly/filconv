@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageLib.Util;
 
 namespace FilConvWpf.Encode
 {
@@ -126,7 +126,7 @@ namespace FilConvWpf.Encode
 
         private void UpdateFormat()
         {
-            Color[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
+            Rgb[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
             Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
             _format = new Apple2HiResImageFormat(tv);
             OnEncodingChanged();

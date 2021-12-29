@@ -32,7 +32,7 @@ namespace ImageLib.Apple
         public BitmapSource FromNative(NativeImage native)
         {
             Apple2SimpleColor[][] simple = ToSimpleColor(native);
-            Color[][] colors = tvSet.ProcessColors(simple);
+            Rgb[][] colors = tvSet.ProcessColors(simple);
 
             int height = colors.Length;
             int width = colors[0].Length;
@@ -46,7 +46,7 @@ namespace ImageLib.Apple
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    Color c = colors[y][x];
+                    Rgb c = colors[y][x];
                     pixels[pixelOffset++] = c.B;
                     pixels[pixelOffset++] = c.G;
                     pixels[pixelOffset++] = c.R;
@@ -167,7 +167,7 @@ namespace ImageLib.Apple
 
                     for (int i = 0; i < 7; i++)
                     {
-                        Color c = x + i < src.Width ? src.GetPixel(x + i, y) : Colors.Black;
+                        Rgb c = x + i < src.Width ? src.GetPixel(x + i, y) : Rgb.FromRgb(0, 0, 0);
                         bool isOdd = ((x + i) & 1) != 0;
                         p1.PutPixel(c, false, isOdd);
                         p2.PutPixel(c, true, isOdd);
@@ -268,12 +268,12 @@ namespace ImageLib.Apple
                 get { return _err; }
             }
 
-            public void PutPixel(Color c, bool shiftBit, bool isOdd)
+            public void PutPixel(Rgb c, bool shiftBit, bool isOdd)
             {
                 _bits >>= 1;
 
                 Apple2SimpleColor thisPixel = GetPixelColor(true, shiftBit, isOdd);
-                Color thisColor;
+                Rgb thisColor;
 
                 if (_setNext)
                 {
@@ -285,7 +285,7 @@ namespace ImageLib.Apple
                 {
                     Apple2SimpleColor nextPixel = GetPixelColor(true, shiftBit, !isOdd);
 
-                    Color[] palette = new Color[4];
+                    Rgb[] palette = new Rgb[4];
                     palette[0] = _tv.GetMiddleColor(_prevPixel, Apple2SimpleColor.Black, Apple2SimpleColor.Black);
                     palette[1] = _tv.GetMiddleColor(_prevPixel, thisPixel, Apple2SimpleColor.Black);
                     palette[2] = _tv.GetMiddleColor(Apple2SimpleColor.Black, nextPixel, Apple2SimpleColor.Black);

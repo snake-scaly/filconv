@@ -160,7 +160,7 @@ namespace FilConvWpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color dithering.
+        ///   Looks up a localized string similar to Rgb dithering.
         /// </summary>
         internal static string ColorDitherToggleTooltip {
             get {

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Media;
+using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -8,24 +8,24 @@ namespace ImageLib.Apple
         /// <summary>
         /// Colors corresponding to each of the Apple2SimpleColor values.
         /// </summary>
-        private Color[] palette;
+        private Rgb[] palette;
 
         public double Aspect { get { return (4.0 / 140) / (3.0 / 192); } }
 
-        public Apple2DoublePixelTv(Color[] palette)
+        public Apple2DoublePixelTv(Rgb[] palette)
         {
             this.palette = palette;
         }
 
-        public Color[][] ProcessColors(Apple2SimpleColor[][] simpleColors)
+        public Rgb[][] ProcessColors(Apple2SimpleColor[][] simpleColors)
         {
             int height = simpleColors.Length;
             int width = simpleColors[0].Length;
 
-            Color[][] result = new Color[height][];
+            Rgb[][] result = new Rgb[height][];
             for (int y = 0; y < height; ++y)
             {
-                result[y] = new Color[width / 2];
+                result[y] = new Rgb[width / 2];
                 for (int x = 0; x < width; x += 2)
                 {
                     result[y][x / 2] = GetPixel(simpleColors[y][x], simpleColors[y][x + 1]);
@@ -35,17 +35,17 @@ namespace ImageLib.Apple
             return result;
         }
 
-        public Color GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
+        public Rgb GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
         {
             throw new NotImplementedException();
         }
 
-        public Apple2SimpleColor GetBestMatch(Color color, bool isOdd)
+        public Apple2SimpleColor GetBestMatch(Rgb color, bool isOdd)
         {
             throw new NotImplementedException();
         }
 
-        private Color GetPixel(Apple2SimpleColor sc1, Apple2SimpleColor sc2)
+        private Rgb GetPixel(Apple2SimpleColor sc1, Apple2SimpleColor sc2)
         {
             if (sc1 == Apple2SimpleColor.Black)
             {
@@ -55,7 +55,7 @@ namespace ImageLib.Apple
             {
                 return palette[(int)sc1];
             }
-            return Colors.White;
+            return palette[5];
         }
     }
 }

@@ -64,7 +64,7 @@ namespace ImageLib.Util
         public double I { get; private set; }
         public double Q { get; private set; }
 
-        public Color ToColor()
+        public Rgb ToColor()
         {
             return ColorUtils.ColorFromYiq(Y, I, Q);
         }

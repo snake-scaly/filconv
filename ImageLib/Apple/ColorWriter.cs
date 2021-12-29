@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
     public interface ColorWriter : IDisposable
     {
-        void Write(Color c);
+        void Write(Rgb c);
         void Close();
     }
 }

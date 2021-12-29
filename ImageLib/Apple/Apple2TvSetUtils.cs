@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+﻿using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -27,9 +23,9 @@ namespace ImageLib.Apple
             return raster[y][x];
         }
 
-        public static Color GetAverageColor(Color c1, Color c2)
+        public static Rgb GetAverageColor(Rgb c1, Rgb c2)
         {
-            return Color.FromRgb((byte)((c1.R + c2.R) / 2), (byte)((c1.G + c2.G) / 2), (byte)((c1.B + c2.B) / 2));
+            return Rgb.FromRgb((byte)((c1.R + c2.R) / 2), (byte)((c1.G + c2.G) / 2), (byte)((c1.B + c2.B) / 2));
         }
     }
 }

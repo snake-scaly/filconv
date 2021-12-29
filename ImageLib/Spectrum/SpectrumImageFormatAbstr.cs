@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using ImageLib.Util;
 
 namespace ImageLib.Spectrum
 {
@@ -40,7 +41,7 @@ namespace ImageLib.Spectrum
                     int color = GetColorSafe(native.Data, srcColorLine + x);
                     for (int i = 0; i < 8; ++i)
                     {
-                        Color pixelColor = GetPixelColor((bw & (0x80 >> i)) != 0, color);
+                        Rgb pixelColor = GetPixelColor((bw & (0x80 >> i)) != 0, color);
                         int dstOffset = dstLine + (x * 8 + i) * 4;
                         pixels[dstOffset] = pixelColor.B;
                         pixels[dstOffset + 1] = pixelColor.G;
@@ -71,14 +72,14 @@ namespace ImageLib.Spectrum
             return _bytesPerLine * _height + _paletteBytesPerLine * (y / 8);
         }
 
-        private Color GetPixelColor(bool isPixelSet, int colorSelector)
+        private Rgb GetPixelColor(bool isPixelSet, int colorSelector)
         {
             int value = (colorSelector & 0x40) != 0 ? 255 : 217;
             int rgb = isPixelSet ? colorSelector : (colorSelector >> 3);
             int g = (rgb & 4) != 0 ? value : 0;
             int r = (rgb & 2) != 0 ? value : 0;
             int b = (rgb & 1) != 0 ? value : 0;
-            return Color.FromRgb((byte)r, (byte)g, (byte)b);
+            return Rgb.FromRgb((byte)r, (byte)g, (byte)b);
         }
 
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)

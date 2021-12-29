@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Media;
 using System;
 
 namespace ImageLib.Util
@@ -11,7 +10,7 @@ namespace ImageLib.Util
         private const double Kb = 0.114;
         private const double Kg = 1 - Kr - Kb;
 
-        public static double GetDistanceSq(Color c1, Color c2)
+        public static double GetDistanceSq(Rgb c1, Rgb c2)
         {
             double dx = (c1.R - c2.R) * Kr;
             double dy = (c1.G - c2.G) * Kg;
@@ -20,7 +19,7 @@ namespace ImageLib.Util
             return dx * dx + dy * dy + dz * dz;
         }
 
-        public static int BestMatch(Color color, IEnumerable<Color> palette)
+        public static int BestMatch(Rgb color, IEnumerable<Rgb> palette)
         {
             double closestMetric = double.PositiveInfinity;
             int closest = -1;
@@ -42,34 +41,58 @@ namespace ImageLib.Util
             return closest;
         }
 
-        public static Color Desaturate(Color color)
+        public static Rgb Desaturate(Rgb color)
         {
             byte gray = (byte)Math.Round(Kr * color.R + Kg * color.G + Kb * color.B);
-            return Color.FromRgb(gray, gray, gray);
+            return Rgb.FromRgb(gray, gray, gray);
         }
 
-        public static Color Pow(Color color, double gamma)
+        public static Rgb Gamma(Rgb color, double gamma)
         {
-            return Color.FromArgb(
-                color.A,
+            return Rgb.FromRgb(
                 Pow(color.R, gamma),
                 Pow(color.G, gamma),
                 Pow(color.B, gamma));
         }
 
-        private static byte Pow(byte c, double gamma)
-        {
-            return ToByte(Math.Pow((c / 255.0), gamma));
-        }
-
         /// <summary>
         /// Convert a color component from double to byte.
         /// </summary>
-        /// <param name="v">color component. The value is clamped to the range [0, 1] before processing</param>
-        /// <returns>A</returns>
-        public static byte ToByte(double v)
+        /// <remarks>
+        /// Double values [0,1] are mapped to byte values [0,255]. Values
+        /// below 0 and above 1 are mapped to 0 and 255 respectively.
+        /// </remarks>
+        public static byte FromDouble(double value)
         {
-            return (byte)Math.Round(Clamp(v) * 255);
+            return ClampByte((int)Math.Round(value * 255));
+        }
+
+        public static double ToDouble(byte value)
+        {
+            return value / 255.0;
+        }
+
+        /// Clamp an integer to the specified interval.
+        public static int Clamp(int value, int min, int max)
+        {
+            return Math.Max(min, Math.Min(max, value));
+        }
+
+        /// Clamp a float to the specified interval.
+        public static float Clamp(float value, float min, float max)
+        {
+            return Math.Max(min, Math.Min(max, value));
+        }
+
+        /// Clamp a double to the specified interval.
+        public static double Clamp(double value, double min, double max)
+        {
+            return Math.Max(min, Math.Min(max, value));
+        }
+
+        public static byte ClampByte(int value)
+        {
+            return (byte)Clamp(value, 0, 255);
         }
 
         /// <summary>
@@ -78,24 +101,18 @@ namespace ImageLib.Util
         /// <param name="y">the Y (luma) component</param>
         /// <param name="i">the I (in-phase) component</param>
         /// <param name="q">the Q (quadrature) component</param>
-        /// <returns>An RGB <see cref="Color"/>.</returns>
-        public static Color ColorFromYiq(double y, double i, double q)
+        /// <returns>An RGB <see cref="Rgb"/>.</returns>
+        public static Rgb ColorFromYiq(double y, double i, double q)
         {
             double r = y + 0.9563 * i + 0.6210 * q;
             double g = y - 0.2721 * i - 0.6474 * q;
             double b = y - 1.1070 * i + 1.7046 * q;
-            return Color.FromRgb(ToByte(r), ToByte(g), ToByte(b));
+            return Rgb.FromRgb(FromDouble(r), FromDouble(g), FromDouble(b));
         }
 
-        /// <summary>
-        /// Clamp a value to the range [0, 1].
-        /// </summary>
-        /// <param name="v">value to clamp</param>
-        /// <returns><code>v</code> if <code>0≤v≤1</code>, 0 if <code>v&lt;0</code>,
-        /// or 1 if <code>v&gt;1</code>.</returns>
-        public static double Clamp(double v)
+        private static byte Pow(byte c, double gamma)
         {
-            return Math.Max(0, Math.Min(1, v));
+            return FromDouble(Math.Pow(ToDouble(c), gamma));
         }
     }
 }

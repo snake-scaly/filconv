@@ -134,7 +134,7 @@ namespace ImageLib.Apple
         // Write a color pixel at the specified offset.
         private void PutPixel(int colorIndex, byte[] pixels, int offset)
         {
-            Color c = Apple2Palettes.LoRes16[colorIndex];
+            Rgb c = Apple2Palettes.LoRes16[colorIndex];
             pixels[offset + _redByteOffset] = c.R;
             pixels[offset + _greenByteOffset] = c.G;
             pixels[offset + _blueByteOffset] = c.B;
@@ -143,8 +143,8 @@ namespace ImageLib.Apple
         // Read a 1x2 pixel block at the specified coordinates.
         private byte GetPixels(BitmapPixels pixels, int x, int y)
         {
-            Color c1 = pixels.GetPixel(x, y);
-            Color c2 = y < pixels.Height ? pixels.GetPixel(x, y + 1) : new Color();
+            Rgb c1 = pixels.GetPixel(x, y);
+            Rgb c2 = y < pixels.Height ? pixels.GetPixel(x, y + 1) : new Rgb();
             int v1 = ColorUtils.BestMatch(c1, Apple2Palettes.LoRes16);
             int v2 = ColorUtils.BestMatch(c2, Apple2Palettes.LoRes16);
             return (byte)(v1 | (v2 << 4));

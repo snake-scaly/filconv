@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Media;
-using ImageLib.Util;
+﻿using ImageLib.Util;
 
 namespace ImageLib.Gamut
 {
@@ -8,10 +6,10 @@ namespace ImageLib.Gamut
     {
         private const double srgbGamma = 2.2;
 
-        public Color FromSrgb(Color c)
+        public Rgb FromSrgb(Rgb c)
         {
-            c = ColorUtils.Desaturate(ColorUtils.Pow(c, srgbGamma));
-            return Color.FromArgb(c.A, c.G, c.G, c.G);
+            c = ColorUtils.Desaturate(ColorUtils.Gamma(c, srgbGamma));
+            return Rgb.FromRgb(c.G, c.G, c.G);
         }
     }
 }

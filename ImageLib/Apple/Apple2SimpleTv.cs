@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Windows.Media;
 using ImageLib.Util;
 
 namespace ImageLib.Apple
@@ -9,23 +8,23 @@ namespace ImageLib.Apple
         /// <summary>
         /// Colors corresponding to each of the Apple2SimpleColor values.
         /// </summary>
-        private Color[] palette;
+        private Rgb[] palette;
 
-        public Apple2SimpleTv(Color[] palette)
+        public Apple2SimpleTv(Rgb[] palette)
         {
             this.palette = palette;
         }
 
-        public override Color GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
+        public override Rgb GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
         {
             if (middle != Apple2SimpleColor.Black && (left != Apple2SimpleColor.Black || right != Apple2SimpleColor.Black))
             {
-                return Colors.White;
+                return palette[5];
             }
             return palette[(int)middle];
         }
 
-        public override Apple2SimpleColor GetBestMatch(Color color, bool isOdd)
+        public override Apple2SimpleColor GetBestMatch(Rgb color, bool isOdd)
         {
             Apple2SimpleColor[] columnColors;
             if (isOdd)
@@ -53,7 +52,7 @@ namespace ImageLib.Apple
             return columnColors[ColorUtils.BestMatch(color, columnPalette)];
         }
 
-        protected override Color GetPixel(Apple2SimpleColor[][] simpleColors, int x, int y)
+        protected override Rgb GetPixel(Apple2SimpleColor[][] simpleColors, int x, int y)
         {
             Apple2SimpleColor middle = Apple2TvSetUtils.GetSimplePixel(simpleColors, x, y);
             Apple2SimpleColor left = Apple2TvSetUtils.GetSimplePixel(simpleColors, x - 1, y);

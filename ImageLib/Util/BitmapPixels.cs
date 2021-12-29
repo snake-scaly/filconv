@@ -28,11 +28,11 @@ namespace ImageLib.Util
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public Color GetPixel(int x, int y)
+        public Rgb GetPixel(int x, int y)
         {
             ValidateCoordinates(x, y);
             int offset = 4 * x + _stride * y;
-            return Color.FromRgb(_pixels[offset + 2], _pixels[offset + 1], _pixels[offset]);
+            return Rgb.FromRgb(_pixels[offset + 2], _pixels[offset + 1], _pixels[offset]);
         }
 
         private void ValidateCoordinates(int x, int y)

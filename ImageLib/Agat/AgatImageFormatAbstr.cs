@@ -36,10 +36,10 @@ namespace ImageLib.Agat
             byte[] pixels = new byte[Height * stride];
             int palette = 0;
 
-            Color[] colors;
+            Rgb[] colors;
             if (native.Metadata?.PaletteType == ImageMeta.Palette.Custom)
             {
-                colors = native.Metadata.CustomPalette.Select(ArgbToColor).ToArray();
+                colors = native.Metadata.CustomPalette.Select(UintToRgb).ToArray();
             }
             else
             {
@@ -54,7 +54,7 @@ namespace ImageLib.Agat
                 for (int x = 0; x < Width; ++x)
                 {
                     int pixel = line + x * 4;
-                    Color c = GetBgr32Pixel(native.Data, colors, palette, x, y);
+                    Rgb c = GetBgr32Pixel(native.Data, colors, palette, x, y);
                     pixels[pixel] = c.B;
                     pixels[pixel + 1] = c.G;
                     pixels[pixel + 2] = c.R;
@@ -83,16 +83,16 @@ namespace ImageLib.Agat
             {
                 for (int x = 0; x < Width; ++x)
                 {
-                    Color pixel = (x < src.Width && y < src.Height) ? src.GetPixel(x, y) : Colors.Black;
+                    Rgb pixel = (x < src.Width && y < src.Height) ? src.GetPixel(x, y) : Rgb.FromRgb(0, 0, 0);
 
                     float r = 0, g = 0, b = 0;
                     if (options.Dither)
                     {
                         pixel = Gamut.FromSrgb(pixel);
-                        r = Clamp(pixel.R + currentLineErrors[x].R);
-                        g = Clamp(pixel.G + currentLineErrors[x].G);
-                        b = Clamp(pixel.B + currentLineErrors[x].B);
-                        pixel = Color.FromRgb(Round(r), Round(g), Round(b));
+                        r = ColorUtils.Clamp(pixel.R + currentLineErrors[x].R, 0, 255);
+                        g = ColorUtils.Clamp(pixel.G + currentLineErrors[x].G, 0, 255);
+                        b = ColorUtils.Clamp(pixel.B + currentLineErrors[x].B, 0, 255);
+                        pixel = Rgb.FromRgb((byte)Math.Round(r), (byte)Math.Round(g), (byte)Math.Round(b));
                     }
 
                     SetPixel(bytes, nativeColors, x, y, pixel);
@@ -185,7 +185,7 @@ namespace ImageLib.Agat
             }
         }
 
-        Color GetBgr32Pixel(byte[] pixels, Color[] colors, int palette, int x, int y)
+        Rgb GetBgr32Pixel(byte[] pixels, Rgb[] colors, int palette, int x, int y)
         {
             int pixelIndex;
             int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
@@ -196,7 +196,7 @@ namespace ImageLib.Agat
             return colors[MapColorIndexNativeToStandard(b, palette)];
         }
 
-        void SetPixel(byte[] pixels, Color[] nativeColors, int x, int y, Color color)
+        void SetPixel(byte[] pixels, Rgb[] nativeColors, int x, int y, Rgb color)
         {
             int pixelIndex;
             int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
@@ -212,16 +212,6 @@ namespace ImageLib.Agat
             }
         }
 
-        static float Clamp(float c)
-        {
-            return Math.Min(Math.Max(c, 0), 255);
-        }
-
-        static byte Round(float c)
-        {
-            return (byte)Math.Round(c);
-        }
-
         static void AddError(float re, float ge, float be, ref Error e)
         {
             e.R += re;
@@ -229,13 +219,12 @@ namespace ImageLib.Agat
             e.B += be;
         }
 
-        static Color ArgbToColor(uint i)
+        static Rgb UintToRgb(uint i)
         {
-            var a = (byte)(i >> 24);
             var r = (byte)(i >> 16);
             var g = (byte)(i >> 8);
             var b = (byte)(i >> 0);
-            return Color.FromArgb(a, r, g, b);
+            return Rgb.FromRgb(r, g, b);
         }
 
         struct Error

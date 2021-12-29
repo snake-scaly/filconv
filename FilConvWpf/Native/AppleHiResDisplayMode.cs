@@ -2,9 +2,8 @@
 using ImageLib.Apple;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
+using ImageLib.Util;
 
 namespace FilConvWpf.Native
 {
@@ -102,7 +101,7 @@ namespace FilConvWpf.Native
             }
             else
             {
-                Color[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
+                Rgb[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
                 Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
                 Format = new Apple2HiResImageFormat(tv);
             }

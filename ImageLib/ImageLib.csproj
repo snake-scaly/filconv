@@ -94,6 +94,7 @@
     <Compile Include="Spectrum\SpectrumImageFormatInterleave.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatPicler.cs" />
     <Compile Include="Util\BitmapPixels.cs" />
+    <Compile Include="Util\Rgb.cs" />
     <Compile Include="Util\YIQColor.cs" />
   </ItemGroup>
   <ItemGroup>

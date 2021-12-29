@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -30,7 +28,7 @@ namespace ImageLib.Apple
             _offset2 = _stride;
         }
 
-        public void Write(System.Windows.Media.Color c)
+        public void Write(Rgb c)
         {
             if (_offset2 + 4 > _pixels.Length)
                 return;
