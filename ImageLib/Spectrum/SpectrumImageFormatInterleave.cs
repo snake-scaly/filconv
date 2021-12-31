@@ -25,13 +25,24 @@ namespace ImageLib.Spectrum
         /// <returns>Native Spectrum image.</returns>
         public NativeImage Interleave(NativeImage sequential)
         {
+            byte[] original;
+            if (sequential.Data.Length < _totalBytes)
+            {
+                original = new byte[_totalBytes];
+                sequential.Data.CopyTo(original, 0);
+            }
+            else
+            {
+                original = sequential.Data;
+            }
+
             var interleaved = new byte[_totalBytes];
-            Array.Copy(sequential.Data, _paletteOffset, interleaved, _paletteOffset, _paletteSize);
+            Array.Copy(original, _paletteOffset, interleaved, _paletteOffset, _paletteSize);
 
             for (int y = 0; y < _height; ++y)
             {
                 int srcOffset = y * _bytesPerLine;
-                Array.Copy(sequential.Data, srcOffset, interleaved, GetLineOffset(y), _bytesPerLine);
+                Array.Copy(original, srcOffset, interleaved, GetLineOffset(y), _bytesPerLine);
             }
 
             return new NativeImage { Data = interleaved, FormatHint = new FormatHint(this) };
