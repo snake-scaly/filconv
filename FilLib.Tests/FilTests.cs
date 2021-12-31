@@ -247,7 +247,7 @@ namespace FilLib.Tests
         }
 
         [Fact]
-        public void LoadAddress_ReflectsSectorsOffset0ForTypeB()
+        public void LoadAddress_Get_ReflectsSectorsOffset0ForTypeB()
         {
             var fil = new Fil { Type = new FilType(0x84) };
 
@@ -271,7 +271,7 @@ namespace FilLib.Tests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(32)]
-        public void LoadAddress_ReturnsDefaultForNonTypeB(byte typeCode)
+        public void LoadAddress_Get_ReturnsDefaultForNonTypeB(byte typeCode)
         {
             var fil = new Fil { Type = new FilType(typeCode), Sectors = _stubData };
 
@@ -282,11 +282,21 @@ namespace FilLib.Tests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(32)]
-        public void LoadAddress_ThrowsIfSetOnNonTypeB(byte typeCode)
+        public void LoadAddress_Set_ThrowsIfSetOnNonTypeB(byte typeCode)
         {
             var fil = new Fil { Type = new FilType(typeCode) };
 
             Assert.Throws<InvalidOperationException>(() => { fil.LoadAddress = 0x2000; });
+        }
+
+        [Fact]
+        public void LoadAddress_Set_PreserversSectors()
+        {
+            var fil = new Fil { Type = new FilType(4), Sectors = _stubData.Concat(_stubData).ToArray() };
+
+            fil.LoadAddress = 0x2000;
+
+            Assert.Equal(512, fil.Sectors.Length);
         }
 
         [Theory]

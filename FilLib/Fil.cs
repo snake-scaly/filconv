@@ -70,7 +70,7 @@ namespace FilLib
             {
                 if (!Type.HasAddrSize)
                     throw new InvalidOperationException($"Cannot set load address for file type {Type}");
-                ReallocateSectors(2);
+                ReallocateSectors(Math.Max(2, _sectors.Length));
                 BitConverter.GetBytes(value).CopyTo(Sectors, 0);
             }
         }
