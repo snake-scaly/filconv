@@ -224,28 +224,28 @@
     <value>Apple ][ Lo-Res</value>
     <comment>Image format combo-box entry for Apple II Low Resolution (40x48)</comment>
   </data>
-  <data name="FormatNameDMGR" xml:space="preserve">
-    <value>DMGR 128x256x16</value>
+  <data name="FormatNameAgatCGSRDV" xml:space="preserve">
+    <value>Agat 128x256x16</value>
     <comment>Image format entry for the non-standard 128x256x16 colors mode</comment>
   </data>
-  <data name="FormatNameGR7" xml:space="preserve">
-    <value>GR7</value>
+  <data name="FormatNameAgatCGNR" xml:space="preserve">
+    <value>Agat Low Resolution Color</value>
     <comment>Image format combo-box entry for 64x64, 16 colors</comment>
   </data>
-  <data name="FormatNameHGR" xml:space="preserve">
-    <value>HGR</value>
+  <data name="FormatNameAgatMGVR" xml:space="preserve">
+    <value>Agat High Resolution Monochrome</value>
     <comment>Image format combo-box entry for 256x256, 2 colors</comment>
   </data>
-  <data name="FormatNameHGR9" xml:space="preserve">
-    <value>HGR9</value>
+  <data name="FormatNameAgatMGDP" xml:space="preserve">
+    <value>Agat Double Density Monochrome</value>
     <comment>Image format combo-box entry for 512x256, 2 colors</comment>
   </data>
-  <data name="FormatNameMGR" xml:space="preserve">
-    <value>MGR</value>
+  <data name="FormatNameAgatCGSR" xml:space="preserve">
+    <value>Agat Medium Resolution Color</value>
     <comment>Image format combo-box entry for 128x128, 16 colors</comment>
   </data>
-  <data name="FormatNameMGR9" xml:space="preserve">
-    <value>MGR9</value>
+  <data name="FormatNameAgatCGVR" xml:space="preserve">
+    <value>Agat High Resolution Color</value>
     <comment>Image format combo-box entry for 256x256, 4 colors</comment>
   </data>
   <data name="FormatNameOriginal" xml:space="preserve">

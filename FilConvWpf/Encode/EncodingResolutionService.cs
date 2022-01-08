@@ -47,12 +47,12 @@ namespace FilConvWpf.Encode
         private static readonly IEncoding[] _genericEncodings =
         {
             new IdentityEncoding(),
-            new NativeEncoding("FormatNameGR7", new Gr7ImageFormat(), true),
-            new NativeEncoding("FormatNameMGR", new MgrImageFormat(), true),
-            new NativeEncoding("FormatNameHGR", new HgrImageFormat(), true),
-            new NativeEncoding("FormatNameMGR9", new Mgr9ImageFormat(), true),
-            new NativeEncoding("FormatNameHGR9", new Hgr9ImageFormat(), true),
-            new NativeEncoding("FormatNameDMGR", new DmgrImageFormat(), true),
+            new NativeEncoding("FormatNameAgatCGNR", new AgatCGNRImageFormat(), true),
+            new NativeEncoding("FormatNameAgatCGSR", new AgatCGSRImageFormat(), true),
+            new NativeEncoding("FormatNameAgatMGVR", new AgatMGVRImageFormat(), true),
+            new NativeEncoding("FormatNameAgatCGVR", new AgatCGVRImageFormat(), true),
+            new NativeEncoding("FormatNameAgatMGDP", new AgatMGDPImageFormat(), true),
+            new NativeEncoding("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat(), true),
             new NativeEncoding("FormatNameApple2LoRes", new Apple2LoResImageFormat(false), false),
             new NativeEncoding("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true), false),
             new AppleHiResEncoding(),

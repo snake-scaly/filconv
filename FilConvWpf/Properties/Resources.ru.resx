@@ -183,27 +183,27 @@
     <value>Apple ][ Lo-Res</value>
     <comment>Элемент комбо-бокса выбора формата Apple II Low Resolution</comment>
   </data>
-  <data name="FormatNameDMGR" xml:space="preserve">
-    <value>DMGR 128x256x16</value>
+  <data name="FormatNameAgatCGSRDV" xml:space="preserve">
+    <value>Агат 128x256x16</value>
   </data>
-  <data name="FormatNameGR7" xml:space="preserve">
-    <value>GR7</value>
+  <data name="FormatNameAgatCGNR" xml:space="preserve">
+    <value>Агат ЦГНР</value>
     <comment>Элемент комбо-бокса выбора формата 64x64, 16 цветов</comment>
   </data>
-  <data name="FormatNameHGR" xml:space="preserve">
-    <value>HGR</value>
+  <data name="FormatNameAgatMGVR" xml:space="preserve">
+    <value>Агат МГВР</value>
     <comment>Элемент комбо-бокса выбора формата 256x256, 2 цвета</comment>
   </data>
-  <data name="FormatNameHGR9" xml:space="preserve">
-    <value>HGR9</value>
+  <data name="FormatNameAgatMGDP" xml:space="preserve">
+    <value>Агат МГДП</value>
     <comment>Элемент комбо-бокса выбора формата 512x256, 2 цвета</comment>
   </data>
-  <data name="FormatNameMGR" xml:space="preserve">
-    <value>MGR</value>
+  <data name="FormatNameAgatCGSR" xml:space="preserve">
+    <value>Агат ЦГСР</value>
     <comment>Элемент комбо-бокса выбора формата 128x128, 16 цветов</comment>
   </data>
-  <data name="FormatNameMGR9" xml:space="preserve">
-    <value>MGR9</value>
+  <data name="FormatNameAgatCGVR" xml:space="preserve">
+    <value>Агат ЦГВР</value>
     <comment>Элемент комбо-бокса выбора формата 256x256, 4 цвета</comment>
   </data>
   <data name="FormatNameOriginal" xml:space="preserve">

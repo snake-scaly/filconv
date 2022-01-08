@@ -315,54 +315,54 @@ namespace FilConvWpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to DMGR 128x256x16.
         /// </summary>
-        internal static string FormatNameDMGR {
+        internal static string FormatNameAgatCGSRDV {
             get {
-                return ResourceManager.GetString("FormatNameDMGR", resourceCulture);
+                return ResourceManager.GetString("FormatNameAgatCGSRDV", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to GR7.
         /// </summary>
-        internal static string FormatNameGR7 {
+        internal static string FormatNameAgatCGNR {
             get {
-                return ResourceManager.GetString("FormatNameGR7", resourceCulture);
+                return ResourceManager.GetString("FormatNameAgatCGNR", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to HGR.
         /// </summary>
-        internal static string FormatNameHGR {
+        internal static string FormatNameAgatMGVR {
             get {
-                return ResourceManager.GetString("FormatNameHGR", resourceCulture);
+                return ResourceManager.GetString("FormatNameAgatMGVR", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to HGR9.
         /// </summary>
-        internal static string FormatNameHGR9 {
+        internal static string FormatNameAgatMGDP {
             get {
-                return ResourceManager.GetString("FormatNameHGR9", resourceCulture);
+                return ResourceManager.GetString("FormatNameAgatMGDP", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to MGR.
         /// </summary>
-        internal static string FormatNameMGR {
+        internal static string FormatNameAgatCGSR {
             get {
-                return ResourceManager.GetString("FormatNameMGR", resourceCulture);
+                return ResourceManager.GetString("FormatNameAgatCGSR", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to MGR9.
         /// </summary>
-        internal static string FormatNameMGR9 {
+        internal static string FormatNameAgatCGVR {
             get {
-                return ResourceManager.GetString("FormatNameMGR9", resourceCulture);
+                return ResourceManager.GetString("FormatNameAgatCGVR", resourceCulture);
             }
         }
         

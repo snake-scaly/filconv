@@ -162,12 +162,12 @@ namespace FilConvWpf.Native
 
         private readonly INativeDisplayMode[] _displayModes =
         {
-            new NativeDisplayMode("FormatNameGR7", new Gr7ImageFormat()),
-            new NativeDisplayMode("FormatNameMGR", new MgrImageFormat()),
-            new NativeDisplayMode("FormatNameHGR", new HgrImageFormat()),
-            new NativeDisplayMode("FormatNameMGR9", new Mgr9ImageFormat()),
-            new NativeDisplayMode("FormatNameHGR9", new Hgr9ImageFormat()),
-            new NativeDisplayMode("FormatNameDMGR", new DmgrImageFormat()),
+            new NativeDisplayMode("FormatNameAgatCGNR", new AgatCGNRImageFormat()),
+            new NativeDisplayMode("FormatNameAgatCGSR", new AgatCGSRImageFormat()),
+            new NativeDisplayMode("FormatNameAgatMGVR", new AgatMGVRImageFormat()),
+            new NativeDisplayMode("FormatNameAgatCGVR", new AgatCGVRImageFormat()),
+            new NativeDisplayMode("FormatNameAgatMGDP", new AgatMGDPImageFormat()),
+            new NativeDisplayMode("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
             new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
             new AppleLoResDisplayMode(false),
             new AppleLoResDisplayMode(true),

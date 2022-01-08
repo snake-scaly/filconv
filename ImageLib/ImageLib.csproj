@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="Agat\AgatImageFormatAbstr.cs" />
     <Compile Include="Agat\AgatPalette.cs" />
-    <Compile Include="Agat\DmgrImageFormat.cs" />
+    <Compile Include="Agat\AgatCGSRDVImageFormat.cs" />
     <Compile Include="Apple\Apple2DoubleHiResImageFormat.cs" />
     <Compile Include="Apple\Apple2DoubleHiResNtscImageFormat.cs" />
     <Compile Include="Apple\Apple2HiResImageFormat.cs" />
@@ -77,17 +77,17 @@
     <Compile Include="Util\ColorUtils.cs" />
     <Compile Include="EncodingOptions.cs" />
     <Compile Include="FormatHint.cs" />
-    <Compile Include="Agat\Gr7ImageFormat.cs" />
-    <Compile Include="Agat\Hgr9ImageFormat.cs" />
-    <Compile Include="Agat\HgrImageFormat.cs" />
+    <Compile Include="Agat\AgatCGNRImageFormat.cs" />
+    <Compile Include="Agat\AgatMGDPImageFormat.cs" />
+    <Compile Include="Agat\AgatMGVRImageFormat.cs" />
     <Compile Include="Gamut\BlackAndWhiteGamut.cs" />
     <Compile Include="Gamut\IGamut.cs" />
     <Compile Include="Gamut\Mgr9BlackGamut.cs" />
     <Compile Include="Gamut\SrgbGamut.cs" />
     <Compile Include="NativeImage.cs" />
     <Compile Include="INativeImageFormat.cs" />
-    <Compile Include="Agat\Mgr9ImageFormat.cs" />
-    <Compile Include="Agat\MgrImageFormat.cs" />
+    <Compile Include="Agat\AgatCGVRImageFormat.cs" />
+    <Compile Include="Agat\AgatCGSRImageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Apple\Apple2SimpleColor.cs" />
     <Compile Include="Spectrum\SpectrumImageFormatAbstr.cs" />

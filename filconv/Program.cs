@@ -17,7 +17,7 @@ namespace filconv
 
         static int Main(string[] args)
         {
-            string filFormatName = "MGR";
+            string filFormatName = "CGSR";
             string filTypeName = "B";
             bool dither = false;
 
@@ -27,10 +27,10 @@ namespace filconv
             {
                 {
                     "g|gfx-format=",
-                    "Agat image format (case-insensitive): " + agatFormats + ".  Default is MGR",
+                    $"Agat image format (case-insensitive): {agatFormats}.  Default is {filFormatName}",
                     v => {
                         if (GetFormatByName(v) == null)
-                            throw new OptionException("Must be either MGR or HGR", "gfx-format");
+                            throw new OptionException($"Must be one of {agatFormats}", "gfx-format");
                         filFormatName = v;
                     }
                 },
@@ -158,11 +158,11 @@ namespace filconv
 
         static readonly Tuple<INativeImageFormat, string>[] _agatFormats =
         {
-            Tuple.Create((INativeImageFormat)new Gr7ImageFormat(), "GR7"),
-            Tuple.Create((INativeImageFormat)new MgrImageFormat(), "MGR"),
-            Tuple.Create((INativeImageFormat)new HgrImageFormat(), "HGR"),
-            Tuple.Create((INativeImageFormat)new Mgr9ImageFormat(), "MGR9"),
-            Tuple.Create((INativeImageFormat)new Hgr9ImageFormat(), "HGR9"),
+            Tuple.Create((INativeImageFormat)new AgatCGNRImageFormat(), "CGNR"),
+            Tuple.Create((INativeImageFormat)new AgatCGSRImageFormat(), "CGSR"),
+            Tuple.Create((INativeImageFormat)new AgatMGVRImageFormat(), "MGVR"),
+            Tuple.Create((INativeImageFormat)new AgatCGVRImageFormat(), "CGVR"),
+            Tuple.Create((INativeImageFormat)new AgatMGDPImageFormat(), "MGDP"),
         };
 
         static readonly Dictionary<string, Type> _extToFormat =
