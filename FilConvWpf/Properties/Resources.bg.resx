@@ -170,7 +170,7 @@
   <data name="FileFormatNameAllSupported" xml:space="preserve">
     <value>Всички поддържани файлове</value>
   </data>
-  <data name="FormatNameApple2" xml:space="preserve">
+  <data name="FormatNameApple2HiRes" xml:space="preserve">
     <value>Apple ][ Hi-Res</value>
     <comment>Элемент комбо-бокса выбора формата Apple II</comment>
   </data>

@@ -172,7 +172,7 @@
     <value>Все поддерживаемые</value>
     <comment>Название фильтра всех поддерживаемых типов файлов диалога "Открыть"</comment>
   </data>
-  <data name="FormatNameApple2" xml:space="preserve">
+  <data name="FormatNameApple2HiRes" xml:space="preserve">
     <value>Apple ][ Hi-Res</value>
     <comment>Элемент комбо-бокса выбора формата Apple II</comment>
   </data>

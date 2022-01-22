@@ -279,9 +279,9 @@ namespace FilConvWpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Apple ][ Hi-Res.
         /// </summary>
-        internal static string FormatNameApple2 {
+        internal static string FormatNameApple2HiRes {
             get {
-                return ResourceManager.GetString("FormatNameApple2", resourceCulture);
+                return ResourceManager.GetString("FormatNameApple2HiRes", resourceCulture);
             }
         }
         

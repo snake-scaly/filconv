@@ -209,7 +209,7 @@
     <value>Tiff</value>
     <comment>TIFF format filter name for open/save dialogs</comment>
   </data>
-  <data name="FormatNameApple2" xml:space="preserve">
+  <data name="FormatNameApple2HiRes" xml:space="preserve">
     <value>Apple ][ Hi-Res</value>
     <comment>Image format combo-box entry for Apple II High Resolution (280x192)</comment>
   </data>

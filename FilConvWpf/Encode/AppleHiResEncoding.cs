@@ -26,7 +26,7 @@ namespace FilConvWpf.Encode
             ToolBar = new ToolBar();
 
             Label toolbarTitle = new Label();
-            L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, "FormatNameApple2").Update();
+            L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, "FormatNameApple2HiRes").Update();
 
             _fillButton = new ToggleButton();
             _fillButton.IsChecked = _fill;
@@ -50,12 +50,9 @@ namespace FilConvWpf.Encode
 
         public event EventHandler<EventArgs> EncodingChanged;
 
-        public string Name
-        {
-            get { return "FormatNameApple2"; }
-        }
+        public string Name => "FormatNameApple2HiRes";
 
-        public System.Windows.Controls.ToolBar ToolBar { get; private set; }
+        public ToolBar ToolBar { get; private set; }
 
         public AspectBitmap Preview(BitmapSource original)
         {

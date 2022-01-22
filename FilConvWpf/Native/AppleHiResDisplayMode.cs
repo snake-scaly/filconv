@@ -16,7 +16,7 @@ namespace FilConvWpf.Native
         private ToggleButton _palButton;
 
         public AppleHiResDisplayMode()
-            : base("FormatNameApple2", new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
+            : base("FormatNameApple2HiRes", new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
         }
 
