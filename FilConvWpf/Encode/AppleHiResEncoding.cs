@@ -1,12 +1,9 @@
-﻿using FilConvWpf.I18n;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Media.Imaging;
+using FilConvWpf.UI;
 using ImageLib;
 using ImageLib.Apple;
-using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Imaging;
 using ImageLib.Util;
 
 namespace FilConvWpf.Encode
@@ -16,35 +13,29 @@ namespace FilConvWpf.Encode
         private bool _fill;
         private bool _pal;
 
-        private ToggleButton _fillButton;
-        private ToggleButton _palButton;
+        private readonly IToggle _fillToggle;
+        private readonly IToggle _palToggle;
 
         private Apple2HiResImageFormat _format;
 
         public AppleHiResEncoding()
         {
-            ToolBar = new ToolBar();
+            _fillToggle = new ToggleBuilder()
+                .WithIcon("fill.png")
+                .WithTooltip("Apple2ColorFillToggleTooltip")
+                .WithCallback( on => { _fill = on; UpdateFormat(); })
+                .WithInitialState(_fill)
+                .Build();
 
-            Label toolbarTitle = new Label();
-            L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, "FormatNameApple2HiRes").Update();
+            _palToggle = new ToggleBuilder()
+                .WithIcon("useu.png")
+                .WithTooltip("Apple2PaletteToggleTooltip")
+                .WithCallback( on => { _pal = on; UpdateFormat(); })
+                .WithInitialState(_pal)
+                .Build();
 
-            _fillButton = new ToggleButton();
-            _fillButton.IsChecked = _fill;
-            _fillButton.Content = ResourceUtils.GetResourceImage("fill.png");
-            L10n.AddLocalizedProperty(_fillButton, ToggleButton.ToolTipProperty, "Apple2ColorFillToggleTooltip").Update();
-            _fillButton.Checked += fill_Checked;
-            _fillButton.Unchecked += fill_Unchecked;
+            Tools = new ITool[] { _fillToggle, _palToggle };
 
-            _palButton = new ToggleButton();
-            _palButton.IsChecked = _pal;
-            _palButton.Content = ResourceUtils.GetResourceImage("useu.png");
-            L10n.AddLocalizedProperty(_palButton, ToggleButton.ToolTipProperty, "Apple2PaletteToggleTooltip").Update();
-            _palButton.Checked += pal_Checked;
-            _palButton.Unchecked += pal_Unchecked;
-
-            ToolBar.Items.Add(toolbarTitle);
-            ToolBar.Items.Add(_fillButton);
-            ToolBar.Items.Add(_palButton);
             _format = new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European));
         }
 
@@ -52,7 +43,7 @@ namespace FilConvWpf.Encode
 
         public string Name => "FormatNameApple2HiRes";
 
-        public ToolBar ToolBar { get; private set; }
+        public IEnumerable<ITool> Tools { get; }
 
         public AspectBitmap Preview(BitmapSource original)
         {
@@ -79,46 +70,19 @@ namespace FilConvWpf.Encode
             if (settings.TryGetValue(SettingNames.AppleFill, out o))
             {
                 _fill = (bool)o;
-                _fillButton.IsChecked = _fill;
+                _fillToggle.IsChecked = _fill;
             }
 
             if (settings.TryGetValue(SettingNames.ApplePalette, out o))
             {
                 _pal = (bool)o;
-                _palButton.IsChecked = _pal;
+                _palToggle.IsChecked = _pal;
             }
         }
 
         protected virtual void OnEncodingChanged()
         {
-            if (EncodingChanged != null)
-            {
-                EncodingChanged(this, EventArgs.Empty);
-            }
-        }
-
-        private void fill_Checked(object sender, RoutedEventArgs e)
-        {
-            _fill = true;
-            UpdateFormat();
-        }
-
-        private void fill_Unchecked(object sender, RoutedEventArgs e)
-        {
-            _fill = false;
-            UpdateFormat();
-        }
-
-        private void pal_Checked(object sender, RoutedEventArgs e)
-        {
-            _pal = true;
-            UpdateFormat();
-        }
-
-        private void pal_Unchecked(object sender, RoutedEventArgs e)
-        {
-            _pal = false;
-            UpdateFormat();
+            EncodingChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateFormat()

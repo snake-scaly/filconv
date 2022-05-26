@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using FilConvWpf.UI;
 
 namespace FilConvWpf.Encode
 {
@@ -10,7 +10,7 @@ namespace FilConvWpf.Encode
         event EventHandler<EventArgs> EncodingChanged;
 
         string Name { get; }
-        ToolBar ToolBar { get; }
+        IEnumerable<ITool> Tools { get; }
 
         AspectBitmap Preview(BitmapSource original);
         IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original);

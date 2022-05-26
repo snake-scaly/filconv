@@ -1,20 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using ImageLib;
-using System.Windows.Controls;
 
 namespace FilConvWpf
 {
-    class PreviewModel
+    class PreviewModel : INotifyPropertyChanged
     {
-        static readonly PictureScale defaultScale = PictureScale.Double;
+        private static readonly PictureScale defaultScale = PictureScale.Double;
 
-        BitmapSource _displayPicture;
-        IImagePresenter _imagePresenter;
-        bool _aspectToggleChecked;
+        private BitmapSource _displayPicture;
+        private IImagePresenter _imagePresenter;
+        private bool _aspectToggleChecked;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<EventArgs> DisplayPictureChange;
 
         public PreviewModel()
         {
@@ -22,31 +24,33 @@ namespace FilConvWpf
             _aspectToggleChecked = true;
         }
 
-        public event EventHandler<EventArgs> DisplayPictureChange;
-
         public string Title { get; set; }
 
         public IImagePresenter ImagePresenter
         {
-            get { return _imagePresenter; }
+            get => _imagePresenter;
+
             set
             {
-                if (!object.ReferenceEquals(value, _imagePresenter))
+                if (!ReferenceEquals(value, _imagePresenter))
                 {
                     if (_imagePresenter != null)
                     {
-                        _imagePresenter.DisplayImageChanged -= image_DisplayImageChanged;
+                        _imagePresenter.DisplayImageChanged -= imagePresenter_DisplayImageChanged;
+                        _imagePresenter.ToolBarChanged -= ImagePresenter_ToolBarChanged;
                     }
 
                     _imagePresenter = value;
 
                     if (_imagePresenter != null)
                     {
-                        _imagePresenter.DisplayImageChanged += image_DisplayImageChanged;
+                        _imagePresenter.DisplayImageChanged += imagePresenter_DisplayImageChanged;
+                        _imagePresenter.ToolBarChanged += ImagePresenter_ToolBarChanged;
                     }
 
                     _displayPicture = null;
                     OnDisplayPictureChange();
+                    OnPropertyChanged(nameof(ToolBarItems));
                 }
             }
         }
@@ -63,77 +67,41 @@ namespace FilConvWpf
             }
         }
 
-        public bool AspectToggleEnabled
-        {
-            get
-            {
-                return _imagePresenter != null && _imagePresenter.DisplayImage != null && _imagePresenter.DisplayImage.Aspect != 1;
-            }
-        }
+        public bool AspectToggleEnabled =>
+            _imagePresenter?.DisplayImage != null && _imagePresenter.DisplayImage.Aspect != 1;
 
         public bool AspectToggleChecked
         {
-            get
-            {
-                return _aspectToggleChecked;
-            }
-            set
-            {
-                _aspectToggleChecked = value;
-            }
+            get => _aspectToggleChecked;
+            set => _aspectToggleChecked = value;
         }
 
-        public double Aspect
-        {
-            get
-            {
-                return AspectToggleEnabled && _aspectToggleChecked ? _imagePresenter.DisplayImage.Aspect : 1;
-            }
-        }
+        public double Aspect => AspectToggleEnabled && _aspectToggleChecked ? _imagePresenter.DisplayImage.Aspect : 1;
 
         public PictureScale Scale { get; set; }
 
-        public string[] SupportedPreviewModes
-        {
-            get
-            {
-                return _imagePresenter != null ? _imagePresenter.SupportedPreviewModes : null;
-            }
-        }
-
-        public int PreviewMode
-        {
-            get
-            {
-                return _imagePresenter.PreviewMode;
-            }
-            set
-            {
-                _imagePresenter.PreviewMode = value;
-            }
-        }
-
-        public ToolBar ToolBar
-        {
-            get
-            {
-                return _imagePresenter != null ? _imagePresenter.ToolBar : null;
-            }
-        }
+        public IEnumerable ToolBarItems => _imagePresenter?.Tools.Select(t => t.Element);
 
         protected virtual void OnDisplayPictureChange()
         {
-            if (DisplayPictureChange != null)
-            {
-                DisplayPictureChange(this, EventArgs.Empty);
-            }
+            DisplayPictureChange?.Invoke(this, EventArgs.Empty);
         }
 
-        private void image_DisplayImageChanged(object sender, EventArgs e)
+        private void imagePresenter_DisplayImageChanged(object sender, EventArgs e)
         {
-            Debug.Assert(object.ReferenceEquals(sender, _imagePresenter));
+            Debug.Assert(ReferenceEquals(sender, _imagePresenter));
             _displayPicture = null;
             OnDisplayPictureChange();
+        }
+
+        private void ImagePresenter_ToolBarChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(ToolBarItems));
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

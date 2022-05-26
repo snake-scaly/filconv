@@ -5,7 +5,7 @@ namespace FilConvWpf
     /// <summary>
     /// An image to be displayed.
     /// </summary>
-    class AspectBitmap
+    public class AspectBitmap
     {
         public BitmapSource Bitmap { get; private set; }
 

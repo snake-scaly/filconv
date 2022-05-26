@@ -1,8 +1,6 @@
-﻿using FilConvWpf.I18n;
+﻿using System.Collections.Generic;
+using FilConvWpf.UI;
 using ImageLib.Apple;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls.Primitives;
 using ImageLib.Util;
 
 namespace FilConvWpf.Native
@@ -12,35 +10,27 @@ namespace FilConvWpf.Native
         private bool _fill;
         private bool _pal;
 
-        private ToggleButton _fillButton;
-        private ToggleButton _palButton;
+        private readonly IToggle _fillToggle;
+        private readonly IToggle _palToggle;
 
         public AppleHiResDisplayMode()
             : base("FormatNameApple2HiRes", new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European)))
         {
-        }
+            _fillToggle = new ToggleBuilder()
+                .WithIcon("fill.png")
+                .WithTooltip("Apple2ColorFillToggleTooltip")
+                .WithCallback( on => { _fill = on; UpdateFormat(); })
+                .WithInitialState(_fill)
+                .Build();
 
-        protected override void BuildToolBar()
-        {
-            _fillButton = new ToggleButton();
-            _fillButton.IsChecked = _fill;
-            _fillButton.Content = ResourceUtils.GetResourceImage("fill.png");
-            L10n.AddLocalizedProperty(_fillButton, ToggleButton.ToolTipProperty, "Apple2ColorFillToggleTooltip").Update();
-            _fillButton.Checked += fill_Checked;
-            _fillButton.Unchecked += fill_Unchecked;
+            _palToggle = new ToggleBuilder()
+                .WithIcon("useu.png")
+                .WithTooltip("Apple2PaletteToggleTooltip")
+                .WithCallback( on => { _pal = on; UpdateFormat(); })
+                .WithInitialState(_pal)
+                .Build();
 
-            _palButton = new ToggleButton();
-            _palButton.IsChecked = _pal;
-            _palButton.Content = ResourceUtils.GetResourceImage("useu.png");
-            L10n.AddLocalizedProperty(_palButton, ToggleButton.ToolTipProperty, "Apple2PaletteToggleTooltip").Update();
-            _palButton.Checked += pal_Checked;
-            _palButton.Unchecked += pal_Unchecked;
-
-            CreateToolBarOnce("Apple2ToolBarTitle");
-            ToolBar.Items.Add(_fillButton);
-            ToolBar.Items.Add(_palButton);
-
-            base.BuildToolBar();
+            Tools = new ITool[] { _fillToggle, _palToggle, _ntscToggle };
         }
 
         public override void StoreSettings(IDictionary<string, object> settings)
@@ -54,43 +44,17 @@ namespace FilConvWpf.Native
         {
             base.AdoptSettings(settings);
 
-            object o;
-
-            if (settings.TryGetValue(SettingNames.AppleFill, out o))
+            if (settings.TryGetValue(SettingNames.AppleFill, out var o))
             {
                 _fill = (bool)o;
-                _fillButton.IsChecked = _fill;
+                _fillToggle.IsChecked = _fill;
             }
 
             if (settings.TryGetValue(SettingNames.ApplePalette, out o))
             {
                 _pal = (bool)o;
-                _palButton.IsChecked = _pal;
+                _palToggle.IsChecked = _pal;
             }
-        }
-
-        private void fill_Checked(object sender, RoutedEventArgs e)
-        {
-            _fill = true;
-            UpdateFormat();
-        }
-
-        private void fill_Unchecked(object sender, RoutedEventArgs e)
-        {
-            _fill = false;
-            UpdateFormat();
-        }
-
-        private void pal_Checked(object sender, RoutedEventArgs e)
-        {
-            _pal = true;
-            UpdateFormat();
-        }
-
-        private void pal_Unchecked(object sender, RoutedEventArgs e)
-        {
-            _pal = false;
-            UpdateFormat();
         }
 
         protected override void UpdateFormat()

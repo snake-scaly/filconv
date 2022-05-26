@@ -1,153 +1,112 @@
-﻿using ImageLib;
+using ImageLib;
 using ImageLib.Agat;
 using ImageLib.Spectrum;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Linq;
+using System.Windows.Media.Imaging;
+using FilConvWpf.UI;
 
 namespace FilConvWpf.Native
 {
     class NativeImagePresenter : IImagePresenter, INativeOriginal
     {
-        private const int _defaultMode = 1; // MGR
         private const string _modeSettingsKey = "previewMode";
 
-        private NativeImage _nativeImage;
         private INativeDisplayMode _currentMode;
         private Dictionary<string, object> _settings;
-        private int _preferredMode;
+        private readonly IMultiChoice<INativeDisplayMode> _modeSelector;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
+        public event EventHandler<EventArgs> ToolBarChanged;
         public event EventHandler<EventArgs> OriginalChanged;
 
         public NativeImagePresenter(NativeImage nativeImage)
         {
-            _nativeImage = nativeImage;
+            NativeImage = nativeImage;
             _settings = new Dictionary<string, object>();
 
-            _preferredMode = _defaultMode;
+            GuessPreviewMode(_displayModes.First());
 
-            var displayModeNames = new List<string>();
-            foreach (INativeDisplayMode m in _displayModes)
-            {
-                displayModeNames.Add(m.Name);
-            }
-            SupportedPreviewModes = displayModeNames.ToArray();
-
-            GuessPreviewMode();
+            _modeSelector = new MultiChoiceBuilder<INativeDisplayMode>()
+                .WithChoices(_displayModes, m => m.Name)
+                .WithDefaultChoice(_currentMode)
+                .WithCallback(SetCurrentMode)
+                .Build();
+            UpdateTools();
         }
 
         public AspectBitmap DisplayImage { get; private set; }
 
-        public BitmapSource OriginalBitmap
-        {
-            get { return DisplayImage != null ? DisplayImage.Bitmap : null; }
-        }
+        public BitmapSource OriginalBitmap => DisplayImage.Bitmap;
 
-        public NativeImage NativeImage
-        {
-            get { return _nativeImage; }
-        }
+        public NativeImage NativeImage { get; }
 
-        public INativeImageFormat NativeImageFormat
-        {
-            get { return _currentMode != null ? _currentMode.Format : null; }
-        }
+        public INativeImageFormat NativeImageFormat => _currentMode?.Format;
 
-        public string[] SupportedPreviewModes { get; private set; }
-        
-        public int PreviewMode
+        public IEnumerable<ITool> Tools { get; private set; } = new ITool[] { };
+
+        private void SetCurrentMode(INativeDisplayMode desiredMode)
         {
-            get
+            if (desiredMode == _currentMode)
             {
-                return Array.IndexOf(_displayModes, _currentMode);
+                return;
             }
 
-            set
+            if (_currentMode != null)
             {
-                if (value < 0 || value >= _displayModes.Length)
-                {
-                    value = _defaultMode;
-                }
-
-                if (!object.ReferenceEquals(_displayModes[value], _currentMode))
-                {
-                    if (_currentMode != null)
-                    {
-                        _currentMode.StoreSettings(_settings);
-                        _currentMode.FormatChanged -= currentMode_FormatChanged;
-                    }
-                    _currentMode = _displayModes[value];
-                    _currentMode.FormatChanged += currentMode_FormatChanged;
-                }
-
-                _currentMode.AdoptSettings(_settings);
-                Convert(_currentMode.Format);
+                _currentMode.StoreSettings(_settings);
+                _currentMode.FormatChanged -= currentMode_FormatChanged;
             }
-        }
 
-        public ToolBar ToolBar
-        {
-            get
-            {
-                return _currentMode.ToolBar;
-            }
+            _currentMode = desiredMode;
+            _currentMode.FormatChanged += currentMode_FormatChanged;
+
+            _currentMode.AdoptSettings(_settings);
+
+            UpdateTools();
+            Convert(_currentMode.Format);
         }
 
         private void currentMode_FormatChanged(object sender, EventArgs e)
         {
-            Debug.Assert(object.ReferenceEquals(sender, _currentMode));
             Convert(_currentMode.Format);
         }
 
         private void Convert(INativeImageFormat f)
         {
-            DisplayImage = new AspectBitmap(f.FromNative(_nativeImage), _currentMode.Aspect);
+            DisplayImage = new AspectBitmap(f.FromNative(NativeImage), _currentMode.Aspect);
             OnDisplayImageChanged();
         }
 
-        protected virtual void OnDisplayImageChanged()
+        private void OnDisplayImageChanged()
         {
-            if (DisplayImageChanged != null)
-            {
-                DisplayImageChanged(this, EventArgs.Empty);
-            }
-            if (OriginalChanged != null)
-            {
-                OriginalChanged(this, EventArgs.Empty);
-            }
+            DisplayImageChanged?.Invoke(this, EventArgs.Empty);
+            OriginalChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void GuessPreviewMode()
+        private void GuessPreviewMode(INativeDisplayMode preferred)
         {
-            int bestMode = _preferredMode;
-            int bestScore = _displayModes[bestMode].Format.ComputeMatchScore(_nativeImage);
-            int i = 0;
+            INativeDisplayMode bestMode = null;
+            var bestScore = int.MinValue;
 
             foreach (INativeDisplayMode mode in _displayModes)
             {
-                int score = mode.Format.ComputeMatchScore(_nativeImage);
-                if (score > bestScore)
+                var score = mode.Format.ComputeMatchScore(NativeImage);
+                if (score > bestScore || (mode == preferred && score == bestScore))
                 {
                     bestScore = score;
-                    bestMode = i;
+                    bestMode = mode;
                 }
-                ++i;
             }
 
-            PreviewMode = bestMode;
+            SetCurrentMode(bestMode);
         }
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            if (_currentMode != null)
-            {
-                _currentMode.StoreSettings(settings);
-            }
-            settings[_modeSettingsKey] = PreviewMode;
+            _currentMode?.StoreSettings(settings);
+            settings[_modeSettingsKey] = _currentMode;
         }
 
         public void AdoptSettings(IDictionary<string, object> settings)
@@ -155,12 +114,17 @@ namespace FilConvWpf.Native
             _settings = new Dictionary<string, object>(settings);
             if (settings.ContainsKey(_modeSettingsKey))
             {
-                _preferredMode = (int)settings[_modeSettingsKey];
-                GuessPreviewMode();
+                GuessPreviewMode((INativeDisplayMode)settings[_modeSettingsKey]);
             }
         }
 
-        private readonly INativeDisplayMode[] _displayModes =
+        private void UpdateTools()
+        {
+            Tools = new[] { _modeSelector }.Concat(_currentMode.Tools);
+            ToolBarChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private static readonly INativeDisplayMode[] _displayModes =
         {
             new NativeDisplayMode("FormatNameAgatCGNR", new AgatCGNRImageFormat()),
             new NativeDisplayMode("FormatNameAgatCGSR", new AgatCGSRImageFormat()),
@@ -168,12 +132,12 @@ namespace FilConvWpf.Native
             new NativeDisplayMode("FormatNameAgatCGVR", new AgatCGVRImageFormat()),
             new NativeDisplayMode("FormatNameAgatMGDP", new AgatMGDPImageFormat()),
             new NativeDisplayMode("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
-            new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
             new AppleLoResDisplayMode(false),
             new AppleLoResDisplayMode(true),
             new AppleHiResDisplayMode(),
             new AppleDoubleHiResDisplayMode(),
             new NativeDisplayMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
+            new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
         };
     }
 }

@@ -7,15 +7,14 @@
              xmlns:i="clr-namespace:FilConvWpf.I18n"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid Name="InnerRoot" d:DataContext="{d:DesignInstance my:PreviewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <ToolBarTray Name="toolBarTray">
-            <ToolBar Name="toolBar" Grid.Row="0">
+            <ToolBar>
                 <Label Name="titleLabel"/>
-                <ComboBox Name="modeComboBox" SelectionChanged="modeComboBox_SelectedIndexChanged"/>
                 <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
                     <ComboBoxItem Content="100%"/>
                     <ComboBoxItem Content="200%"/>
@@ -26,6 +25,7 @@
                     4:3
                 </ToggleButton>
             </ToolBar>
+            <ToolBar ItemsSource="{Binding ToolBarItems}"/>
         </ToolBarTray>
         <Viewbox Name="previewViewBox" Grid.Row="1" SnapsToDevicePixels="False">
             <my:PixelAlignedBitmap x:Name="previewPictureBox" RenderOptions.BitmapScalingMode="NearestNeighbor" AllowDrop="True"/>

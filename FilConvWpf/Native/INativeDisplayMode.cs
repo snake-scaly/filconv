@@ -1,17 +1,18 @@
 ﻿using System;
 using ImageLib;
 using System.Collections.Generic;
-using System.Windows.Controls;
+using FilConvWpf.UI;
 
 namespace FilConvWpf.Native
 {
     interface INativeDisplayMode
     {
+        event EventHandler<EventArgs> FormatChanged;
+
         string Name { get; }
         INativeImageFormat Format { get; }
         double Aspect { get; }
-        event EventHandler<EventArgs> FormatChanged;
-        ToolBar ToolBar { get; }
+        IEnumerable<ITool> Tools { get; }
 
         void StoreSettings(IDictionary<string, object> settings);
         void AdoptSettings(IDictionary<string, object> settings);

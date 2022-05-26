@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
-using FilConvWpf.I18n;
+using FilConvWpf.UI;
 using ImageLib;
 
 namespace FilConvWpf.Encode
 {
-    class NativeEncoding : IEncoding
+    public class NativeEncoding : IEncoding
     {
         private INativeImageFormat _format;
         private bool _dither;
-        private ToggleButton _ditherButton;
+        private readonly IToggle _ditherToggle;
 
         public event EventHandler<EventArgs> EncodingChanged;
 
@@ -24,35 +21,20 @@ namespace FilConvWpf.Encode
 
             if (canDither)
             {
-                ToolBar = new ToolBar();
+                _ditherToggle = new ToggleBuilder()
+                    .WithIcon("rainbow.png")
+                    .WithTooltip("ColorDitherToggleTooltip")
+                    .WithCallback(on => { _dither = on; OnEncodingChanged(); })
+                    .WithInitialState(_dither)
+                    .Build();
 
-                Label label = new Label();
-                L10n.AddLocalizedProperty(label, Label.ContentProperty, "EncodingToolbarTitle").Update();
-                ToolBar.Items.Add(label);
-
-                _ditherButton = new ToggleButton();
-                _ditherButton.Content = ResourceUtils.GetResourceImage("rainbow.png");
-                L10n.AddLocalizedProperty(_ditherButton, ToggleButton.ToolTipProperty, "ColorDitherToggleTooltip").Update();
-                _ditherButton.IsChecked = _dither;
-                _ditherButton.Checked += dither_Checked;
-                _ditherButton.Unchecked += dither_Unchecked;
-                ToolBar.Items.Add(_ditherButton);
+                Tools = new ITool[] { _ditherToggle };
             }
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public ToolBar ToolBar { get; private set; }
-
-        private EncodingOptions EncodingOptions
-        {
-            get
-            {
-                EncodingOptions options = new EncodingOptions();
-                options.Dither = _dither;
-                return options;
-            }
-        }
+        public IEnumerable<ITool> Tools { get; } = new ITool[] { };
 
         public AspectBitmap Preview(BitmapSource original)
         {
@@ -63,7 +45,7 @@ namespace FilConvWpf.Encode
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)
         {
-            yield return new FilSaveDelegate(original, _format, EncodingOptions);
+            yield return new FilSaveDelegate(original, _format, new EncodingOptions { Dither = _dither });
         }
 
         public void StoreSettings(IDictionary<string, object> settings)
@@ -73,44 +55,24 @@ namespace FilConvWpf.Encode
 
         public void AdoptSettings(IDictionary<string, object> settings)
         {
-            object o;
-
-            if (_ditherButton != null && settings.TryGetValue(SettingNames.Dithering, out o))
+            if (settings.TryGetValue(SettingNames.Dithering, out var o))
             {
                 _dither = (bool)o;
-                _ditherButton.IsChecked = _dither;
+                if (_ditherToggle != null)
+                {
+                    _ditherToggle.IsChecked = _dither;
+                }
             }
         }
 
         private NativeImage ToNative(BitmapSource original)
         {
-            return _format.ToNative(original, EncodingOptions);
-        }
-
-        private void dither_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!_dither)
-            {
-                _dither = true;
-                OnEncodingChanged();
-            }
-        }
-
-        private void dither_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (_dither)
-            {
-                _dither = false;
-                OnEncodingChanged();
-            }
+            return _format.ToNative(original, new EncodingOptions { Dither = _dither });
         }
 
         protected virtual void OnEncodingChanged()
         {
-            if (EncodingChanged != null)
-            {
-                EncodingChanged(this, EventArgs.Empty);
-            }
+            EncodingChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

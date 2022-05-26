@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Windows.Controls;
+using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using FilConvWpf.UI;
 
 namespace FilConvWpf
 {
@@ -12,39 +13,26 @@ namespace FilConvWpf
             remove { }
         }
 
+        public event EventHandler<EventArgs> ToolBarChanged
+        {
+            add { }
+            remove { }
+        }
+
         public BitmapPresenter(BitmapSource bmp)
         {
             DisplayImage = new AspectBitmap(bmp, 1);
         }
 
-        public AspectBitmap DisplayImage { get; private set; }
-
-        public string[] SupportedPreviewModes
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public AspectBitmap DisplayImage { get; }
 
         public int PreviewMode
         {
-            get
-            {
-                return 0;
-            }
-            set
-            {
-            }
+            get => 0;
+            set { }
         }
 
-        public ToolBar ToolBar
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public IEnumerable<ITool> Tools { get; } = new ITool[] { };
 
         public event EventHandler<EventArgs> OriginalChanged
         {
@@ -52,16 +40,13 @@ namespace FilConvWpf
             remove { }
         }
 
-        public BitmapSource OriginalBitmap
-        {
-            get { return DisplayImage.Bitmap; }
-        }
+        public BitmapSource OriginalBitmap => DisplayImage.Bitmap;
 
-        public void StoreSettings(System.Collections.Generic.IDictionary<string, object> settings)
+        public void StoreSettings(IDictionary<string, object> settings)
         {
         }
 
-        public void AdoptSettings(System.Collections.Generic.IDictionary<string, object> settings)
+        public void AdoptSettings(IDictionary<string, object> settings)
         {
         }
     }

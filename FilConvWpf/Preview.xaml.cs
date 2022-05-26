@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using FilConvWpf.I18n;
 
 namespace FilConvWpf
 {
@@ -16,7 +15,6 @@ namespace FilConvWpf
     {
         PreviewModel model;
         bool updating;
-        ToolBar secondToolbar;
 
         public event EventHandler<EventArgs> DisplayPictureChange;
 
@@ -30,16 +28,16 @@ namespace FilConvWpf
                 model.Title = (string) titleLabel.Content;
                 model.DisplayPictureChange += model_DisplayPictureChange;
 
+                InnerRoot.DataContext = model;
+
                 Update();
             }
         }
 
         public string Title
         {
-            get
-            {
-                return model.Title;
-            }
+            get => model.Title;
+
             set
             {
                 model.Title = value;
@@ -49,21 +47,15 @@ namespace FilConvWpf
 
         internal IImagePresenter ImagePresenter
         {
-            get { return model.ImagePresenter; }
-            set { model.ImagePresenter = value; }
+            get => model.ImagePresenter;
+            set => model.ImagePresenter = value;
         }
 
-        public BitmapSource DisplayPicture
-        {
-            get { return model.DisplayPicture; }
-        }
+        public BitmapSource DisplayPicture => model.DisplayPicture;
 
         protected virtual void OnDisplayPictureChange()
         {
-            if (DisplayPictureChange != null)
-            {
-                DisplayPictureChange(this, EventArgs.Empty);
-            }
+            DisplayPictureChange?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -81,23 +73,6 @@ namespace FilConvWpf
 
                 titleLabel.Content = model.Title;
 
-                if (model.SupportedPreviewModes != null && model.SupportedPreviewModes.Length != 0)
-                {
-                    modeComboBox.Items.Clear();
-                    foreach (string mode in model.SupportedPreviewModes)
-                    {
-                        var item = new ComboBoxItem();
-                        L10n.AddLocalizedProperty(item, ComboBoxItem.ContentProperty, mode).Update();
-                        modeComboBox.Items.Add(item);
-                    }
-                    modeComboBox.SelectedIndex = model.PreviewMode;
-                    modeComboBox.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    modeComboBox.Visibility = Visibility.Collapsed;
-                }
-
                 var scale = new Dictionary<PictureScale, int>
                 {
                     { PictureScale.Single, 0 },
@@ -113,19 +88,6 @@ namespace FilConvWpf
 
                 BitmapSource bs = model.DisplayPicture;
                 previewPictureBox.Source = bs;
-
-                if (model.ToolBar != secondToolbar)
-                {
-                    if (secondToolbar != null)
-                    {
-                        toolBarTray.ToolBars.Remove(secondToolbar);
-                    }
-                    secondToolbar = model.ToolBar;
-                    if (secondToolbar != null)
-                    {
-                        toolBarTray.ToolBars.Add(secondToolbar);
-                    }
-                }
 
                 if (bs != null)
                 {
@@ -148,9 +110,9 @@ namespace FilConvWpf
         {
             if (!IgnoreEvents.Ignore)
             {
-                Debug.Assert(object.ReferenceEquals(sender, scaleComboBox));
+                Debug.Assert(ReferenceEquals(sender, scaleComboBox));
 
-                var scale = new PictureScale[] {
+                var scale = new[] {
                     PictureScale.Single,
                     PictureScale.Double,
                     PictureScale.Triple,
@@ -159,14 +121,6 @@ namespace FilConvWpf
 
                 model.Scale = scale[scaleComboBox.SelectedIndex];
                 Update();
-            }
-        }
-
-        void modeComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                model.PreviewMode = modeComboBox.SelectedIndex;
             }
         }
 
@@ -186,7 +140,7 @@ namespace FilConvWpf
         {
             static int ignore = 0;
 
-            public static bool Ignore { get { return ignore != 0; } }
+            public static bool Ignore => ignore != 0;
 
             public IgnoreEvents()
             {

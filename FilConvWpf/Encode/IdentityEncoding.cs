@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-    
+using FilConvWpf.UI;
+
 namespace FilConvWpf.Encode
 {
     class IdentityEncoding : IEncoding
@@ -14,20 +14,14 @@ namespace FilConvWpf.Encode
             remove { }
         }
 
-        public string Name { get { return "FormatNameOriginal"; } }
+        public string Name => "FormatNameOriginal";
 
         public AspectBitmap Preview(BitmapSource original)
         {
             return new AspectBitmap(original, 1);
         }
 
-        public ToolBar ToolBar
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public IEnumerable<ITool> Tools { get; } = new ITool[] { };
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource bitmap)
         {

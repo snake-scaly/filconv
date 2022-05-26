@@ -1,10 +1,8 @@
-﻿using ImageLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using FilConvWpf.UI;
+using ImageLib;
 
 namespace FilConvWpf.Encode
 {
@@ -28,12 +26,9 @@ namespace FilConvWpf.Encode
             remove { }
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public ToolBar ToolBar
-        {
-            get { return null; }
-        }
+        public IEnumerable<ITool> Tools { get; } = new ITool[] { };
 
         public AspectBitmap Preview(BitmapSource original)
         {

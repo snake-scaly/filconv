@@ -1,14 +1,11 @@
 ﻿using System;
-using ImageLib;
-using System.Windows;
 using System.Collections.Generic;
-using System.Windows.Controls.Primitives;
-using System.Windows.Controls;
-using FilConvWpf.I18n;
+using FilConvWpf.UI;
+using ImageLib;
 
 namespace FilConvWpf.Native
 {
-    class NativeDisplayMode : INativeDisplayMode
+    public class NativeDisplayMode : INativeDisplayMode
     {
         public event EventHandler<EventArgs> FormatChanged;
 
@@ -18,31 +15,10 @@ namespace FilConvWpf.Native
             Format = format;
         }
 
-        public string Name { get; private set; }
-        public double Aspect
-        {
-            get
-            {
-                return Format.Aspect;
-            }
-        }
+        public string Name { get; }
+        public double Aspect => Format.Aspect;
         public INativeImageFormat Format { get; protected set; }
-        public ToolBar ToolBar { get; private set; }
-
-        protected void CreateToolBarOnce(string title)
-        {
-            if (ToolBar == null)
-            {
-                ToolBar = new ToolBar();
-
-                if (title != null)
-                {
-                    Label toolbarTitle = new Label();
-                    L10n.AddLocalizedProperty(toolbarTitle, Label.ContentProperty, title).Update();
-                    ToolBar.Items.Add(toolbarTitle);
-                }
-            }
-        }
+        public IEnumerable<ITool> Tools { get; protected set; } = new ITool[] {};
 
         public virtual void StoreSettings(IDictionary<string, object> settings)
         {
@@ -54,10 +30,7 @@ namespace FilConvWpf.Native
 
         protected virtual void OnFormatChanged()
         {
-            if (FormatChanged != null)
-            {
-                FormatChanged(this, EventArgs.Empty);
-            }
+            FormatChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

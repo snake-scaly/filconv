@@ -13,7 +13,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Menu Grid.ColumnSpan="2">
+        <Menu Grid.ColumnSpan="3">
             <MenuItem Header="{i:L10n MenuFile}">
                 <MenuItem Header="{i:L10n MenuFileOpen}" Click="menuOpen_Click" />
                 <MenuItem x:Name="fileSaveAsMenuItem" IsEnabled="False" Header="{i:L10n MenuFileSaveAs}" Click="menuSaveAs_Click" />
@@ -25,8 +25,8 @@
                 <MenuItem Header="{i:L10n MenuHelpAbout}" Click="menuAbout_Click" />
             </MenuItem>
         </Menu>
-        <z:Preview x:Name="left" Grid.Row="1" Margin="0 0 4pt 0" Title="{i:L10n LeftPreviewDefaultTitle}"/>
-        <GridSplitter Grid.Row="1" Width="4pt"/>
+        <z:Preview x:Name="left" Grid.Row="1" Grid.Column="0" Margin="0 0 4pt 0" Title="{i:L10n LeftPreviewDefaultTitle}"/>
         <z:Preview x:Name="right" Grid.Row="1" Grid.Column="1" Title="{i:L10n RightPreviewDefaultTitle}"/>
+        <GridSplitter Grid.Row="1" Grid.Column="0" Width="4pt" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
