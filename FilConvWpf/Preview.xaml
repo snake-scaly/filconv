@@ -4,31 +4,46 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:FilConvWpf"
-             xmlns:i="clr-namespace:FilConvWpf.I18n"
-             mc:Ignorable="d" 
+             xmlns:i18n="clr-namespace:FilConvWpf.I18n"
+             xmlns:ui="clr-namespace:FilConvWpf.UI"
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Name="InnerRoot" d:DataContext="{d:DesignInstance my:PreviewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ToolBarTray Name="toolBarTray">
+        <ToolBarTray>
             <ToolBar>
-                <Label Name="titleLabel"/>
-                <ComboBox Name="scaleComboBox" SelectionChanged="zoomComboBox_SelectedIndexChanged">
-                    <ComboBoxItem Content="100%"/>
-                    <ComboBoxItem Content="200%"/>
-                    <ComboBoxItem Content="300%"/>
-                    <ComboBoxItem Content="{i:L10n PreviewPictureScaleFitWindow}"/>
-                </ComboBox>
-                <ToggleButton Name="nativeAspectToggle" ToolTip="{i:L10n AspectToggleTooltip}" Checked="aspectButton_Checked" Unchecked="aspectButton_Unchecked">
+                <Label Content="{Binding Title}"/>
+                <ui:ScaleComboBox x:Name="ScaleComboBox"/>
+                <ToggleButton ToolTip="{i18n:L10n AspectToggleTooltip}"
+                              IsChecked="{Binding AspectToggleChecked}"
+                              Visibility="{Binding AspectToggleVisibility}">
                     4:3
                 </ToggleButton>
             </ToolBar>
             <ToolBar ItemsSource="{Binding ToolBarItems}"/>
         </ToolBarTray>
-        <Viewbox Name="previewViewBox" Grid.Row="1" SnapsToDevicePixels="False">
-            <my:PixelAlignedBitmap x:Name="previewPictureBox" RenderOptions.BitmapScalingMode="NearestNeighbor" AllowDrop="True"/>
-        </Viewbox>
+        <ScrollViewer Name="ScrollViewer"
+                      Grid.Row="1"
+                      HorizontalScrollBarVisibility="{Binding ScrollBarVisibility}"
+                      VerticalScrollBarVisibility="{Binding ScrollBarVisibility}"
+                      PanningMode="Both">
+            <my:ScaledBitmap x:Name="BitmapView"
+                              Source="{Binding DisplayPicture}"
+                              Scale="{Binding Scale}"
+                              Aspect="{Binding Aspect}"
+                              FitWidth="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=ScrollViewer}}"
+                              FitHeight="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType=ScrollViewer}}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Cursor="{Binding BitmapCursor}"
+                              SnapsToDevicePixels="True"
+                              RenderOptions.BitmapScalingMode="NearestNeighbor"
+                              MouseDown="BitmapView_OnMouseDown"
+                              MouseUp="BitmapView_OnMouseUp"
+                              MouseMove="BitmapView_OnMouseMove"/>
+        </ScrollViewer>
     </Grid>
 </UserControl>

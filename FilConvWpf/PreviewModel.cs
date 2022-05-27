@@ -3,28 +3,40 @@ using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace FilConvWpf
 {
     class PreviewModel : INotifyPropertyChanged
     {
-        private static readonly PictureScale defaultScale = PictureScale.Double;
-
-        private BitmapSource _displayPicture;
+        private string _title;
         private IImagePresenter _imagePresenter;
         private bool _aspectToggleChecked;
+        private double? _scale;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler<EventArgs> DisplayPictureChange;
 
         public PreviewModel()
         {
-            Scale = defaultScale;
             _aspectToggleChecked = true;
         }
 
-        public string Title { get; set; }
+        public string Title
+        {
+            get => _title;
+
+            set
+            {
+                if (value != _title)
+                {
+                    _title = value;
+                    OnPropertyChanged(nameof(Title));
+                }
+            }
+        }
 
         public IImagePresenter ImagePresenter
         {
@@ -48,49 +60,67 @@ namespace FilConvWpf
                         _imagePresenter.ToolBarChanged += ImagePresenter_ToolBarChanged;
                     }
 
-                    _displayPicture = null;
                     OnDisplayPictureChange();
                     OnPropertyChanged(nameof(ToolBarItems));
                 }
             }
         }
 
-        public BitmapSource DisplayPicture
-        {
-            get
-            {
-                if (_displayPicture == null && _imagePresenter != null && _imagePresenter.DisplayImage != null)
-                {
-                    _displayPicture = _imagePresenter.DisplayImage.Bitmap;
-                }
-                return _displayPicture;
-            }
-        }
+        public BitmapSource DisplayPicture => _imagePresenter?.DisplayImage?.Bitmap;
 
-        public bool AspectToggleEnabled =>
-            _imagePresenter?.DisplayImage != null && _imagePresenter.DisplayImage.Aspect != 1;
+        public Visibility AspectToggleVisibility =>
+            _imagePresenter?.DisplayImage?.Aspect != 1 ? Visibility.Visible : Visibility.Collapsed;
 
         public bool AspectToggleChecked
         {
             get => _aspectToggleChecked;
-            set => _aspectToggleChecked = value;
+
+            set
+            {
+                if (value != _aspectToggleChecked)
+                {
+                    _aspectToggleChecked = value;
+                    OnPropertyChanged(nameof(AspectToggleChecked));
+                    OnPropertyChanged(nameof(Aspect));
+                }
+            }
         }
 
-        public double Aspect => AspectToggleEnabled && _aspectToggleChecked ? _imagePresenter.DisplayImage.Aspect : 1;
+        public double Aspect => _aspectToggleChecked ? _imagePresenter?.DisplayImage?.Aspect ?? 1 : 1;
 
-        public PictureScale Scale { get; set; }
+        public double? Scale
+        {
+            get => _scale;
+
+            set
+            {
+                if (!Equals(value, _scale))
+                {
+                    _scale = value;
+                    OnPropertyChanged(nameof(Scale));
+                    OnPropertyChanged(nameof(ScrollBarVisibility));
+                    OnPropertyChanged(nameof(BitmapCursor));
+                }
+            }
+        }
+
+        public ScrollBarVisibility ScrollBarVisibility =>
+            Scale == null ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto;
+
+        public Cursor BitmapCursor => ScrollBarVisibility == ScrollBarVisibility.Auto ? Cursors.Hand : Cursors.Arrow;
 
         public IEnumerable ToolBarItems => _imagePresenter?.Tools.Select(t => t.Element);
 
         protected virtual void OnDisplayPictureChange()
         {
-            DisplayPictureChange?.Invoke(this, EventArgs.Empty);
+            OnPropertyChanged(nameof(DisplayPicture));
+            OnPropertyChanged(nameof(Aspect));
+            OnPropertyChanged(nameof(AspectToggleVisibility));
         }
 
         private void imagePresenter_DisplayImageChanged(object sender, EventArgs e)
         {
             Debug.Assert(ReferenceEquals(sender, _imagePresenter));
-            _displayPicture = null;
             OnDisplayPictureChange();
         }
 

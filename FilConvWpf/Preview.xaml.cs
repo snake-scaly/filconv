@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Input;
 
 namespace FilConvWpf
 {
@@ -13,149 +9,49 @@ namespace FilConvWpf
     /// </summary>
     public partial class Preview : UserControl
     {
-        PreviewModel model;
-        bool updating;
-
-        public event EventHandler<EventArgs> DisplayPictureChange;
+        private readonly PreviewModel _model;
+        private Point _dragOrigin;
+        private Point _dragInitialOffset;
 
         public Preview()
         {
-            using (new IgnoreEvents())
-            {
-                InitializeComponent();
-
-                model = new PreviewModel();
-                model.Title = (string) titleLabel.Content;
-                model.DisplayPictureChange += model_DisplayPictureChange;
-
-                InnerRoot.DataContext = model;
-
-                Update();
-            }
+            InitializeComponent();
+            _model = new PreviewModel();
+            ScaleComboBox.ScaleChanged += (s, e) => _model.Scale = ScaleComboBox.Scale;
+            InnerRoot.DataContext = _model;
         }
 
         public string Title
         {
-            get => model.Title;
-
-            set
-            {
-                model.Title = value;
-                Update();
-            }
+            get => _model.Title;
+            set => _model.Title = value;
         }
 
         internal IImagePresenter ImagePresenter
         {
-            get => model.ImagePresenter;
-            set => model.ImagePresenter = value;
+            get => _model.ImagePresenter;
+            set => _model.ImagePresenter = value;
         }
 
-        public BitmapSource DisplayPicture => model.DisplayPicture;
-
-        protected virtual void OnDisplayPictureChange()
+        private void BitmapView_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DisplayPictureChange?.Invoke(this, EventArgs.Empty);
+            _dragOrigin = e.GetPosition(ScrollViewer);
+            _dragInitialOffset = new Point(ScrollViewer.ContentHorizontalOffset, ScrollViewer.ContentVerticalOffset);
+            BitmapView.CaptureMouse();
         }
 
-        /// <summary>
-        /// Reflect any changes in the model.
-        /// </summary>
-        void Update()
+        private void BitmapView_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            using (new IgnoreEvents())
+            BitmapView.ReleaseMouseCapture();
+        }
+
+        private void BitmapView_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (updating)
-                {
-                    return;
-                }
-                updating = true;
-
-                titleLabel.Content = model.Title;
-
-                var scale = new Dictionary<PictureScale, int>
-                {
-                    { PictureScale.Single, 0 },
-                    { PictureScale.Double, 1 },
-                    { PictureScale.Triple, 2 },
-                    { PictureScale.Free, 3 },
-                };
-
-                scaleComboBox.SelectedIndex = scale[model.Scale];
-
-                nativeAspectToggle.Visibility = model.AspectToggleEnabled ? Visibility.Visible : Visibility.Collapsed;
-                nativeAspectToggle.IsChecked = model.AspectToggleChecked;
-
-                BitmapSource bs = model.DisplayPicture;
-                previewPictureBox.Source = bs;
-
-                if (bs != null)
-                {
-                    previewPictureBox.Scale = model.Scale.Scale;
-                    previewPictureBox.Aspect = model.Aspect;
-                }
-                previewViewBox.Stretch = model.Scale.ResizeToFit ? Stretch.Uniform : Stretch.None;
-
-                updating = false;
-            }
-        }
-
-        void model_DisplayPictureChange(object sender, EventArgs e)
-        {
-            Update();
-            OnDisplayPictureChange();
-        }
-
-        void zoomComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!IgnoreEvents.Ignore)
-            {
-                Debug.Assert(ReferenceEquals(sender, scaleComboBox));
-
-                var scale = new[] {
-                    PictureScale.Single,
-                    PictureScale.Double,
-                    PictureScale.Triple,
-                    PictureScale.Free,
-                };
-
-                model.Scale = scale[scaleComboBox.SelectedIndex];
-                Update();
-            }
-        }
-
-        void aspectButton_Checked(object sender, RoutedEventArgs e)
-        {
-            model.AspectToggleChecked = true;
-            Update();
-        }
-
-        void aspectButton_Unchecked(object sender, RoutedEventArgs e)
-        {
-            model.AspectToggleChecked = false;
-            Update();
-        }
-
-        sealed class IgnoreEvents : IDisposable
-        {
-            static int ignore = 0;
-
-            public static bool Ignore => ignore != 0;
-
-            public IgnoreEvents()
-            {
-                ++ignore;
-            }
-
-            ~IgnoreEvents()
-            {
-                Debug.Fail("Object weren'target disposed");
-            }
-
-            public void Dispose()
-            {
-                --ignore;
-                GC.SuppressFinalize(this);
+                var dragPosition = e.GetPosition(ScrollViewer);
+                ScrollViewer.ScrollToHorizontalOffset(_dragInitialOffset.X + _dragOrigin.X - dragPosition.X);
+                ScrollViewer.ScrollToVerticalOffset(_dragInitialOffset.Y + _dragOrigin.Y - dragPosition.Y);
             }
         }
     }
