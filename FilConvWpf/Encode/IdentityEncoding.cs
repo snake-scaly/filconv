@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using FilConvWpf.UI;
+using ImageLib;
 
 namespace FilConvWpf.Encode
 {

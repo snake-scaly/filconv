@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
@@ -10,17 +7,12 @@ namespace ImageLib.Apple
     {
         private readonly bool _doubleResolution;
 
-        public double Aspect
-        {
-            get { return NtscPictureBuilder.PixelAspect; }
-        }
-
         public Apple2LoResNtscImageFormat(bool doubleResolution)
         {
             _doubleResolution = doubleResolution;
         }
 
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             const int width = 40;
             const int height = 24;
@@ -43,7 +35,7 @@ namespace ImageLib.Apple
                 {
                     int tick = 0;
 
-                    var scanlines = new NtscScanLine[]{ l0, l1, l2, l3, l4, l5, l6, l7 };
+                    var scanlines = new[] { l0, l1, l2, l3, l4, l5, l6, l7 };
 
                     for (int x = 0; x < width; ++x)
                     {

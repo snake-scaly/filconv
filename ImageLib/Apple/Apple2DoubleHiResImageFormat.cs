@@ -19,9 +19,7 @@ namespace ImageLib.Apple
         private const int _width = 140;
         private const int _height = 192;
 
-        public double Aspect => (double)(_height * 4) / (_width * 3);
-
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             const int bytesPerBmpPixel = 4;
             const int applePixelMask = (1 << _bitsPerApplePixel) - 1;
@@ -63,11 +61,11 @@ namespace ImageLib.Apple
             }
 
             const int dpi = 96;
-            var bmp = new WriteableBitmap(_width, _height, dpi / Aspect, dpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(_width, _height, dpi, dpi, PixelFormats.Bgr32, null);
             var rect = new Int32Rect(0, 0, _width, _height);
             bmp.WritePixels(rect, pixels, stride, 0);
 
-            return bmp;
+            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
         }
 
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)

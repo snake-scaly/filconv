@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FilConvWpf.UI;
+using ImageLib;
 
 namespace FilConvWpf
 {

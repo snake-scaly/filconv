@@ -69,7 +69,7 @@ namespace FilConvWpf
         public BitmapSource DisplayPicture => _imagePresenter?.DisplayImage?.Bitmap;
 
         public Visibility AspectToggleVisibility =>
-            _imagePresenter?.DisplayImage?.Aspect != 1 ? Visibility.Visible : Visibility.Collapsed;
+            _imagePresenter?.DisplayImage?.PixelAspect != 1 ? Visibility.Visible : Visibility.Collapsed;
 
         public bool AspectToggleChecked
         {
@@ -86,7 +86,7 @@ namespace FilConvWpf
             }
         }
 
-        public double Aspect => _aspectToggleChecked ? _imagePresenter?.DisplayImage?.Aspect ?? 1 : 1;
+        public double Aspect => _aspectToggleChecked ? _imagePresenter?.DisplayImage?.PixelAspect ?? 1 : 1;
 
         public double? Scale
         {

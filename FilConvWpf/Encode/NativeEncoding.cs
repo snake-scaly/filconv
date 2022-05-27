@@ -38,9 +38,7 @@ namespace FilConvWpf.Encode
 
         public AspectBitmap Preview(BitmapSource original)
         {
-            return new AspectBitmap(
-                _format.FromNative(ToNative(original)),
-                _format.Aspect);
+            return _format.FromNative(ToNative(original));
         }
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)

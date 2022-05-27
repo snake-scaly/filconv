@@ -16,7 +16,6 @@ namespace FilConvWpf.Native
         }
 
         public string Name { get; }
-        public double Aspect => Format.Aspect;
         public INativeImageFormat Format { get; protected set; }
         public IEnumerable<ITool> Tools { get; protected set; } = new ITool[] {};
 

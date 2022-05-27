@@ -9,8 +9,6 @@ namespace ImageLib.Agat
     /// </remarks>
     public class AgatCGSRDVImageFormat : C16ImageFormatAbstr
     {
-        public override double Aspect => 8.0 / 3.0;
-
         public override int ComputeMatchScore(NativeImage native)
         {
             if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_128_256_Pal16)

@@ -10,12 +10,7 @@ namespace ImageLib
     /// native format.</para>
     public interface INativeImageFormat
     {
-        /// <summary>
-        /// Native aspect ratio of the image pixels.
-        /// </summary>
-        double Aspect { get; }
-
-        BitmapSource FromNative(NativeImage native);
+        AspectBitmap FromNative(NativeImage native);
         NativeImage ToNative(BitmapSource bitmap, EncodingOptions options);
 
         /// <summary>

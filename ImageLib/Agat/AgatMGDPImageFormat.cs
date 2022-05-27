@@ -7,8 +7,6 @@ namespace ImageLib.Agat
     /// <remarks>512x256, 2 colors per pixel. Only in Agat-9.</remarks>
     public class AgatMGDPImageFormat : BwImageFormatAbstr
     {
-        public override double Aspect => 2.0 / 3.0;
-
         public override int ComputeMatchScore(NativeImage native)
         {
             if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_512_256_Mono)

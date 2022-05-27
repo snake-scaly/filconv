@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace ImageLib.Apple
 {
     public class Apple2HiResNtscImageFormat : INativeImageFormat
     {
-        public double Aspect
-        {
-            get { return NtscPictureBuilder.PixelAspect; }
-        }
-
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             const int height = 192;
             const int firstBitPhase = 2;

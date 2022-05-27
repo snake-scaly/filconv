@@ -10,8 +10,6 @@ namespace ImageLib.Apple
         /// </summary>
         private Rgb[] palette;
 
-        public double Aspect { get { return (4.0 / 140) / (3.0 / 192); } }
-
         public Apple2DoublePixelTv(Rgb[] palette)
         {
             this.palette = palette;

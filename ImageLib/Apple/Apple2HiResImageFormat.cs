@@ -19,17 +19,12 @@ namespace ImageLib.Apple
 
         private Apple2TvSet tvSet;
 
-        public double Aspect
-        {
-            get { return tvSet.Aspect; }
-        }
-
         public Apple2HiResImageFormat(Apple2TvSet tvSet)
         {
             this.tvSet = tvSet;
         }
 
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             Apple2SimpleColor[][] simple = ToSimpleColor(native);
             Rgb[][] colors = tvSet.ProcessColors(simple);
@@ -54,9 +49,9 @@ namespace ImageLib.Apple
                 }
             }
 
-            WriteableBitmap result = new WriteableBitmap(width, height, dpi / Aspect, dpi, PixelFormats.Bgr32, null);
+            WriteableBitmap result = new WriteableBitmap(width, height, dpi, dpi, PixelFormats.Bgr32, null);
             result.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
-            return result;
+            return AspectBitmap.FromImageAspect(result, 4.0 / 3.0);
         }
 
         /// <summary>

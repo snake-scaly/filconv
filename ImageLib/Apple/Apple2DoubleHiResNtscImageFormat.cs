@@ -6,15 +6,9 @@ namespace ImageLib.Apple
     public class Apple2DoubleHiResNtscImageFormat : INativeImageFormat
     {
         private const int _lines = 192;
-        private const int _height = _lines * 3;
         private const int _bytesPerHalfScreen = 8192;
 
-        public double Aspect
-        {
-            get { return NtscPictureBuilder.PixelAspect; }
-        }
-
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             const int wordsPerLine = 20;
             const int bytesPerWord = 2;

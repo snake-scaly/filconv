@@ -19,12 +19,7 @@ namespace ImageLib.Spectrum
         protected const int _paletteSize = _colorLines * _bytesPerLine;
         protected const int _totalBytes = (_height + _colorLines) * _bytesPerLine;
 
-        public double Aspect
-        {
-            get { return 1.0; }
-        }
-
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             int dstStride = _width * 4;
             int size = dstStride * _height;
@@ -50,9 +45,9 @@ namespace ImageLib.Spectrum
                 }
             }
 
-            var bmp = new WriteableBitmap(_width, _height, _defaultDpi / Aspect, _defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(_width, _height, _defaultDpi, _defaultDpi, PixelFormats.Bgr32, null);
             bmp.WritePixels(new Int32Rect(0, 0, _width, _height), pixels, dstStride, 0);
-            return bmp;
+            return new AspectBitmap(bmp, 1);
         }
 
         private static int GetBwSafe(byte[] data, int offset)

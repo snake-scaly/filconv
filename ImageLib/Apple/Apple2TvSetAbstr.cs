@@ -5,8 +5,6 @@ namespace ImageLib.Apple
 {
     public abstract class Apple2TvSetAbstr : Apple2TvSet
     {
-        public double Aspect { get { return (4.0 / 280) / (3.0 / 192); } }
-
         public Rgb[][] ProcessColors(Apple2SimpleColor[][] simpleColors)
         {
             int height = simpleColors.Length;

@@ -28,11 +28,6 @@ namespace ImageLib.Apple
         private readonly int _bmpHeight;
         private const double _bmpDpi = 96;
 
-        public double Aspect
-        {
-            get { return (4.0 * _bmpHeight) / (3.0 * _bmpWidth); }
-        }
-
         public Apple2LoResImageFormat(bool doubleResolution)
         {
             _doubleResolution = doubleResolution;
@@ -42,7 +37,7 @@ namespace ImageLib.Apple
             _bmpHeight = _nativeHeight * _bmpBlockHeight;
         }
 
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
             PixelFormat bmpPixelFormat = PixelFormats.Bgr32;
             const int bmpBPP = 4;
@@ -77,10 +72,10 @@ namespace ImageLib.Apple
                 }
             }
 
-            var bmp = new WriteableBitmap(_bmpWidth, _bmpHeight, _bmpDpi / Aspect, _bmpDpi, bmpPixelFormat, null);
+            var bmp = new WriteableBitmap(_bmpWidth, _bmpHeight, _bmpDpi, _bmpDpi, bmpPixelFormat, null);
             var srcRect = new Int32Rect(0, 0, _bmpWidth, _bmpHeight);
             bmp.WritePixels(srcRect, pixels, bmpStride, 0);
-            return bmp;
+            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
         }
 
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)

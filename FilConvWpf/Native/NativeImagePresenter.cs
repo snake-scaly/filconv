@@ -75,7 +75,7 @@ namespace FilConvWpf.Native
 
         private void Convert(INativeImageFormat f)
         {
-            DisplayImage = new AspectBitmap(f.FromNative(NativeImage), _currentMode.Aspect);
+            DisplayImage = f.FromNative(NativeImage);
             OnDisplayImageChanged();
         }
 

@@ -11,7 +11,6 @@ namespace FilConvWpf.Native
 
         string Name { get; }
         INativeImageFormat Format { get; }
-        double Aspect { get; }
         IEnumerable<ITool> Tools { get; }
 
         void StoreSettings(IDictionary<string, object> settings);

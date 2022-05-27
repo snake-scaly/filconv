@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -16,14 +14,15 @@ namespace ImageLib.Apple
     /// <para>Use this class as follows:</para>
     /// <list type="number">
     /// <item>Create an instance of the class.</item>
-    /// <item>For each of the image lines:</item>
+    /// <item>
+    /// For each of the image lines:
     /// <list type="number">
     /// <item>Use the <see cref="GetScanLine"/> method to get the scanline renderer.</item>
     /// <item>Feed all the bits of the line into the renderer.</item>
     /// <item>Close, or dispose of, the renderer. It's a good idea to wrap it in a <code>using</code> block.</item>
     /// </list>
+    /// </item>
     /// <item>Use the <see cref="GetBitmap"/> method to retrieve the resulting bitmap.</item>
-    /// <item>Use the <see cref="GetPixelAspect"/> method to retrieve the bitmap's pixel aspect ratio.</item>
     /// </list>
     /// </remarks>
     public class NtscPictureBuilder
@@ -50,22 +49,7 @@ namespace ImageLib.Apple
             const double dpi = 96;
 
             int widthWithOverdraw = _width + _scanlineBufferSize;
-            _bitmap = new WriteableBitmap(widthWithOverdraw, _height * _linesPerScanline, dpi / PixelAspect, dpi, PixelFormats.Bgr32, null);
-        }
-
-        /// <summary>
-        /// Get aspect ratio of the generated bitmap pixels.
-        /// </summary>
-        public static double PixelAspect
-        {
-            get
-            {
-                const double bitsPerNtscLine = 753.2;
-                const double ntscScanLinesPerField = 262.5;
-                const double screenRelativeWidth = 4;
-                const double screenRelativeHeight = 3;
-                return (ntscScanLinesPerField * _linesPerScanline / bitsPerNtscLine) * (screenRelativeWidth / screenRelativeHeight);
-            }
+            _bitmap = new WriteableBitmap(widthWithOverdraw, _height * _linesPerScanline, dpi, dpi, PixelFormats.Bgr32, null);
         }
 
         /// <summary>
@@ -80,7 +64,7 @@ namespace ImageLib.Apple
         public NtscScanLine GetScanLine(int index)
         {
             if (index < 0 || index >= _height)
-                throw new ArgumentOutOfRangeException("index", index, "Must be within [0, " + _height + ")");
+                throw new ArgumentOutOfRangeException(nameof(index), index, "Must be within [0, " + _height + ")");
 
             var writer = new BitmapDoubleColorWriter(_bitmap, index * _linesPerScanline);
             try
@@ -98,9 +82,9 @@ namespace ImageLib.Apple
         /// Get the rendered bitmap.
         /// </summary>
         /// <returns>A bitmap object with scanlines rendered so far.</returns>
-        public BitmapSource GetBitmap()
+        public AspectBitmap GetBitmap()
         {
-            return _bitmap;
+            return AspectBitmap.FromImageAspect(_bitmap, 4.0 / 3.0);
         }
     }
 }

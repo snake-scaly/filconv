@@ -20,7 +20,6 @@ namespace ImageLib.Agat
         const float _errDistrS = 0.2929f;
         const float _errDistrSe = 0.2071f;
 
-        public virtual double Aspect => 4.0 / 3.0;
         public int ImageSizeInBytes => BytesPerScanline * Height;
         protected abstract int Width { get; }
         protected abstract int Height { get; }
@@ -29,9 +28,9 @@ namespace ImageLib.Agat
         protected int PixelsPerByte => 8 / BitsPerPixel;
         protected int BytesPerScanline => Width / PixelsPerByte;
 
-        public BitmapSource FromNative(NativeImage native)
+        public AspectBitmap FromNative(NativeImage native)
         {
-            var bmp = new WriteableBitmap(Width, Height, _defaultDpi / Aspect, _defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(Width, Height, _defaultDpi, _defaultDpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
             int palette = 0;
@@ -62,7 +61,7 @@ namespace ImageLib.Agat
             }
             Int32Rect srcRect = new Int32Rect(0, 0, Width, Height);
             bmp.WritePixels(srcRect, pixels, stride, 0);
-            return bmp;
+            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
         }
 
         public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
