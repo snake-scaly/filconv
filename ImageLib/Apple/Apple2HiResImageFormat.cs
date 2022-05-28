@@ -8,7 +8,7 @@ using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
-    public class Apple2HiResImageFormat : INativeImageFormat
+    public class Apple2HiResImageFormat : Apple2ImageFormatAbstr
     {
         private const int width = 280;
         private const int height = 192;
@@ -24,7 +24,7 @@ namespace ImageLib.Apple
             this.tvSet = tvSet;
         }
 
-        public AspectBitmap FromNative(NativeImage native)
+        public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             Apple2SimpleColor[][] simple = ToSimpleColor(native);
             Rgb[][] colors = tvSet.ProcessColors(simple);
@@ -137,7 +137,7 @@ namespace ImageLib.Apple
             return shiftBit ? Apple2SimpleColor.Blue : Apple2SimpleColor.Green;
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
             var src = new BitmapPixels(bitmap);
             var dst = new AppleScreenHiRes();
@@ -184,7 +184,7 @@ namespace ImageLib.Apple
             return new NativeImage { Data = dst.Pixels, FormatHint = new FormatHint(this) };
         }
 
-        public int ComputeMatchScore(NativeImage native)
+        public override int ComputeMatchScore(NativeImage native)
         {
             if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_280_192_HiRes)
                 return NativeImageFormatUtils.MetaMatchScore;

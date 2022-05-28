@@ -7,7 +7,7 @@ using FilLib;
 
 namespace ImageLib.Apple
 {
-    public class Apple2DoubleHiResImageFormat : INativeImageFormat
+    public class Apple2DoubleHiResImageFormat : Apple2ImageFormatAbstr
     {
         private const int _bytesPerHalfScreen = 8192;
         private const int _pixelsPerWord = 7;
@@ -19,7 +19,7 @@ namespace ImageLib.Apple
         private const int _width = 140;
         private const int _height = 192;
 
-        public AspectBitmap FromNative(NativeImage native)
+        public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             const int bytesPerBmpPixel = 4;
             const int applePixelMask = (1 << _bitsPerApplePixel) - 1;
@@ -68,7 +68,7 @@ namespace ImageLib.Apple
             return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
             int w = Math.Min(bitmap.PixelWidth, _width);
             int h = Math.Min(bitmap.PixelHeight, _height);
@@ -115,7 +115,7 @@ namespace ImageLib.Apple
             return block * 1024 + subBlock * 128 + line * 40;
         }
 
-        public int ComputeMatchScore(NativeImage native)
+        public override int ComputeMatchScore(NativeImage native)
         {
             if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_140_192_DoubleHiResColor)
                 return NativeImageFormatUtils.MetaMatchScore;

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
+using FilLib;
 
 namespace ImageLib.Apple
 {
-    public class Apple2HiResNtscImageFormat : INativeImageFormat
+    public class Apple2HiResNtscImageFormat : Apple2ImageFormatAbstr
     {
-        public AspectBitmap FromNative(NativeImage native)
+        public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             const int height = 192;
             const int firstBitPhase = 2;
@@ -48,15 +49,17 @@ namespace ImageLib.Apple
             return builder.GetBitmap();
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
 
-        public int ComputeMatchScore(NativeImage native)
+        public override int ComputeMatchScore(NativeImage native)
         {
-            throw new NotImplementedException();
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_280_192_HiRes)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return NativeImageFormatUtils.ComputeMatch(native, 0x2000);
         }
     }
 }

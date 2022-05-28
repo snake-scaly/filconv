@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
@@ -19,7 +20,11 @@ namespace ImageLib.Spectrum
         protected const int _paletteSize = _colorLines * _bytesPerLine;
         protected const int _totalBytes = (_height + _colorLines) * _bytesPerLine;
 
-        public AspectBitmap FromNative(NativeImage native)
+        public IEnumerable<NativePalette> SupportedPalettes => null;
+
+        public abstract int ComputeMatchScore(NativeImage native);
+
+        public AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             int dstStride = _width * 4;
             int size = dstStride * _height;
@@ -50,6 +55,15 @@ namespace ImageLib.Spectrum
             return new AspectBitmap(bmp, 1);
         }
 
+        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        {
+            throw new NotSupportedException("Conversion to Spectrum format is not supported");
+        }
+
+        public DecodingOptions GetDefaultDecodingOptions(NativeImage native) => default;
+
+        protected abstract int GetLineOffset(int y);
+
         private static int GetBwSafe(byte[] data, int offset)
         {
             return (offset >= 0 && offset < data.Length) ? data[offset] : 0;
@@ -59,8 +73,6 @@ namespace ImageLib.Spectrum
         {
             return (offset >= 0 && offset < data.Length) ? data[offset] : 0x47;
         }
-
-        protected abstract int GetLineOffset(int y);
 
         private static int GetColorOffset(int y)
         {
@@ -76,12 +88,5 @@ namespace ImageLib.Spectrum
             int b = (rgb & 1) != 0 ? value : 0;
             return Rgb.FromRgb((byte)r, (byte)g, (byte)b);
         }
-
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
-        {
-            throw new NotSupportedException("Conversion to Spectrum format is not supported");
-        }
-
-        public abstract int ComputeMatchScore(NativeImage native);
     }
 }

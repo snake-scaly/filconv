@@ -111,7 +111,7 @@ namespace filconv
                 Data = fil.GetData(),
                 FormatHint = new FormatHint(Path.GetExtension(from))
             };
-            BitmapSource bmp = formatFrom.FromNative(ni).Bitmap;
+            BitmapSource bmp = formatFrom.FromNative(ni, formatFrom.GetDefaultDecodingOptions(ni)).Bitmap;
 
             BitmapEncoder enc = (BitmapEncoder)Activator.CreateInstance(formatTo);
             enc.Frames.Add(BitmapFrame.Create(bmp));

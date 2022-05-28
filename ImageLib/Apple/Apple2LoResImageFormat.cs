@@ -7,7 +7,7 @@ using FilLib;
 
 namespace ImageLib.Apple
 {
-    public class Apple2LoResImageFormat : INativeImageFormat
+    public class Apple2LoResImageFormat : Apple2ImageFormatAbstr
     {
         // Lo-res mode is always 40x24 blocks. Each block is either 1x2 pixels,
         // or 2x2 pixels in double lo-res.
@@ -37,7 +37,7 @@ namespace ImageLib.Apple
             _bmpHeight = _nativeHeight * _bmpBlockHeight;
         }
 
-        public AspectBitmap FromNative(NativeImage native)
+        public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             PixelFormat bmpPixelFormat = PixelFormats.Bgr32;
             const int bmpBPP = 4;
@@ -78,7 +78,7 @@ namespace ImageLib.Apple
             return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
             int w = Math.Min(bitmap.PixelWidth, _bmpWidth);
             int h = Math.Min(bitmap.PixelHeight, _bmpHeight);
@@ -109,7 +109,7 @@ namespace ImageLib.Apple
             return new NativeImage { Data = nativePixels, FormatHint = new FormatHint(this) };
         }
 
-        public int ComputeMatchScore(NativeImage native)
+        public override int ComputeMatchScore(NativeImage native)
         {
             var preferredMode = _doubleResolution
                 ? ImageMeta.Mode.Apple_80_48_DoubleLoRes

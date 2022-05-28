@@ -12,10 +12,14 @@ namespace FilConvWpf.Native
     class NativeImagePresenter : IImagePresenter, INativeOriginal
     {
         private const string _modeSettingsKey = "previewMode";
+        private const string _paletteSettingsKey = "palette";
+
+        private readonly IMultiChoice<INativeDisplayMode> _modeSelector;
+        private readonly IMultiChoice<NamedPalette> _paletteSelector;
 
         private INativeDisplayMode _currentMode;
+        private NamedPalette _currentPalette;
         private Dictionary<string, object> _settings;
-        private readonly IMultiChoice<INativeDisplayMode> _modeSelector;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
         public event EventHandler<EventArgs> ToolBarChanged;
@@ -25,15 +29,19 @@ namespace FilConvWpf.Native
         {
             NativeImage = nativeImage;
             _settings = new Dictionary<string, object>();
-
-            GuessPreviewMode(_displayModes.First());
+            _currentMode = _displayModes[0];
 
             _modeSelector = new MultiChoiceBuilder<INativeDisplayMode>()
                 .WithChoices(_displayModes, m => m.Name)
                 .WithDefaultChoice(_currentMode)
                 .WithCallback(SetCurrentMode)
                 .Build();
-            UpdateTools();
+
+            _paletteSelector = new MultiChoiceBuilder<NamedPalette>()
+                .WithCallback(p => SetCurrentPalette(p, true))
+                .Build();
+
+            GuessPreviewMode(_displayModes.First());
         }
 
         public AspectBitmap DisplayImage { get; private set; }
@@ -46,9 +54,9 @@ namespace FilConvWpf.Native
 
         public IEnumerable<ITool> Tools { get; private set; } = new ITool[] { };
 
-        private void SetCurrentMode(INativeDisplayMode desiredMode)
+        private void SetCurrentMode(INativeDisplayMode mode)
         {
-            if (desiredMode == _currentMode)
+            if (mode == _currentMode)
             {
                 return;
             }
@@ -59,23 +67,42 @@ namespace FilConvWpf.Native
                 _currentMode.FormatChanged -= currentMode_FormatChanged;
             }
 
-            _currentMode = desiredMode;
+            _currentMode = mode;
             _currentMode.FormatChanged += currentMode_FormatChanged;
-
             _currentMode.AdoptSettings(_settings);
 
+            _modeSelector.CurrentChoice = _currentMode;
+
             UpdateTools();
-            Convert(_currentMode.Format);
+            UpdateDisplayImage();
+        }
+
+        private void SetCurrentPalette(NamedPalette palette, bool updateDisplay)
+        {
+            if (palette == _currentPalette)
+            {
+                return;
+            }
+
+            _currentPalette = palette;
+            _paletteSelector.CurrentChoice = palette;
+
+            if (updateDisplay)
+            {
+                UpdateDisplayImage();
+            }
         }
 
         private void currentMode_FormatChanged(object sender, EventArgs e)
         {
-            Convert(_currentMode.Format);
+            UpdateTools();
+            UpdateDisplayImage();
         }
 
-        private void Convert(INativeImageFormat f)
+        private void UpdateDisplayImage()
         {
-            DisplayImage = f.FromNative(NativeImage);
+            var options = new DecodingOptions { Palette = _currentPalette?.Palette ?? NativePalette.Default };
+            DisplayImage = _currentMode.Format.FromNative(NativeImage, options);
             OnDisplayImageChanged();
         }
 
@@ -87,18 +114,12 @@ namespace FilConvWpf.Native
 
         private void GuessPreviewMode(INativeDisplayMode preferred)
         {
-            INativeDisplayMode bestMode = null;
-            var bestScore = int.MinValue;
-
-            foreach (INativeDisplayMode mode in _displayModes)
-            {
-                var score = mode.Format.ComputeMatchScore(NativeImage);
-                if (score > bestScore || (mode == preferred && score == bestScore))
-                {
-                    bestScore = score;
-                    bestMode = mode;
-                }
-            }
+            // This relies on OrderByDescending performing a stable sort. Therefore if
+            // preferred is among the best it will come out first.
+            var bestMode = new[] { preferred }
+                .Concat(_displayModes)
+                .OrderByDescending(f => f.Format.ComputeMatchScore(NativeImage))
+                .First();
 
             SetCurrentMode(bestMode);
         }
@@ -107,6 +128,7 @@ namespace FilConvWpf.Native
         {
             _currentMode?.StoreSettings(settings);
             settings[_modeSettingsKey] = _currentMode;
+            settings[_paletteSettingsKey] = _currentPalette;
         }
 
         public void AdoptSettings(IDictionary<string, object> settings)
@@ -116,12 +138,45 @@ namespace FilConvWpf.Native
             {
                 GuessPreviewMode((INativeDisplayMode)settings[_modeSettingsKey]);
             }
+            if (settings.ContainsKey(_paletteSettingsKey))
+            {
+                var paletteSettings = (NamedPalette)settings[_paletteSettingsKey];
+                SetCurrentPalette(ChooseCompatiblePalette(paletteSettings, _currentMode.Format), true);
+            }
         }
 
         private void UpdateTools()
         {
-            Tools = new[] { _modeSelector }.Concat(_currentMode.Tools);
+            IEnumerable<ITool> tools = new[] { _modeSelector };
+
+            if (_currentMode.Format.SupportedPalettes != null)
+            {
+                var supportedPalettes = _currentMode.Format.SupportedPalettes
+                    .Select(p => _palettes.First(s => s.Palette == p));
+
+                var palette = ChooseCompatiblePalette(_currentPalette, _currentMode.Format);
+
+                _paletteSelector.Choices = supportedPalettes;
+                _paletteSelector.CurrentChoice = palette;
+
+                SetCurrentPalette(palette, false);
+
+                tools = tools.Concat(new[] { _paletteSelector });
+            }
+
+            Tools = tools.Concat(_currentMode.Tools);
             ToolBarChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private NamedPalette ChooseCompatiblePalette(NamedPalette current, INativeImageFormat format)
+        {
+            if (format?.SupportedPalettes == null ||
+                current != null && format.SupportedPalettes.Contains(current.Palette))
+            {
+                return current;
+            }
+            var defaultPalette = format.GetDefaultDecodingOptions(NativeImage).Palette;
+            return _palettes.First(s => s.Palette == defaultPalette);
         }
 
         private static readonly INativeDisplayMode[] _displayModes =
@@ -139,5 +194,27 @@ namespace FilConvWpf.Native
             new NativeDisplayMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
             new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
         };
+
+        private static readonly NamedPalette[] _palettes =
+        {
+            new NamedPalette("PaletteNameAgat1", NativePalette.Agat1),
+            new NamedPalette("PaletteNameAgat2", NativePalette.Agat2),
+            new NamedPalette("PaletteNameAgat3", NativePalette.Agat3),
+            new NamedPalette("PaletteNameAgat4", NativePalette.Agat4),
+        };
+
+        private class NamedPalette
+        {
+            public NamedPalette(string name, NativePalette palette)
+            {
+                Name = name;
+                Palette = palette;
+            }
+
+            public string Name { get; }
+            public NativePalette Palette { get; }
+
+            public override string ToString() => Name;
+        }
     }
 }

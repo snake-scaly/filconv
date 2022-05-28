@@ -6,7 +6,7 @@ using ImageLib;
 
 namespace FilConvWpf.Encode
 {
-    class Transcoding : IEncoding
+    public class Transcoding : IEncoding
     {
         private NativeImage _nativeImage;
         private INativeImageFormat _format;
@@ -32,7 +32,7 @@ namespace FilConvWpf.Encode
 
         public AspectBitmap Preview(BitmapSource original)
         {
-            return _format.FromNative(_nativeImage);
+            return _format.FromNative(_nativeImage, new DecodingOptions());
         }
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)

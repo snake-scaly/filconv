@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -11,16 +12,18 @@ namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
-        const double _defaultDpi = 96;
+        private const double _defaultDpi = 96;
 
         // Error distribution coefficients by direction: East, South-West, South, South-East
         // These values distribute error inversely related to pixel distance
-        const float _errDistrE = 0.2929f;
-        const float _errDistrSw = 0.2071f;
-        const float _errDistrS = 0.2929f;
-        const float _errDistrSe = 0.2071f;
+        private const float _errDistrE = 0.2929f;
+        private const float _errDistrSw = 0.2071f;
+        private const float _errDistrS = 0.2929f;
+        private const float _errDistrSe = 0.2071f;
 
-        public int ImageSizeInBytes => BytesPerScanline * Height;
+        public virtual IEnumerable<NativePalette> SupportedPalettes { get; } =
+            new[] { NativePalette.Agat1, NativePalette.Agat2, NativePalette.Agat3, NativePalette.Agat4 };
+
         protected abstract int Width { get; }
         protected abstract int Height { get; }
         protected abstract int BitsPerPixel { get; }
@@ -28,24 +31,16 @@ namespace ImageLib.Agat
         protected int PixelsPerByte => 8 / BitsPerPixel;
         protected int BytesPerScanline => Width / PixelsPerByte;
 
-        public AspectBitmap FromNative(NativeImage native)
+        private int ImageSizeInBytes => BytesPerScanline * Height;
+
+        public AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             var bmp = new WriteableBitmap(Width, Height, _defaultDpi, _defaultDpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
-            int palette = 0;
 
-            Rgb[] colors;
-            if (native.Metadata?.PaletteType == ImageMeta.Palette.Custom)
-            {
-                colors = native.Metadata.CustomPalette.Select(UintToRgb).ToArray();
-            }
-            else
-            {
-                var paletteType = native.Metadata?.PaletteType ?? ImageMeta.Palette.Unknown;
-                DecodePaletteVariant(paletteType, out var bw, out palette);
-                colors = bw ? AgatPalette.MonoPalette : AgatPalette.ColorPalette;
-            }
+            var colors = AgatPalettes.Color;
+            var paletteIndex = NativePaletteToIndex(options.Palette);
 
             for (int y = 0; y < Height; ++y)
             {
@@ -53,7 +48,7 @@ namespace ImageLib.Agat
                 for (int x = 0; x < Width; ++x)
                 {
                     int pixel = line + x * 4;
-                    Rgb c = GetBgr32Pixel(native.Data, colors, palette, x, y);
+                    Rgb c = GetBgr32Pixel(native.Data, colors, paletteIndex, x, y);
                     pixels[pixel] = c.B;
                     pixels[pixel + 1] = c.G;
                     pixels[pixel + 2] = c.R;
@@ -71,7 +66,7 @@ namespace ImageLib.Agat
             var currentLineErrors = new Error[Width];
             var nextLineErrors = new Error[Width];
 
-            var colors = AgatPalette.ColorPalette;
+            var colors = AgatPalettes.Color;
             var nativeColors = Enumerable
                 .Range(0, 1 << BitsPerPixel)
                 .Select(i => colors[MapColorIndexNativeToStandard(i, 0)])
@@ -134,6 +129,15 @@ namespace ImageLib.Agat
             return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
         }
 
+        public DecodingOptions GetDefaultDecodingOptions(NativeImage native)
+        {
+            if (native.Metadata == null)
+                return new DecodingOptions { Palette = NativePalette.Agat1 };
+
+            DecodePaletteVariant(native.Metadata.PaletteType, out var bw, out var palette);
+            return new DecodingOptions { Palette = palette };
+        }
+
         protected virtual int GetLineOffset(int y)
         {
             return y * BytesPerScanline;
@@ -144,42 +148,55 @@ namespace ImageLib.Agat
         /// <param name="palette">one of the 4 hardware palettes</param>
         protected abstract int MapColorIndexNativeToStandard(int index, int palette);
 
+        static int NativePaletteToIndex(NativePalette palette)
+        {
+            switch (palette)
+            {
+                case NativePalette.Default:
+                case NativePalette.Agat1: return 0;
+                case NativePalette.Agat2: return 1;
+                case NativePalette.Agat3: return 2;
+                case NativePalette.Agat4: return 3;
+                default: throw new ArgumentException($"Unsupported palette {palette:G}", nameof(palette));
+            }
+        }
+
         /// Get a palette variant for a mode. Unknown should retrieve the default palette.
-        void DecodePaletteVariant(ImageMeta.Palette variant, out bool bw, out int palette)
+        void DecodePaletteVariant(ImageMeta.Palette variant, out bool bw, out NativePalette palette)
         {
             switch (variant)
             {
                 default:
                     bw = false;
-                    palette = 0;
+                    palette = NativePalette.Agat1;
                     break;
                 case ImageMeta.Palette.Agat_2:
                     bw = false;
-                    palette = 1;
+                    palette = NativePalette.Agat2;
                     break;
                 case ImageMeta.Palette.Agat_3:
                     bw = false;
-                    palette = 2;
+                    palette = NativePalette.Agat3;
                     break;
                 case ImageMeta.Palette.Agat_4:
                     bw = false;
-                    palette = 3;
+                    palette = NativePalette.Agat4;
                     break;
                 case ImageMeta.Palette.Agat_1_Gray:
                     bw = true;
-                    palette = 0;
+                    palette = NativePalette.Agat1;
                     break;
                 case ImageMeta.Palette.Agat_2_Gray:
                     bw = true;
-                    palette = 1;
+                    palette = NativePalette.Agat2;
                     break;
                 case ImageMeta.Palette.Agat_3_Gray:
                     bw = true;
-                    palette = 2;
+                    palette = NativePalette.Agat3;
                     break;
                 case ImageMeta.Palette.Agat_4_Gray:
                     bw = true;
-                    palette = 3;
+                    palette = NativePalette.Agat4;
                     break;
             }
         }
@@ -216,14 +233,6 @@ namespace ImageLib.Agat
             e.R += re;
             e.G += ge;
             e.B += be;
-        }
-
-        static Rgb UintToRgb(uint i)
-        {
-            var r = (byte)(i >> 16);
-            var g = (byte)(i >> 8);
-            var b = (byte)(i >> 0);
-            return Rgb.FromRgb(r, g, b);
         }
 
         struct Error

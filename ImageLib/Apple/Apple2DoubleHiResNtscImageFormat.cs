@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
+using FilLib;
 
 namespace ImageLib.Apple
 {
-    public class Apple2DoubleHiResNtscImageFormat : INativeImageFormat
+    public class Apple2DoubleHiResNtscImageFormat : Apple2ImageFormatAbstr
     {
         private const int _lines = 192;
         private const int _bytesPerHalfScreen = 8192;
 
-        public AspectBitmap FromNative(NativeImage native)
+        public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             const int wordsPerLine = 20;
             const int bytesPerWord = 2;
@@ -51,14 +52,16 @@ namespace ImageLib.Apple
             return builder.GetBitmap();
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
-        public int ComputeMatchScore(NativeImage native)
+        public override int ComputeMatchScore(NativeImage native)
         {
-            throw new NotImplementedException();
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_140_192_DoubleHiResColor)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
         }
     }
 }

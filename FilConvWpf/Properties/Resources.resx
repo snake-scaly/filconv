@@ -328,4 +328,16 @@
     <value>Could not load image “{0}”: {1}</value>
     <comment>{0} - file name, {1} - error message</comment>
   </data>
+  <data name="PaletteNameAgat1" xml:space="preserve">
+    <value>Palette 1</value>
+  </data>
+  <data name="PaletteNameAgat2" xml:space="preserve">
+    <value>Palette 2</value>
+  </data>
+  <data name="PaletteNameAgat3" xml:space="preserve">
+    <value>Palette 3</value>
+  </data>
+  <data name="PaletteNameAgat4" xml:space="preserve">
+    <value>Palette 4</value>
+  </data>
 </root>

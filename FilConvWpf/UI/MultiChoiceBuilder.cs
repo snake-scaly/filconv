@@ -10,6 +10,7 @@ namespace FilConvWpf.UI
     public class MultiChoiceBuilder<TChoice>
     {
         private List<ComboBoxItem> _items;
+        private Func<TChoice, string> _nameResolver;
         private ComboBoxItem _defaultItem;
         private Action<TChoice> _onChoice;
         private string _title;
@@ -19,16 +20,10 @@ namespace FilConvWpf.UI
             IEnumerable<TChoice> choices,
             Func<TChoice, string> nameResolver = null)
         {
+            _nameResolver = nameResolver;
             _items = choices
-                .Select(c =>
-                {
-                    var comboBoxItem = new ComboBoxItem { Tag = c };
-                    var choiceName = nameResolver?.Invoke(c) ?? c.ToString();
-                    L10n.AddLocalizedProperty(comboBoxItem, ContentControl.ContentProperty, choiceName).Update();
-                    return comboBoxItem;
-                })
+                .Select(c => ChoiceToItem(nameResolver, c))
                 .ToList();
-
             return this;
         }
 
@@ -59,12 +54,14 @@ namespace FilConvWpf.UI
 
         public IMultiChoice<TChoice> Build()
         {
-            if (_items == null)
-                throw new InvalidOperationException("Choices are not set");
-
             var comboBox = new ComboBox();
-            foreach (var item in _items)
-                comboBox.Items.Add(item);
+            if (_items != null)
+            {
+                foreach (var item in _items)
+                {
+                    comboBox.Items.Add(item);
+                }
+            }
             comboBox.SelectedItem = _defaultItem;
             comboBox.Style = (Style)Application.Current.FindResource(ToolBar.ComboBoxStyleKey);
 
@@ -95,20 +92,44 @@ namespace FilConvWpf.UI
             if (_description != null)
                 L10n.AddLocalizedProperty(element, FrameworkElement.ToolTipProperty, _description).Update();
 
-            return new MultiChoice(element, comboBox);
+            return new MultiChoice(element, comboBox, _nameResolver);
+        }
+
+        private static ComboBoxItem ChoiceToItem(Func<TChoice, string> nameResolver, TChoice c)
+        {
+            var comboBoxItem = new ComboBoxItem { Tag = c };
+            var choiceName = nameResolver?.Invoke(c) ?? c.ToString();
+            L10n.AddLocalizedProperty(comboBoxItem, ContentControl.ContentProperty, choiceName).Update();
+            return comboBoxItem;
         }
 
         private class MultiChoice : IMultiChoice<TChoice>
         {
             private readonly ComboBox _comboBox;
+            private readonly Func<TChoice, string> _nameResolver;
 
-            public MultiChoice(FrameworkElement element, ComboBox comboBox)
+            public MultiChoice(FrameworkElement element, ComboBox comboBox, Func<TChoice, string> nameResolver)
             {
                 Element = element;
                 _comboBox = comboBox;
+                _nameResolver = nameResolver;
             }
 
             public FrameworkElement Element { get; }
+
+            public IEnumerable<TChoice> Choices
+            {
+                get => _comboBox.Items.Cast<ComboBoxItem>().Select(i => (TChoice)i.Tag);
+
+                set
+                {
+                    _comboBox.Items.Clear();
+                    foreach (var c in value)
+                    {
+                        _comboBox.Items.Add(ChoiceToItem(_nameResolver, c));
+                    }
+                }
+            }
 
             public TChoice CurrentChoice
             {

@@ -282,4 +282,16 @@
   <data name="UnableToLoadFileError" xml:space="preserve">
     <value>Грешка при зареждане на изображение „{0}“: {1}</value>
   </data>
+  <data name="PaletteNameAgat1" xml:space="preserve">
+    <value>Палитра 1</value>
+  </data>
+  <data name="PaletteNameAgat2" xml:space="preserve">
+    <value>Палитра 2</value>
+  </data>
+  <data name="PaletteNameAgat3" xml:space="preserve">
+    <value>Палитра 3</value>
+  </data>
+  <data name="PaletteNameAgat4" xml:space="preserve">
+    <value>Палитра 4</value>
+  </data>
 </root>

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
+using FilLib;
 
 namespace ImageLib.Apple
 {
-    public class Apple2LoResNtscImageFormat : INativeImageFormat
+    public class Apple2LoResNtscImageFormat : Apple2ImageFormatAbstr
     {
         private readonly bool _doubleResolution;
 
@@ -12,7 +13,7 @@ namespace ImageLib.Apple
             _doubleResolution = doubleResolution;
         }
 
-        public AspectBitmap FromNative(NativeImage native)
+        public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             const int width = 40;
             const int height = 24;
@@ -59,14 +60,19 @@ namespace ImageLib.Apple
             return builder.GetBitmap();
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
-        public int ComputeMatchScore(NativeImage native)
+        public override int ComputeMatchScore(NativeImage native)
         {
-            throw new NotImplementedException();
+            var preferredMode = _doubleResolution
+                ? ImageMeta.Mode.Apple_80_48_DoubleLoRes
+                : ImageMeta.Mode.Apple_40_48_LoRes;
+            if (native.Metadata?.DisplayMode == preferredMode)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return NativeImageFormatUtils.ComputeMatch(native, _doubleResolution ? 0x800 : 0x400);
         }
 
         private void WritePixelColumn(int value, NtscScanLine[] scanlines, int pixelWidth, ref int tick)
