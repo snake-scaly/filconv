@@ -13,6 +13,9 @@ namespace ImageLib
     /// </remarks>
     public interface INativeImageFormat
     {
+        /// Output displays supported by the format.
+        IEnumerable<NativeDisplay> SupportedDisplays { get; }
+
         /// Color palettes supported by the format. Null for none.
         IEnumerable<NativePalette> SupportedPalettes { get; }
 

@@ -340,4 +340,19 @@
   <data name="PaletteNameAgat4" xml:space="preserve">
     <value>Palette 4</value>
   </data>
+  <data name="DisplayNameArtifact" xml:space="preserve">
+    <value>NTSC</value>
+  </data>
+  <data name="DisplayNameColor" xml:space="preserve">
+    <value>RGB</value>
+  </data>
+  <data name="DisplayNameMeta" xml:space="preserve">
+    <value>Palette card</value>
+  </data>
+  <data name="DisplayNameMono" xml:space="preserve">
+    <value>Monochrome</value>
+  </data>
+  <data name="DisplayNameMonoA7" xml:space="preserve">
+    <value>Agat-7 monochrome</value>
+  </data>
 </root>

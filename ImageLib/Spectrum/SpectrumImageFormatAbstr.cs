@@ -20,6 +20,7 @@ namespace ImageLib.Spectrum
         protected const int _paletteSize = _colorLines * _bytesPerLine;
         protected const int _totalBytes = (_height + _colorLines) * _bytesPerLine;
 
+        public IEnumerable<NativeDisplay> SupportedDisplays => null;
         public IEnumerable<NativePalette> SupportedPalettes => null;
 
         public abstract int ComputeMatchScore(NativeImage native);

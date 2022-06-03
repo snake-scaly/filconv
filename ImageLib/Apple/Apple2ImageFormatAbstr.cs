@@ -5,6 +5,7 @@ namespace ImageLib.Apple
 {
     public abstract class Apple2ImageFormatAbstr : INativeImageFormat
     {
+        public IEnumerable<NativeDisplay> SupportedDisplays => null;
         public IEnumerable<NativePalette> SupportedPalettes => null;
 
         public abstract AspectBitmap FromNative(NativeImage native, DecodingOptions options);

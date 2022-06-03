@@ -21,6 +21,9 @@ namespace ImageLib.Agat
         private const float _errDistrS = 0.2929f;
         private const float _errDistrSe = 0.2071f;
 
+        public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
+            new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.MonoA7, NativeDisplay.Meta };
+
         public virtual IEnumerable<NativePalette> SupportedPalettes { get; } =
             new[] { NativePalette.Agat1, NativePalette.Agat2, NativePalette.Agat3, NativePalette.Agat4 };
 
@@ -39,7 +42,7 @@ namespace ImageLib.Agat
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
 
-            var colors = AgatPalettes.Color;
+            var colors = AgatColorUtils.NativeDisplayToColors(options.Display, native.Metadata);
             var paletteIndex = NativePaletteToIndex(options.Palette);
 
             for (int y = 0; y < Height; ++y)
@@ -132,10 +135,18 @@ namespace ImageLib.Agat
         public DecodingOptions GetDefaultDecodingOptions(NativeImage native)
         {
             if (native.Metadata == null)
-                return new DecodingOptions { Palette = NativePalette.Agat1 };
+                return new DecodingOptions { Display = NativeDisplay.Color, Palette = NativePalette.Agat1 };
+
+            if (native.Metadata.PaletteType == ImageMeta.Palette.Custom)
+                return new DecodingOptions { Display = NativeDisplay.Meta, Palette = NativePalette.Agat1 };
 
             DecodePaletteVariant(native.Metadata.PaletteType, out var bw, out var palette);
-            return new DecodingOptions { Palette = palette };
+
+            return new DecodingOptions
+            {
+                Display = bw ? NativeDisplay.Mono : NativeDisplay.Color,
+                Palette = palette
+            };
         }
 
         protected virtual int GetLineOffset(int y)
