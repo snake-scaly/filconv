@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FilLib;
+using ImageLib.Common;
 using ImageLib.Gamut;
 using ImageLib.Util;
 
@@ -12,8 +13,6 @@ namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
-        private const double _defaultDpi = 96;
-
         // Error distribution coefficients by direction: East, South-West, South, South-East
         // These values distribute error inversely related to pixel distance
         private const float _errDistrE = 0.2929f;
@@ -38,7 +37,7 @@ namespace ImageLib.Agat
 
         public AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
-            var bmp = new WriteableBitmap(Width, Height, _defaultDpi, _defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(Width, Height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
 

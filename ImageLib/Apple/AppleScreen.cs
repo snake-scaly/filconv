@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ImageLib.Apple
+﻿namespace ImageLib.Apple
 {
     interface AppleScreen
     {
@@ -16,11 +11,6 @@ namespace ImageLib.Apple
         /// Get screen height, in pixels.
         /// </summary>
         int Height { get; }
-
-        /// <summary>
-        /// Get line width, in bytes.
-        /// </summary>
-        int ByteWidth { get; }
 
         /// <summary>
         /// Get image pixels in native format.

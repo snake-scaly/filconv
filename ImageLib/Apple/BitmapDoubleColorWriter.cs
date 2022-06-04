@@ -1,11 +1,10 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media.Imaging;
 using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
-    class BitmapDoubleColorWriter : ColorWriter
+    internal sealed class BitmapDoubleColorWriter : IColorWriter
     {
         private const int _numberOfLines = 2;
 
@@ -44,24 +43,13 @@ namespace ImageLib.Apple
             ++_offset2;
         }
 
-        public void Close()
-        {
-            var r = new Int32Rect(0, _startLine, _dst.PixelWidth, _numberOfLines);
-            _dst.WritePixels(r, _pixels, _stride, 0);
-        }
-
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Close();
-            }
+            if (_dst == null)
+                return;
+            var r = new Int32Rect(0, _startLine, _dst.PixelWidth, _numberOfLines);
+            _dst.WritePixels(r, _pixels, _stride, 0);
+            _dst = null;
         }
     }
 }

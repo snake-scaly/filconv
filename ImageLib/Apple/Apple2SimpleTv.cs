@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ImageLib.Util;
+﻿using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -22,34 +21,6 @@ namespace ImageLib.Apple
                 return palette[5];
             }
             return palette[(int)middle];
-        }
-
-        public override Apple2SimpleColor GetBestMatch(Rgb color, bool isOdd)
-        {
-            Apple2SimpleColor[] columnColors;
-            if (isOdd)
-            {
-                columnColors = new Apple2SimpleColor[]
-                {
-                    Apple2SimpleColor.Black,
-                    Apple2SimpleColor.Green,
-                    Apple2SimpleColor.Blue,
-                    Apple2SimpleColor.White,
-                };
-            }
-            else
-            {
-                columnColors = new Apple2SimpleColor[]
-                {
-                    Apple2SimpleColor.Black,
-                    Apple2SimpleColor.Violet,
-                    Apple2SimpleColor.Orange,
-                    Apple2SimpleColor.White,
-                };
-            }
-
-            var columnPalette = columnColors.Select(sc => palette[(int)sc]);
-            return columnColors[ColorUtils.BestMatch(color, columnPalette)];
         }
 
         protected override Rgb GetPixel(Apple2SimpleColor[][] simpleColors, int x, int y)

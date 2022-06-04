@@ -313,4 +313,7 @@
   <data name="DisplayNameMonoA7" xml:space="preserve">
     <value>Агат-7 Ч/Б</value>
   </data>
+  <data name="FormatNameAgatApple" xml:space="preserve">
+    <value>Агат Apple</value>
+  </data>
 </root>

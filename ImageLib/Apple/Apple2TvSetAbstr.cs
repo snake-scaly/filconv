@@ -1,5 +1,4 @@
-﻿using System;
-using ImageLib.Util;
+﻿using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -25,11 +24,6 @@ namespace ImageLib.Apple
         }
 
         public abstract Rgb GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right);
-
-        public virtual Apple2SimpleColor GetBestMatch(Rgb color, bool isOdd)
-        {
-            throw new NotImplementedException();
-        }
 
         protected abstract Rgb GetPixel(Apple2SimpleColor[][] simpleColors, int x, int y);
     }

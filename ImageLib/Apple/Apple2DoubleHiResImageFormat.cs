@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FilLib;
+using ImageLib.Common;
 
 namespace ImageLib.Apple
 {
@@ -21,51 +22,13 @@ namespace ImageLib.Apple
 
         public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
-            const int bytesPerBmpPixel = 4;
-            const int applePixelMask = (1 << _bitsPerApplePixel) - 1;
-            const int wordsPerLine = 20;
-
-            int stride = _width * bytesPerBmpPixel;
-            var pixels = new byte[stride * _height];
-
-            for (int y = 0; y < _height; ++y)
+            switch (options.Display)
             {
-                int lineOffset = GetLineOffset(y);
-                if (lineOffset + _bytesPerHalfScreen >= native.Data.Length)
-                    continue;
-
-                for (int w = 0; w < wordsPerLine; ++w)
-                {
-                    int wordOffsetLo = lineOffset + w * _bytesPerWord;
-                    int wordOffsetHi = wordOffsetLo + _bytesPerHalfScreen;
-                    if (wordOffsetHi + _bytesPerWord > native.Data.Length)
-                        break;
-
-                    int word =
-                        (native.Data[wordOffsetLo] & _significantBitsMask) |
-                        ((native.Data[wordOffsetHi] & _significantBitsMask) << _significantBitsPerByte) |
-                        ((native.Data[wordOffsetLo + 1] & _significantBitsMask) << _significantBitsPerByte * 2) |
-                        ((native.Data[wordOffsetHi + 1] & _significantBitsMask) << _significantBitsPerByte * 3);
-
-                    for (int i = 0; i < _pixelsPerWord; ++i)
-                    {
-                        int pixelValue = (word >> (i * _bitsPerApplePixel)) & applePixelMask;
-                        Rgb c = Apple2Palettes.DoubleHiRes16[pixelValue];
-
-                        int dstPixelOffset = y * stride + (w * _pixelsPerWord + i) * bytesPerBmpPixel;
-                        pixels[dstPixelOffset + 2] = c.R;
-                        pixels[dstPixelOffset + 1] = c.G;
-                        pixels[dstPixelOffset + 0] = c.B;
-                    }
-                }
+                case NativeDisplay.Color: return NativeToColor(native);
+                case NativeDisplay.Mono: return NativeToBitStream(native, new MonoPictureBuilder());
+                case NativeDisplay.Artifact: return NativeToBitStream(native, new NtscPictureBuilder(1));
+                default: throw new ArgumentException($"Unsupported display {options.Display:G}", nameof(options));
             }
-
-            const int dpi = 96;
-            var bmp = new WriteableBitmap(_width, _height, dpi, dpi, PixelFormats.Bgr32, null);
-            var rect = new Int32Rect(0, 0, _width, _height);
-            bmp.WritePixels(rect, pixels, stride, 0);
-
-            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
         }
 
         public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
@@ -107,19 +70,108 @@ namespace ImageLib.Apple
             return new NativeImage { Data = data, FormatHint = new FormatHint(this) };
         }
 
+        public override int ComputeMatchScore(NativeImage native)
+        {
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_140_192_DoubleHiResColor)
+                return NativeImageFormatUtils.MetaMatchScore;
+            return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
+        }
+
+        private AspectBitmap NativeToColor(NativeImage native)
+        {
+            const int bytesPerBmpPixel = 4;
+            const int applePixelMask = (1 << _bitsPerApplePixel) - 1;
+            const int wordsPerLine = 20;
+
+            int stride = _width * bytesPerBmpPixel;
+            var pixels = new byte[stride * _height];
+
+            for (int y = 0; y < _height; ++y)
+            {
+                int lineOffset = GetLineOffset(y);
+                if (lineOffset + _bytesPerHalfScreen >= native.Data.Length)
+                    continue;
+
+                for (int w = 0; w < wordsPerLine; ++w)
+                {
+                    int wordOffsetLo = lineOffset + w * _bytesPerWord;
+                    int wordOffsetHi = wordOffsetLo + _bytesPerHalfScreen;
+                    if (wordOffsetHi + _bytesPerWord > native.Data.Length)
+                        break;
+
+                    int word =
+                        (native.Data[wordOffsetLo] & _significantBitsMask) |
+                        ((native.Data[wordOffsetHi] & _significantBitsMask) << _significantBitsPerByte) |
+                        ((native.Data[wordOffsetLo + 1] & _significantBitsMask) << _significantBitsPerByte * 2) |
+                        ((native.Data[wordOffsetHi + 1] & _significantBitsMask) << _significantBitsPerByte * 3);
+
+                    for (int i = 0; i < _pixelsPerWord; ++i)
+                    {
+                        int pixelValue = (word >> (i * _bitsPerApplePixel)) & applePixelMask;
+                        Rgb c = Apple2Palettes.DoubleHiRes16[pixelValue];
+
+                        int dstPixelOffset = y * stride + (w * _pixelsPerWord + i) * bytesPerBmpPixel;
+                        pixels[dstPixelOffset + 2] = c.R;
+                        pixels[dstPixelOffset + 1] = c.G;
+                        pixels[dstPixelOffset + 0] = c.B;
+                    }
+                }
+            }
+
+            var bmp = new WriteableBitmap(
+                _width, _height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
+            var rect = new Int32Rect(0, 0, _width, _height);
+            bmp.WritePixels(rect, pixels, stride, 0);
+
+            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
+        }
+
+        private AspectBitmap NativeToBitStream(NativeImage native, IBitStreamPictureBuilder builder)
+        {
+            const int wordsPerLine = 20;
+            const int bytesPerWord = 2;
+            const int significantBitsPerByte = 7;
+            const int significantBitsMask = (1 << significantBitsPerByte) - 1;
+
+            for (int y = 0; y < _height; ++y)
+            {
+                int lineOffset = Apple2Utils.GetHiResLineOffset(y);
+                if (lineOffset + _bytesPerHalfScreen >= native.Data.Length)
+                    continue;
+
+                using (var scanline = builder.GetScanlineWriter(y))
+                {
+                    for (int w = 0; w < wordsPerLine; ++w)
+                    {
+                        int wordOffsetLo = lineOffset + w * bytesPerWord;
+                        int wordOffsetHi = wordOffsetLo + _bytesPerHalfScreen;
+                        if (wordOffsetHi + bytesPerWord > native.Data.Length)
+                            break;
+
+                        int word =
+                            (native.Data[wordOffsetLo] & significantBitsMask) |
+                            ((native.Data[wordOffsetHi] & significantBitsMask) << significantBitsPerByte) |
+                            ((native.Data[wordOffsetLo + 1] & significantBitsMask) << significantBitsPerByte * 2) |
+                            ((native.Data[wordOffsetHi + 1] & significantBitsMask) << significantBitsPerByte * 3);
+
+                        for (int i = 0; i < significantBitsPerByte * 4; ++i)
+                        {
+                            scanline.Write(word & 1);
+                            word >>= 1;
+                        }
+                    }
+                }
+            }
+
+            return AspectBitmap.FromImageAspect(builder.Build(), 4.0 / 3.0);
+        }
+
         private int GetLineOffset(int lineIndex)
         {
             int block = lineIndex & 7;
             int subBlock = (lineIndex >> 3) & 7;
             int line = (lineIndex >> 6) & 3;
             return block * 1024 + subBlock * 128 + line * 40;
-        }
-
-        public override int ComputeMatchScore(NativeImage native)
-        {
-            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_140_192_DoubleHiResColor)
-                return NativeImageFormatUtils.MetaMatchScore;
-            return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
         }
     }
 }

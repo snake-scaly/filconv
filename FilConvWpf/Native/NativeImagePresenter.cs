@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using FilConvWpf.UI;
+using ImageLib.Apple;
 
 namespace FilConvWpf.Native
 {
@@ -15,14 +16,13 @@ namespace FilConvWpf.Native
         private const string _displaySettingsKey = "display";
         private const string _paletteSettingsKey = "palette";
 
-        private readonly IMultiChoice<INativeDisplayMode> _modeSelector;
+        private readonly IMultiChoice<NamedMode> _modeSelector;
         private readonly IMultiChoice<NamedDisplay> _displaySelector;
         private readonly IMultiChoice<NamedPalette> _paletteSelector;
 
-        private INativeDisplayMode _currentMode;
+        private NamedMode _currentMode;
         private NamedDisplay _currentDisplay;
         private NamedPalette _currentPalette;
-        private Dictionary<string, object> _settings;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
         public event EventHandler<EventArgs> ToolBarChanged;
@@ -31,10 +31,9 @@ namespace FilConvWpf.Native
         public NativeImagePresenter(NativeImage nativeImage)
         {
             NativeImage = nativeImage;
-            _settings = new Dictionary<string, object>();
             _currentMode = _modes[0];
 
-            _modeSelector = new MultiChoiceBuilder<INativeDisplayMode>()
+            _modeSelector = new MultiChoiceBuilder<NamedMode>()
                 .WithChoices(_modes, m => m.Name)
                 .WithDefaultChoice(_currentMode)
                 .WithCallback(SetCurrentMode)
@@ -49,8 +48,10 @@ namespace FilConvWpf.Native
                 .Build();
 
             var mode = GuessPreviewMode(_modes.First());
-            _currentDisplay = ChooseCompatibleDisplay(null, mode.Format);
-            _currentPalette = ChooseCompatiblePalette(null, mode.Format);
+            if (mode.Format.SupportedDisplays != null)
+                _currentDisplay = ChooseCompatibleDisplay(null, mode.Format);
+            if (mode.Format.SupportedPalettes != null)
+                _currentPalette = ChooseCompatiblePalette(null, mode.Format);
             SetCurrentMode(mode);
         }
 
@@ -64,24 +65,15 @@ namespace FilConvWpf.Native
 
         public IEnumerable<ITool> Tools { get; private set; } = new ITool[] { };
 
-        private void SetCurrentMode(INativeDisplayMode mode)
+        private void SetCurrentMode(NamedMode mode)
         {
             if (mode == _currentMode)
             {
                 return;
             }
 
-            if (_currentMode != null)
-            {
-                _currentMode.StoreSettings(_settings);
-                _currentMode.FormatChanged -= currentMode_FormatChanged;
-            }
-
             _currentMode = mode;
-            _currentMode.FormatChanged += currentMode_FormatChanged;
-            _currentMode.AdoptSettings(_settings);
-
-            _modeSelector.CurrentChoice = _currentMode;
+            _modeSelector.CurrentChoice = mode;
 
             UpdateTools();
             UpdateDisplayImage();
@@ -119,12 +111,6 @@ namespace FilConvWpf.Native
             }
         }
 
-        private void currentMode_FormatChanged(object sender, EventArgs e)
-        {
-            UpdateTools();
-            UpdateDisplayImage();
-        }
-
         private void UpdateDisplayImage()
         {
             var options = new DecodingOptions
@@ -142,7 +128,7 @@ namespace FilConvWpf.Native
             OriginalChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private INativeDisplayMode GuessPreviewMode(INativeDisplayMode preferred)
+        private NamedMode GuessPreviewMode(NamedMode preferred)
         {
             // This relies on OrderByDescending performing a stable sort. Therefore if
             // preferred is among the best it will come out first.
@@ -153,10 +139,11 @@ namespace FilConvWpf.Native
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            _currentMode?.StoreSettings(settings);
             settings[_modeSettingsKey] = _currentMode;
-            settings[_displaySettingsKey] = _currentDisplay;
-            settings[_paletteSettingsKey] = _currentPalette;
+            if (_currentMode.Format.SupportedDisplays != null)
+                settings[_displaySettingsKey] = _currentDisplay;
+            if (_currentMode.Format.SupportedPalettes != null)
+                settings[_paletteSettingsKey] = _currentPalette;
         }
 
         public void AdoptSettings(IDictionary<string, object> settings)
@@ -165,18 +152,16 @@ namespace FilConvWpf.Native
             {
                 return;
             }
-
-            _settings = new Dictionary<string, object>(settings);
             if (settings.ContainsKey(_modeSettingsKey))
             {
-                SetCurrentMode(GuessPreviewMode((INativeDisplayMode)settings[_modeSettingsKey]));
+                SetCurrentMode(GuessPreviewMode((NamedMode)settings[_modeSettingsKey]));
             }
-            if (settings.ContainsKey(_displaySettingsKey))
+            if (_currentMode.Format.SupportedDisplays != null && settings.ContainsKey(_displaySettingsKey))
             {
                 var displaySettings = (NamedDisplay)settings[_displaySettingsKey];
                 SetCurrentDisplay(ChooseCompatibleDisplay(displaySettings, _currentMode.Format), true);
             }
-            if (settings.ContainsKey(_paletteSettingsKey))
+            if (_currentMode.Format.SupportedPalettes != null && settings.ContainsKey(_paletteSettingsKey))
             {
                 var paletteSettings = (NamedPalette)settings[_paletteSettingsKey];
                 SetCurrentPalette(ChooseCompatiblePalette(paletteSettings, _currentMode.Format), true);
@@ -193,7 +178,7 @@ namespace FilConvWpf.Native
             {
                 var display = ChooseCompatibleDisplay(_currentDisplay, format);
 
-                _displaySelector.Choices = _displays;
+                _displaySelector.Choices = GetSupportedDisplays();
                 _displaySelector.CurrentChoice = display;
 
                 SetCurrentDisplay(display, false);
@@ -216,13 +201,13 @@ namespace FilConvWpf.Native
                 tools = tools.Concat(new[] { _paletteSelector });
             }
 
-            Tools = tools.Concat(_currentMode.Tools);
+            Tools = tools;
             ToolBarChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private NamedDisplay ChooseCompatibleDisplay(NamedDisplay current, INativeImageFormat format)
         {
-            var supported = _displays.ToList();
+            var supported = GetSupportedDisplays().ToList();
             if (current != null && supported.Contains(current))
             {
                 return current;
@@ -242,39 +227,45 @@ namespace FilConvWpf.Native
             return _palettes.First(s => s.Palette == defaultPalette);
         }
 
-        private static readonly INativeDisplayMode[] _modes =
+
+        private IEnumerable<NamedDisplay> GetSupportedDisplays()
         {
-            new NativeDisplayMode("FormatNameAgatCGNR", new AgatCGNRImageFormat()),
-            new NativeDisplayMode("FormatNameAgatCGSR", new AgatCGSRImageFormat()),
-            new NativeDisplayMode("FormatNameAgatMGVR", new AgatMGVRImageFormat()),
-            new NativeDisplayMode("FormatNameAgatCGVR", new AgatCGVRImageFormat()),
-            new NativeDisplayMode("FormatNameAgatMGDP", new AgatMGDPImageFormat()),
-            new NativeDisplayMode("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
-            new AppleLoResDisplayMode(false),
-            new AppleLoResDisplayMode(true),
-            new AppleHiResDisplayMode(),
-            new AppleDoubleHiResDisplayMode(),
-            new NativeDisplayMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
-            new NativeDisplayMode("FormatNamePicler", new SpectrumImageFormatPicler()),
+            var supportedDisplays = _currentMode.Format.SupportedDisplays
+                .Select(s => _displays.First(d => d.Display == s));
+
+            if (NativeImage.Metadata == null)
+            {
+                supportedDisplays = supportedDisplays.Where(s => s.Display != NativeDisplay.Meta);
+            }
+
+            return supportedDisplays;
+        }
+
+        private static readonly NamedMode[] _modes =
+        {
+            new NamedMode("FormatNameAgatCGNR", new AgatCGNRImageFormat()),
+            new NamedMode("FormatNameAgatCGSR", new AgatCGSRImageFormat()),
+            new NamedMode("FormatNameAgatMGVR", new AgatMGVRImageFormat()),
+            new NamedMode("FormatNameAgatCGVR", new AgatCGVRImageFormat()),
+            new NamedMode("FormatNameAgatMGDP", new AgatMGDPImageFormat()),
+            new NamedMode("FormatNameAgatApple", new AgatAppleImageFormat()),
+            new NamedMode("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
+            new NamedMode("FormatNameApple2LoRes", new Apple2LoResImageFormat(false)),
+            new NamedMode("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true)),
+            new NamedMode("FormatNameApple2HiRes", new Apple2HiResImageFormat(new Apple2FillTv(Apple2Palettes.American))),
+            new NamedMode("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat()),
+            new NamedMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
+            new NamedMode("FormatNamePicler", new SpectrumImageFormatPicler()),
         };
 
-        private static readonly NamedDisplay[] _allDisplays =
+        private static readonly NamedDisplay[] _displays =
         {
             new NamedDisplay("DisplayNameColor", NativeDisplay.Color),
             new NamedDisplay("DisplayNameMono", NativeDisplay.Mono),
             new NamedDisplay("DisplayNameMonoA7", NativeDisplay.MonoA7),
             new NamedDisplay("DisplayNameMeta", NativeDisplay.Meta),
+            new NamedDisplay("DisplayNameArtifact", NativeDisplay.Artifact),
         };
-
-        private IList<NamedDisplay> _displays
-        {
-            get
-            {
-                return NativeImage.Metadata != null
-                    ? (IList<NamedDisplay>)_allDisplays
-                    : _allDisplays.Where(x => x.Display != NativeDisplay.Meta).ToList();
-            }
-        }
 
         private static readonly NamedPalette[] _palettes =
         {
@@ -294,6 +285,16 @@ namespace FilConvWpf.Native
             }
 
             public override string ToString() => Name;
+        }
+
+        private class NamedMode : Named
+        {
+            public readonly INativeImageFormat Format;
+
+            public NamedMode(string name, INativeImageFormat format) : base(name)
+            {
+                Format = format;
+            }
         }
 
         private class NamedDisplay : Named

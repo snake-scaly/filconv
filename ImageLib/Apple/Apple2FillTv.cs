@@ -33,11 +33,6 @@ namespace ImageLib.Apple
             return palette[(int)middle];
         }
 
-        public override Apple2SimpleColor GetBestMatch(Rgb color, bool isOdd)
-        {
-            return (Apple2SimpleColor)ColorUtils.BestMatch(color, palette);
-        }
-
         protected override Rgb GetPixel(Apple2SimpleColor[][] simpleColors, int x, int y)
         {
             Apple2SimpleColor middle = Apple2TvSetUtils.GetSimplePixel(simpleColors, x, y);

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using ImageLib.Common;
 using ImageLib.Util;
 
 namespace ImageLib.Spectrum
 {
     public abstract class SpectrumImageFormatAbstr : INativeImageFormat
     {
-        private const double _defaultDpi = 96;
-
         protected const int _bytesPerLine = 32;
         protected const int _paletteBytesPerLine = 32;
         protected const int _width = 256;
@@ -51,7 +50,7 @@ namespace ImageLib.Spectrum
                 }
             }
 
-            var bmp = new WriteableBitmap(_width, _height, _defaultDpi, _defaultDpi, PixelFormats.Bgr32, null);
+            var bmp = new WriteableBitmap(_width, _height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
             bmp.WritePixels(new Int32Rect(0, 0, _width, _height), pixels, dstStride, 0);
             return new AspectBitmap(bmp, 1);
         }

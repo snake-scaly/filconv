@@ -355,4 +355,7 @@
   <data name="DisplayNameMonoA7" xml:space="preserve">
     <value>Agat-7 monochrome</value>
   </data>
+  <data name="FormatNameAgatApple" xml:space="preserve">
+    <value>Agat Apple</value>
+  </data>
 </root>

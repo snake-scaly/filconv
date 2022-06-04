@@ -6,6 +6,5 @@ namespace ImageLib.Apple
     {
         Rgb[][] ProcessColors(Apple2SimpleColor[][] simpleColors);
         Rgb GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right);
-        Apple2SimpleColor GetBestMatch(Rgb color, bool isOdd);
     }
 }
