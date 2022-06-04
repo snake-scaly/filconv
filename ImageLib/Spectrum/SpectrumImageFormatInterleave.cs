@@ -59,13 +59,24 @@ namespace ImageLib.Spectrum
         /// <returns>Picler sequential image.</returns>
         public NativeImage Deinterleave(NativeImage interleaved)
         {
+            byte[] original;
+            if (interleaved.Data.Length < _totalBytes)
+            {
+                original = new byte[_totalBytes];
+                interleaved.Data.CopyTo(original, 0);
+            }
+            else
+            {
+                original = interleaved.Data;
+            }
+
             var sequential = new byte[_totalBytes];
-            Array.Copy(interleaved.Data, _paletteOffset, sequential, _paletteOffset, _paletteSize);
+            Array.Copy(original, _paletteOffset, sequential, _paletteOffset, _paletteSize);
 
             for (int y = 0; y < _height; ++y)
             {
                 int dstOffset = y * _bytesPerLine;
-                Array.Copy(interleaved.Data, GetLineOffset(y), sequential, dstOffset, _bytesPerLine);
+                Array.Copy(original, GetLineOffset(y), sequential, dstOffset, _bytesPerLine);
             }
 
             return new NativeImage { Data = sequential, FormatHint = new FormatHint(new SpectrumImageFormatPicler()) };
