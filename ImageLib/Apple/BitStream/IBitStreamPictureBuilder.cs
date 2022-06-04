@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media.Imaging;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     internal interface IBitStreamPictureBuilder
     {

@@ -2,7 +2,7 @@
 using System.Windows.Media.Imaging;
 using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     internal sealed class BitmapDoubleColorWriter : IColorWriter
     {

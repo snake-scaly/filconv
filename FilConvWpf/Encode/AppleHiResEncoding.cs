@@ -4,6 +4,7 @@ using System.Windows.Media.Imaging;
 using FilConvWpf.UI;
 using ImageLib;
 using ImageLib.Apple;
+using ImageLib.Apple.HiRes;
 using ImageLib.Util;
 
 namespace FilConvWpf.Encode

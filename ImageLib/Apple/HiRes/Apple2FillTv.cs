@@ -1,25 +1,35 @@
 ﻿using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.HiRes
 {
-    public class Apple2SimpleTv : Apple2TvSetAbstr
+    public class Apple2FillTv : Apple2TvSetAbstr
     {
         /// <summary>
         /// Colors corresponding to each of the Apple2SimpleColor values.
         /// </summary>
         private Rgb[] palette;
 
-        public Apple2SimpleTv(Rgb[] palette)
+        public Apple2FillTv(Rgb[] palette)
         {
             this.palette = palette;
         }
 
         public override Rgb GetMiddleColor(Apple2SimpleColor left, Apple2SimpleColor middle, Apple2SimpleColor right)
         {
-            if (middle != Apple2SimpleColor.Black && (left != Apple2SimpleColor.Black || right != Apple2SimpleColor.Black))
+            if (middle == Apple2SimpleColor.Black)
+            {
+                if (left != Apple2SimpleColor.Black && right != Apple2SimpleColor.Black)
+                {
+                    return Apple2TvSetUtils.GetAverageColor(palette[(int)left], palette[(int)right]);
+                }
+                return palette[0];
+            }
+
+            if (left != Apple2SimpleColor.Black || right != Apple2SimpleColor.Black)
             {
                 return palette[5];
             }
+
             return palette[(int)middle];
         }
 

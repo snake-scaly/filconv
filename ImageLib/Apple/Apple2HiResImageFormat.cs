@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using FilLib;
+using ImageLib.Apple.BitStream;
+using ImageLib.Apple.HiRes;
 using ImageLib.Util;
 
 namespace ImageLib.Apple

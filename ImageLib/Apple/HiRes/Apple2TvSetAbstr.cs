@@ -1,6 +1,6 @@
 ﻿using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.HiRes
 {
     public abstract class Apple2TvSetAbstr : Apple2TvSet
     {

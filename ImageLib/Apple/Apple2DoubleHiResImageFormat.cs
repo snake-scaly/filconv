@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FilLib;
+using ImageLib.Apple.BitStream;
 using ImageLib.Common;
 
 namespace ImageLib.Apple

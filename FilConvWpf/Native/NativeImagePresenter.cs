@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using FilConvWpf.UI;
 using ImageLib.Apple;
+using ImageLib.Apple.HiRes;
 
 namespace FilConvWpf.Native
 {

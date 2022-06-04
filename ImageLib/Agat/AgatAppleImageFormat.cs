@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib.Apple;
+using ImageLib.Apple.HiRes;
 using ImageLib.Util;
 
 namespace ImageLib.Agat

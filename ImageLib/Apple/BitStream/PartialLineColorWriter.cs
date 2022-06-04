@@ -1,6 +1,6 @@
 ﻿using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     /// Writes only a subset of pixels into the inner writer.
     public class PartialLineColorWriter : IColorWriter

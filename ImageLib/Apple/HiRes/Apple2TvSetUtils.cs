@@ -1,6 +1,6 @@
 ﻿using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.HiRes
 {
     static class Apple2TvSetUtils
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     /// <summary>
     /// Converts a stream of bits as supplied by Apple hardware into

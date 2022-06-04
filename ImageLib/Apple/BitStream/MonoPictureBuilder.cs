@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 using ImageLib.Common;
 using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     public sealed class MonoPictureBuilder : IBitStreamPictureBuilder
     {

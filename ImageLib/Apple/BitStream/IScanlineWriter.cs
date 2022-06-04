@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     /// Users must call Dispose to properly write colors to the destination.
     public interface IScanlineWriter : IDisposable

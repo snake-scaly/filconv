@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 using ImageLib.Common;
 using ImageLib.Util;
 
-namespace ImageLib.Apple
+namespace ImageLib.Apple.BitStream
 {
     /// <summary>
     /// Manages conversion of raw Apple graphics data into an image
