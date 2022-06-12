@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using FilConvWpf.Encode;
 using FilConvWpf.I18n;
 using FilConvWpf.Native;
+using FilConvWpf.Presenter;
 using FilLib;
 using ImageLib;
 using Microsoft.Win32;

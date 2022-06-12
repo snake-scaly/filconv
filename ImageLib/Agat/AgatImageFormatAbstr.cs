@@ -68,7 +68,7 @@ namespace ImageLib.Agat
             var currentLineErrors = new Error[Width];
             var nextLineErrors = new Error[Width];
 
-            var colors = AgatPalettes.Color;
+            var colors = AgatColorUtils.NativeDisplayToColors(options.Display, null);
             var nativeColors = Enumerable
                 .Range(0, 1 << BitsPerPixel)
                 .Select(i => colors[MapColorIndexNativeToStandard(i, 0)])
@@ -224,18 +224,16 @@ namespace ImageLib.Agat
 
         void SetPixel(byte[] pixels, Rgb[] nativeColors, int x, int y, Rgb color)
         {
-            int pixelIndex;
-            int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
+            int byteInLine = Math.DivRem(x, PixelsPerByte, out var pixelIndex);
             int offset = GetLineOffset(y) + byteInLine;
-            if (offset < pixels.Length)
-            {
-                int b = pixels[offset];
-                int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
-                int mask = ((1 << BitsPerPixel) - 1) << shift;
-                int index = ColorUtils.BestMatch(color, nativeColors) << shift;
-                b = b & ~mask | index;
-                pixels[offset] = (byte)b;
-            }
+            if (offset >= pixels.Length)
+                return;
+            int b = pixels[offset];
+            int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
+            int mask = ((1 << BitsPerPixel) - 1) << shift;
+            int index = ColorUtils.BestMatch(color, nativeColors) << shift;
+            b = b & ~mask | index;
+            pixels[offset] = (byte)b;
         }
 
         static void AddError(float re, float ge, float be, ref Error e)

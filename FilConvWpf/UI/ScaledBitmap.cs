@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace FilConvWpf
+namespace FilConvWpf.UI
 {
     public class ScaledBitmap : FrameworkElement
     {

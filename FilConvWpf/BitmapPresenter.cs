@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using FilConvWpf.Presenter;
 using FilConvWpf.UI;
 using ImageLib;
 

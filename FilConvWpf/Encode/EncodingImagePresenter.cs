@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using FilConvWpf.Presenter;
 using FilConvWpf.UI;
 using ImageLib;
 
@@ -72,7 +73,7 @@ namespace FilConvWpf.Encode
 
         private void UpdateEncodings()
         {
-            _encodings = EncodingResolutionService.GetPossibleEncodings(_original).ToList();
+            _encodings = EncodingResolver.GetPossibleEncodings(_original).ToList();
 
             var newEncoding = GetCompatibleEncoding(_currentEncoding);
 
@@ -105,10 +106,7 @@ namespace FilConvWpf.Encode
 
         protected virtual void OnDisplayImageChanged()
         {
-            if (DisplayImageChanged != null)
-            {
-                DisplayImageChanged(this, EventArgs.Empty);
-            }
+            DisplayImageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private IEnumerable<ISaveDelegate> GetStandardSaveDelegates()

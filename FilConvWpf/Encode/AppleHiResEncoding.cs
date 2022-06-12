@@ -58,21 +58,21 @@ namespace FilConvWpf.Encode
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            settings[SettingNames.AppleFill] = _fill;
-            settings[SettingNames.ApplePalette] = _pal;
+            settings[EncodingSettingNames.AppleFill] = _fill;
+            settings[EncodingSettingNames.ApplePalette] = _pal;
         }
 
         public void AdoptSettings(IDictionary<string, object> settings)
         {
             object o;
 
-            if (settings.TryGetValue(SettingNames.AppleFill, out o))
+            if (settings.TryGetValue(EncodingSettingNames.AppleFill, out o))
             {
                 _fill = (bool)o;
                 _fillToggle.IsChecked = _fill;
             }
 
-            if (settings.TryGetValue(SettingNames.ApplePalette, out o))
+            if (settings.TryGetValue(EncodingSettingNames.ApplePalette, out o))
             {
                 _pal = (bool)o;
                 _palToggle.IsChecked = _pal;

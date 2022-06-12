@@ -6,7 +6,7 @@ using ImageLib;
 
 namespace FilConvWpf.Encode
 {
-    interface IEncoding
+    public interface IEncoding
     {
         event EventHandler<EventArgs> EncodingChanged;
 

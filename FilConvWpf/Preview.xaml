@@ -30,7 +30,7 @@
                       HorizontalScrollBarVisibility="{Binding ScrollBarVisibility}"
                       VerticalScrollBarVisibility="{Binding ScrollBarVisibility}"
                       PanningMode="Both">
-            <my:ScaledBitmap x:Name="BitmapView"
+            <ui:ScaledBitmap x:Name="BitmapView"
                               Source="{Binding DisplayPicture}"
                               Scale="{Binding Scale}"
                               Aspect="{Binding Aspect}"

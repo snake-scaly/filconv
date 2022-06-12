@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using FilConvWpf.Presenter;
 using FilConvWpf.UI;
 using ImageLib.Apple;
 using ImageLib.Apple.HiRes;
@@ -276,19 +277,7 @@ namespace FilConvWpf.Native
             new NamedPalette("PaletteNameAgat4", NativePalette.Agat4),
         };
 
-        private class Named
-        {
-            public readonly string Name;
-
-            protected Named(string name)
-            {
-                Name = name;
-            }
-
-            public override string ToString() => Name;
-        }
-
-        private class NamedMode : Named
+        private class NamedMode : NamedChoice
         {
             public readonly INativeImageFormat Format;
 
@@ -298,18 +287,7 @@ namespace FilConvWpf.Native
             }
         }
 
-        private class NamedDisplay : Named
-        {
-            public readonly NativeDisplay Display;
-
-            public NamedDisplay(string name, NativeDisplay display)
-                : base(name)
-            {
-                Display = display;
-            }
-        };
-
-        private class NamedPalette : Named
+        private class NamedPalette : NamedChoice
         {
             public readonly NativePalette Palette;
 
