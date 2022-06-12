@@ -13,8 +13,10 @@ namespace FilConvWpf.Encode
         private readonly INativeImageFormat _format;
         private readonly bool _canDither;
         private NamedDisplay _currentDisplay;
+        private NamedPalette _currentPalette;
         private bool _dither;
         private readonly IMultiChoice<NamedDisplay> _displaySelector;
+        private readonly IMultiChoice<NamedPalette> _paletteSelector;
         private readonly IToggle _ditherToggle;
 
         public event EventHandler<EventArgs> EncodingChanged;
@@ -25,9 +27,14 @@ namespace FilConvWpf.Encode
             _format = format;
             _canDither = canDither;
             _currentDisplay = _displays.First();
+            _currentPalette = _palettes.First();
 
             _displaySelector = new MultiChoiceBuilder<NamedDisplay>()
                 .WithCallback(SetCurrentDisplay)
+                .Build();
+
+            _paletteSelector = new MultiChoiceBuilder<NamedPalette>()
+                .WithCallback(SetCurrentPalette)
                 .Build();
 
             _ditherToggle = new ToggleBuilder()
@@ -46,23 +53,27 @@ namespace FilConvWpf.Encode
 
         public AspectBitmap Preview(BitmapSource original)
         {
-            return _format.FromNative(ToNative(original), new DecodingOptions { Display = _currentDisplay.Display });
+            return _format.FromNative(ToNative(original), GetDecodingOptions());
         }
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)
         {
-            yield return new FilSaveDelegate(original, _format, new EncodingOptions { Display = _currentDisplay.Display, Dither = _dither });
+            return new[] { new FilSaveDelegate(original, _format, GetEncodingOptions()) };
         }
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            settings[EncodingSettingNames.Display] = _currentDisplay;
-            settings[EncodingSettingNames.Dithering] = _dither;
+            if (_format.SupportedDisplays != null)
+                settings[EncodingSettingNames.Display] = _currentDisplay;
+            if (_format.SupportedPalettes != null)
+                settings[EncodingSettingNames.Palette] = _currentPalette;
+            if (_canDither)
+                settings[EncodingSettingNames.Dithering] = _dither;
         }
 
         public void AdoptSettings(IDictionary<string, object> settings)
         {
-            if (settings.TryGetValue(EncodingSettingNames.Display, out var d))
+            if (_format.SupportedDisplays != null && settings.TryGetValue(EncodingSettingNames.Display, out var d))
             {
                 var display = (NamedDisplay)d;
                 if (_format.SupportedDisplays.Any(x => x == display.Display))
@@ -72,7 +83,17 @@ namespace FilConvWpf.Encode
                 }
             }
 
-            if (settings.TryGetValue(EncodingSettingNames.Dithering, out var o))
+            if (_format.SupportedPalettes != null && settings.TryGetValue(EncodingSettingNames.Palette, out var p))
+            {
+                var palette = (NamedPalette)p;
+                if (_format.SupportedPalettes.Any(x => x == palette.Palette))
+                {
+                    _currentPalette = palette;
+                    _paletteSelector.CurrentChoice = palette;
+                }
+            }
+
+            if (_canDither && settings.TryGetValue(EncodingSettingNames.Dithering, out var o))
             {
                 _dither = (bool)o;
                 _ditherToggle.IsChecked = _dither;
@@ -86,7 +107,7 @@ namespace FilConvWpf.Encode
 
         private NativeImage ToNative(BitmapSource original)
         {
-            return _format.ToNative(original, new EncodingOptions { Display = _currentDisplay.Display, Dither = _dither });
+            return _format.ToNative(original, GetEncodingOptions());
         }
 
         private void SetCurrentDisplay(NamedDisplay display)
@@ -97,6 +118,17 @@ namespace FilConvWpf.Encode
             }
 
             _currentDisplay = display;
+            OnEncodingChanged();
+        }
+
+        private void SetCurrentPalette(NamedPalette palette)
+        {
+            if (palette == _currentPalette)
+            {
+                return;
+            }
+
+            _currentPalette = palette;
             OnEncodingChanged();
         }
 
@@ -124,17 +156,45 @@ namespace FilConvWpf.Encode
                 tools.Add(_displaySelector);
             }
 
+            if (_format.SupportedPalettes != null)
+            {
+                var choices = _palettes.Where(x => _format.SupportedPalettes.Contains(x.Palette)).ToList();
+                _paletteSelector.Choices = choices;
+                if (choices.Contains(_currentPalette))
+                    _paletteSelector.CurrentChoice = _currentPalette;
+                tools.Add(_paletteSelector);
+            }
+
             if (_canDither)
                 tools.Add(_ditherToggle);
 
             Tools = tools;
         }
 
+        private EncodingOptions GetEncodingOptions() =>
+            new EncodingOptions
+            {
+                Display = _currentDisplay.Display,
+                Palette = _currentPalette.Palette,
+                Dither = _dither
+            };
+
+        private DecodingOptions GetDecodingOptions() =>
+            new DecodingOptions { Display = _currentDisplay.Display, Palette = _currentPalette.Palette };
+
         private static readonly NamedDisplay[] _displays =
         {
             new NamedDisplay("DisplayNameColor", NativeDisplay.Color),
             new NamedDisplay("DisplayNameMono", NativeDisplay.Mono),
             new NamedDisplay("DisplayNameMonoA7", NativeDisplay.MonoA7),
+        };
+
+        private static readonly NamedPalette[] _palettes =
+        {
+            new NamedPalette("PaletteNameAgat1", NativePalette.Agat1),
+            new NamedPalette("PaletteNameAgat2", NativePalette.Agat2),
+            new NamedPalette("PaletteNameAgat3", NativePalette.Agat3),
+            new NamedPalette("PaletteNameAgat4", NativePalette.Agat4),
         };
     }
 }

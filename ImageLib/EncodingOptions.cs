@@ -7,6 +7,7 @@
     public struct EncodingOptions
     {
         public NativeDisplay Display { get; set; }
+        public NativePalette Palette { get; set; }
         public bool Dither { get; set; }
     }
 }

@@ -69,9 +69,10 @@ namespace ImageLib.Agat
             var nextLineErrors = new Error[Width];
 
             var colors = AgatColorUtils.NativeDisplayToColors(options.Display, null);
+            var paletteIndex = NativePaletteToIndex(options.Palette);
             var nativeColors = Enumerable
                 .Range(0, 1 << BitsPerPixel)
-                .Select(i => colors[MapColorIndexNativeToStandard(i, 0)])
+                .Select(i => colors[MapColorIndexNativeToStandard(i, paletteIndex)])
                 .ToArray();
 
             byte[] bytes = new byte[ImageSizeInBytes];
@@ -95,7 +96,7 @@ namespace ImageLib.Agat
 
                     if (options.Dither)
                     {
-                        pixel = GetBgr32Pixel(bytes, colors, 0, x, y);
+                        pixel = GetBgr32Pixel(bytes, colors, paletteIndex, x, y);
                         float re = r - pixel.R;
                         float ge = g - pixel.G;
                         float be = b - pixel.B;
