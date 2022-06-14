@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace FilLib.Tests
@@ -183,6 +184,97 @@ namespace FilLib.Tests
 
             Assert.False(success);
             Assert.Null(meta);
+        }
+
+        [Fact]
+        public void Embed_Success()
+        {
+            var meta = new ImageMeta
+            {
+                DisplayMode = ImageMeta.Mode.Agat_128_256_Pal16,
+                PaletteType = ImageMeta.Palette.Agat_3_Gray,
+                CustomPalette = new uint[]
+                {
+                    0x112233, 0x445566, 0x778899, 0xAABBCC,
+                    0x113355, 0x224466, 0x335577, 0x446688,
+                    0x557799, 0x6688AA, 0x7799BB, 0x88AACC,
+                    0xFFEEDD, 0xCCBBAA, 0x998877, 0x665544,
+                },
+                Charset = "chars",
+                Comment = "This is a comment",
+            };
+
+            var fil = new Fil { Type = new FilType(4), Sectors = new byte[512] };
+
+            meta.Embed(fil);
+
+            Assert.Equal(0xD6, fil.Sectors[0x104]);
+            Assert.Equal(0xD2, fil.Sectors[0x105]);
+            Assert.Equal(0x80, fil.Sectors[0x106]);
+            Assert.Equal(0xA0, fil.Sectors[0x107]);
+            Assert.Equal(new byte[] { 0x43, 0x48, 0x41, 0x52, 0x53, 0xA0, 0xA0, 0xA0 }, fil.Sectors.Skip(0x110).Take(8));
+            Assert.Equal(new byte[] { 0x14, 0x7A, 0x12, 0x34, 0x56, 0x78, 0xFC, 0x96 }, fil.Sectors.Skip(0x108).Take(8));
+            Assert.Equal(new byte[] { 0x25, 0x8B, 0x34, 0x56, 0x78, 0x9A, 0xEB, 0x85 }, fil.Sectors.Skip(0x118).Take(8));
+            Assert.Equal(new byte[] { 0x36, 0x9C, 0x56, 0x78, 0x9A, 0xBC, 0xDA, 0x74 }, fil.Sectors.Skip(0x128).Take(8));
+
+            byte[] expectedComment =
+            {
+                0xD4, 0x48, 0x49, 0x53, 0xA0, 0x49, 0x53, 0xA0,
+                0x41, 0xA0, 0x43, 0x4F, 0x4D, 0x4D, 0x45, 0x4E,
+                0x54, 0xA0, 0xA0, 0xA0, 0xA0, 0xA0, 0xA0, 0xA0,
+            };
+            Assert.Equal(expectedComment, fil.Sectors.Skip(0x140).Take(24));
+        }
+
+        [Fact]
+        public void Embed_Empty()
+        {
+            var fil = new Fil { Type = new FilType(4), Sectors = new byte[512] };
+
+            new ImageMeta().Embed(fil);
+
+            Assert.Equal(0xD6, fil.Sectors[0x104]);
+            Assert.Equal(0xD2, fil.Sectors[0x105]);
+            Assert.Equal(0, fil.Sectors[0x106]);
+            Assert.Equal(0, fil.Sectors[0x107]);
+        }
+
+        [Fact]
+        public void Embed_RejectNonBFiles()
+        {
+            var fil = new Fil { Sectors = new byte[256] };
+
+            Assert.Throws<InvalidOperationException>(() => new ImageMeta().Embed(fil));
+        }
+
+        [Fact]
+        public void Embed_RejectFilesWithDataSizeNotDivisibleBy256()
+        {
+            var fil = new Fil { Type = new FilType(4), Sectors = new byte[600] };
+
+            Assert.Throws<InvalidOperationException>(() => new ImageMeta().Embed(fil));
+        }
+
+        [Fact]
+        public void Embed_RejectShortFiles()
+        {
+            var fil = new Fil { Type = new FilType(4), Sectors = new byte[256] };
+
+            Assert.Throws<InvalidOperationException>(() => new ImageMeta().Embed(fil));
+        }
+
+        [Fact]
+        public void CharsetTooLong()
+        {
+            var meta = new ImageMeta { Charset = "VeryLongCharsetName"};
+            Assert.Equal(8, meta.Charset.Length);
+        }
+
+        [Fact]
+        public void CommentTooLong()
+        {
+            var meta = new ImageMeta { Comment = new string('x', 256) };
+            Assert.Equal(0xC0, meta.Comment.Length);
         }
     }
 }

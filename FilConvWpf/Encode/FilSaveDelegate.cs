@@ -35,26 +35,29 @@ namespace FilConvWpf.Encode
             _fileNameSuffix = fileNameSuffix;
         }
 
-        public override string FormatNameL10nKey
-        {
-            get { return "FileFormatNameFil"; }
-        }
+        public override string FormatNameL10nKey => "FileFormatNameFil";
 
-        public override IEnumerable<string> FileNameMasks
-        {
-            get
-            {
-                yield return "*.fil";
-            }
-        }
+        public override IEnumerable<string> FileNameMasks { get; } = new[] { "*.fil" };
 
         public UInt16 LoadAddress { get; set; }
 
         public override void SaveAs(string fileName)
         {
             var fil = new Fil { Name = Path.GetFileNameWithoutExtension(fileName), Type = new FilType(0x84) };
-            fil.SetData(_data ?? _format.ToNative(_bitmap, _options).Data);
+
+            if (_data != null)
+            {
+                fil.SetData(_data);
+            }
+            else
+            {
+                var nativeImage = _format.ToNative(_bitmap, _options);
+                fil.SetData(nativeImage.Data);
+                nativeImage.Metadata?.Embed(fil);
+            }
+
             fil.LoadAddress = LoadAddress;
+
             using (var fs = new FileStream(fileName, FileMode.Create))
             {
                 fil.Write(fs);
