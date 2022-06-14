@@ -25,6 +25,11 @@ namespace ImageLib.Agat
             }
         }
 
+        public static uint RgbToUint(Rgb c)
+        {
+            return ((uint)c.R << 16) | ((uint)c.G << 8) | c.B;
+        }
+
         private static Rgb UintToRgb(uint i)
         {
             var r = (byte)(i >> 16);

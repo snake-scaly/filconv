@@ -9,15 +9,9 @@ namespace ImageLib.Agat
     /// </remarks>
     public class AgatCGSRDVImageFormat : C16ImageFormatAbstr
     {
-        public override int ComputeMatchScore(NativeImage native)
-        {
-            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_128_256_Pal16)
-                return NativeImageFormatUtils.MetaMatchScore;
-            return base.ComputeMatchScore(native);
-        }
-
         protected override int Width => 128;
         protected override int Height => 256;
+        protected override ImageMeta.Mode MetaMode => ImageMeta.Mode.Agat_128_256_Pal16;
 
         protected override int GetLineOffset(int y)
         {

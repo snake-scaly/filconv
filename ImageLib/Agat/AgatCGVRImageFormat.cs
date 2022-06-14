@@ -8,17 +8,11 @@ namespace ImageLib.Agat
     /// <remarks>256x256, 4 colors per pixel. Only in Agat-9.</remarks>
     public class AgatCGVRImageFormat : AgatImageFormatAbstr
     {
-        public override int ComputeMatchScore(NativeImage native)
-        {
-            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Agat_256_256_Pal4)
-                return NativeImageFormatUtils.MetaMatchScore;
-            return base.ComputeMatchScore(native);
-        }
-
         protected override int Width => 256;
         protected override int Height => 256;
         protected override int BitsPerPixel => 2;
         protected override IGamut Gamut { get; } = new Mgr9BlackGamut();
+        protected override ImageMeta.Mode MetaMode => ImageMeta.Mode.Agat_256_256_Pal4;
 
         protected override int GetLineOffset(int y)
         {

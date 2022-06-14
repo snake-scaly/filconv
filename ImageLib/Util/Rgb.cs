@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImageLib.Util
+﻿namespace ImageLib.Util
 {
     public struct Rgb
     {

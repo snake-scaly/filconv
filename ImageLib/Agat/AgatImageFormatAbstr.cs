@@ -29,6 +29,7 @@ namespace ImageLib.Agat
         protected abstract int Width { get; }
         protected abstract int Height { get; }
         protected abstract int BitsPerPixel { get; }
+        protected abstract ImageMeta.Mode MetaMode { get; }
         protected virtual IGamut Gamut { get; } = new SrgbGamut();
         protected int PixelsPerByte => 8 / BitsPerPixel;
         protected int BytesPerScanline => Width / PixelsPerByte;
@@ -68,8 +69,10 @@ namespace ImageLib.Agat
             var currentLineErrors = new Error[Width];
             var nextLineErrors = new Error[Width];
 
-            var colors = AgatColorUtils.NativeDisplayToColors(options.Display, null);
             var paletteIndex = NativePaletteToIndex(options.Palette);
+            ImageMeta meta = BuildMeta(src, options);
+
+            var colors = AgatColorUtils.NativeDisplayToColors(options.Display, meta);
             var nativeColors = Enumerable
                 .Range(0, 1 << BitsPerPixel)
                 .Select(i => colors[MapColorIndexNativeToStandard(i, paletteIndex)])
@@ -124,11 +127,13 @@ namespace ImageLib.Agat
                 nextLineErrors = new Error[Width];
             }
 
-            return new NativeImage { Data = bytes, FormatHint = new FormatHint(this) };
+            return new NativeImage { Data = bytes, FormatHint = new FormatHint(this), Metadata = meta };
         }
 
-        public virtual int ComputeMatchScore(NativeImage native)
+        public int ComputeMatchScore(NativeImage native)
         {
+            if (native.Metadata?.DisplayMode == MetaMode)
+                return NativeImageFormatUtils.MetaMatchScore;
             return NativeImageFormatUtils.ComputeMatch(native, ImageSizeInBytes);
         }
 
@@ -235,6 +240,79 @@ namespace ImageLib.Agat
             int index = ColorUtils.BestMatch(color, nativeColors) << shift;
             b = b & ~mask | index;
             pixels[offset] = (byte)b;
+        }
+
+        ImageMeta BuildMeta(BitmapPixels src, EncodingOptions options)
+        {
+            ImageMeta.Palette paletteType = ImageMeta.Palette.Unknown;
+            uint[] customPalette = null;
+
+            if (options.Display == NativeDisplay.Meta)
+            {
+                paletteType = ImageMeta.Palette.Custom;
+                customPalette = BuildPalette(src, NativePaletteToIndex(options.Palette));
+            }
+            else
+            {
+                var bw = options.Display == NativeDisplay.Mono || options.Display == NativeDisplay.MonoA7;
+                switch (options.Palette)
+                {
+                    case NativePalette.Default:
+                    case NativePalette.Agat1:
+                        paletteType = bw ? ImageMeta.Palette.Agat_1_Gray : ImageMeta.Palette.Agat_1;
+                        break;
+                    case NativePalette.Agat2:
+                        paletteType = bw ? ImageMeta.Palette.Agat_2_Gray : ImageMeta.Palette.Agat_2;
+                        break;
+                    case NativePalette.Agat3:
+                        paletteType = bw ? ImageMeta.Palette.Agat_3_Gray : ImageMeta.Palette.Agat_3;
+                        break;
+                    case NativePalette.Agat4:
+                        paletteType = bw ? ImageMeta.Palette.Agat_4_Gray : ImageMeta.Palette.Agat_4;
+                        break;
+                }
+            }
+
+            return new ImageMeta
+            {
+                DisplayMode = MetaMode,
+                PaletteType = paletteType,
+                CustomPalette = customPalette,
+            };
+        }
+
+        uint[] BuildPalette(BitmapPixels src, int paletteIndex)
+        {
+            var paletteBuilder = new AgatPaletteBuilder();
+            var colors = paletteBuilder.Build(AllPixelsForPalette(src), 1 << BitsPerPixel);
+
+            if (BitsPerPixel == 4)
+            {
+                return colors.Select(AgatColorUtils.RgbToUint).ToArray();
+            }
+
+            var palette = new uint[16];
+            var i = 0;
+            foreach (var color in colors)
+            {
+                palette[MapColorIndexNativeToStandard(i, paletteIndex)] = AgatColorUtils.RgbToUint(color);
+                i++;
+            }
+            return palette;
+        }
+
+        IEnumerable<Rgb> AllPixelsForPalette(BitmapPixels src)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                for (var x = 0; x < Width; x++)
+                {
+                    if (x < src.Width && y < src.Height)
+                        yield return src.GetPixel(x, y);
+                    else
+                        yield return Rgb.FromRgb(0, 0, 0);
+                }
+            }
         }
 
         static void AddError(float re, float ge, float be, ref Error e)
