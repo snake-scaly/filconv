@@ -12,7 +12,7 @@ using ImageLib.Apple.HiRes;
 
 namespace FilConvWpf.Native
 {
-    class NativeImagePresenter : IImagePresenter, INativeOriginal
+    public sealed class NativeImagePresenter : IImagePresenter, INativeOriginal
     {
         private const string _modeSettingsKey = "previewMode";
         private const string _displaySettingsKey = "display";
@@ -55,6 +55,10 @@ namespace FilConvWpf.Native
             if (mode.Format.SupportedPalettes != null)
                 _currentPalette = ChooseCompatiblePalette(null, mode.Format);
             SetCurrentMode(mode);
+        }
+
+        public void Dispose()
+        {
         }
 
         public AspectBitmap DisplayImage { get; private set; }

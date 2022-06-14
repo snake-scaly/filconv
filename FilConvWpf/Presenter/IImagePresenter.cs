@@ -5,7 +5,7 @@ using ImageLib;
 
 namespace FilConvWpf.Presenter
 {
-    interface IImagePresenter
+    public interface IImagePresenter : IDisposable
     {
         event EventHandler<EventArgs> DisplayImageChanged;
         event EventHandler<EventArgs> ToolBarChanged;

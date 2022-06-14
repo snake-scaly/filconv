@@ -7,7 +7,7 @@ using ImageLib;
 
 namespace FilConvWpf
 {
-    class BitmapPresenter : IImagePresenter, IOriginal
+    public sealed class BitmapPresenter : IImagePresenter, IOriginal
     {
         public event EventHandler<EventArgs> DisplayImageChanged
         {
@@ -24,6 +24,10 @@ namespace FilConvWpf
         public BitmapPresenter(BitmapSource bmp)
         {
             DisplayImage = new AspectBitmap(bmp, 1);
+        }
+
+        public void Dispose()
+        {
         }
 
         public AspectBitmap DisplayImage { get; }

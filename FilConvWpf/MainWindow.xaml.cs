@@ -52,10 +52,7 @@ namespace FilConvWpf
         {
             try
             {
-                if (left.ImagePresenter != null)
-                {
-                    left.ImagePresenter.StoreSettings(leftSettings);
-                }
+                IImagePresenter newLeftPresenter;
 
                 if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -67,7 +64,7 @@ namespace FilConvWpf
                         Metadata = metadata,
                         FormatHint = new FormatHint(fileName),
                     };
-                    left.ImagePresenter = new NativeImagePresenter(ni);
+                    newLeftPresenter = new NativeImagePresenter(ni);
                 }
                 else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase) ||
                     fileName.EndsWith(".bol", StringComparison.InvariantCultureIgnoreCase))
@@ -77,7 +74,7 @@ namespace FilConvWpf
                         Data = File.ReadAllBytes(fileName),
                         FormatHint = new FormatHint(fileName)
                     };
-                    left.ImagePresenter = new NativeImagePresenter(ni);
+                    newLeftPresenter = new NativeImagePresenter(ni);
                 }
                 else
                 {
@@ -88,16 +85,11 @@ namespace FilConvWpf
                     bmp.UriSource = new Uri(fileName);
                     bmp.EndInit();
 
-                    left.ImagePresenter = new BitmapPresenter(bmp);
+                    newLeftPresenter = new BitmapPresenter(bmp);
                 }
-                left.ImagePresenter.AdoptSettings(leftSettings);
 
-                if (right.ImagePresenter != null)
-                {
-                    right.ImagePresenter.StoreSettings(rightSettings);
-                }
-                right.ImagePresenter = new EncodingImagePresenter((IOriginal)left.ImagePresenter);
-                right.ImagePresenter.AdoptSettings(rightSettings);
+                ReplacePresenter(left, newLeftPresenter, leftSettings);
+                ReplacePresenter(right, new EncodingImagePresenter((IOriginal)left.ImagePresenter), rightSettings);
 
                 this.fileName = fileName;
                 Title = Path.GetFileName(fileName) + " - " + rawTitle;
@@ -111,6 +103,19 @@ namespace FilConvWpf
                     "Fil Converter",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+            }
+        }
+
+        private void ReplacePresenter(Preview preview, IImagePresenter presenter, IDictionary<string, object> settings)
+        {
+            var oldPresenter = preview.ImagePresenter;
+            preview.ImagePresenter = presenter;
+
+            if (oldPresenter != null)
+            {
+                oldPresenter.StoreSettings(settings);
+                presenter.AdoptSettings(settings);
+                oldPresenter.Dispose();
             }
         }
 

@@ -8,7 +8,7 @@ using ImageLib;
 
 namespace FilConvWpf.Encode
 {
-    class EncodingImagePresenter : IImagePresenter
+    public sealed class EncodingImagePresenter : IImagePresenter
     {
         private const string _modeSettingsKey = "encodingMode";
 
@@ -28,6 +28,15 @@ namespace FilConvWpf.Encode
 
             _settings = new Dictionary<string, object>();
             UpdateEncodings();
+        }
+
+        public void Dispose()
+        {
+            _original.OriginalChanged -= original_OriginalChanged;
+            if (_currentEncoding != null)
+            {
+                _currentEncoding.EncodingChanged -= currentEncoding_EncodingChanged;
+            }
         }
 
         public AspectBitmap DisplayImage { get; private set; }
@@ -104,7 +113,7 @@ namespace FilConvWpf.Encode
             OnDisplayImageChanged();
         }
 
-        protected virtual void OnDisplayImageChanged()
+        private void OnDisplayImageChanged()
         {
             DisplayImageChanged?.Invoke(this, EventArgs.Empty);
         }

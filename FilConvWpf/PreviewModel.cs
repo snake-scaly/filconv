@@ -11,7 +11,7 @@ using FilConvWpf.Presenter;
 
 namespace FilConvWpf
 {
-    class PreviewModel : INotifyPropertyChanged
+    public sealed class PreviewModel : INotifyPropertyChanged, IDisposable
     {
         private string _title;
         private IImagePresenter _imagePresenter;
@@ -23,6 +23,15 @@ namespace FilConvWpf
         public PreviewModel()
         {
             _aspectToggleChecked = true;
+        }
+
+        public void Dispose()
+        {
+            if (_imagePresenter != null)
+            {
+                _imagePresenter.DisplayImageChanged -= imagePresenter_DisplayImageChanged;
+                _imagePresenter.ToolBarChanged -= ImagePresenter_ToolBarChanged;
+            }
         }
 
         public string Title
@@ -112,7 +121,7 @@ namespace FilConvWpf
 
         public IEnumerable ToolBarItems => _imagePresenter?.Tools.Select(t => t.Element);
 
-        protected virtual void OnDisplayPictureChange()
+        private void OnDisplayPictureChange()
         {
             OnPropertyChanged(nameof(DisplayPicture));
             OnPropertyChanged(nameof(Aspect));
