@@ -61,7 +61,7 @@ namespace filconv
             }
             catch (OptionException e)
             {
-                System.Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
                 Usage(options);
                 return 1;
             }
@@ -84,7 +84,7 @@ namespace filconv
                 Type imgFormat;
                 if (!_extToFormat.TryGetValue(ext, out imgFormat))
                 {
-                    System.Console.Error.WriteLine("Supported PC formats are {0} but output file is {1}", string.Join(", ", _extToFormat.Keys), dst);
+                    Console.Error.WriteLine("Supported PC formats are {0} but output file is {1}", string.Join(", ", _extToFormat.Keys), dst);
                     return 1;
                 }
                 FromFil(src, dst, filFormat, imgFormat);
@@ -96,7 +96,7 @@ namespace filconv
             }
             else
             {
-                System.Console.Error.WriteLine("Neither of files have a {0} extension", filExtension);
+                Console.Error.WriteLine("Neither of files have a {0} extension", filExtension);
                 return 1;
             }
 
@@ -138,17 +138,17 @@ namespace filconv
         static void Usage(OptionSet options)
         {
             string exe = Process.GetCurrentProcess().ProcessName;
-            System.Console.WriteLine("Usage: {0} [options] <infile> <outfile>", exe);
-            System.Console.WriteLine("The file extensions determine the action and the output format.");
-            System.Console.WriteLine("Options:");
-            options.WriteOptionDescriptions(System.Console.Out);
+            Console.WriteLine("Usage: {0} [options] <infile> <outfile>", exe);
+            Console.WriteLine("The file extensions determine the action and the output format.");
+            Console.WriteLine("Options:");
+            options.WriteOptionDescriptions(Console.Out);
         }
 
         static INativeImageFormat GetFormatByName(string name)
         {
             foreach (var f in _agatFormats)
             {
-                if (string.Compare(f.Item2, name, true) == 0)
+                if (String.Compare(f.Item2, name, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     return f.Item1;
                 }
