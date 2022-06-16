@@ -33,11 +33,9 @@ namespace FilConvWpf.Native
         public NativeImagePresenter(NativeImage nativeImage)
         {
             NativeImage = nativeImage;
-            _currentMode = _modes[0];
 
             _modeSelector = new MultiChoiceBuilder<NamedMode>()
                 .WithChoices(_modes, m => m.Name)
-                .WithDefaultChoice(_currentMode)
                 .WithCallback(SetCurrentMode)
                 .Build();
 
@@ -184,7 +182,7 @@ namespace FilConvWpf.Native
             {
                 var display = ChooseCompatibleDisplay(_currentDisplay, format);
 
-                _displaySelector.Choices = GetSupportedDisplays();
+                _displaySelector.Choices = GetSupportedDisplays(format);
                 _displaySelector.CurrentChoice = display;
 
                 SetCurrentDisplay(display, false);
@@ -213,7 +211,7 @@ namespace FilConvWpf.Native
 
         private NamedDisplay ChooseCompatibleDisplay(NamedDisplay current, INativeImageFormat format)
         {
-            var supported = GetSupportedDisplays().ToList();
+            var supported = GetSupportedDisplays(format).ToList();
             if (current != null && supported.Contains(current))
             {
                 return current;
@@ -234,9 +232,9 @@ namespace FilConvWpf.Native
         }
 
 
-        private IEnumerable<NamedDisplay> GetSupportedDisplays()
+        private IEnumerable<NamedDisplay> GetSupportedDisplays(INativeImageFormat format)
         {
-            var supportedDisplays = _currentMode.Format.SupportedDisplays
+            var supportedDisplays = format.SupportedDisplays
                 .Select(s => _displays.First(d => d.Display == s));
 
             if (NativeImage.Metadata == null)
