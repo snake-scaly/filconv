@@ -22,7 +22,7 @@ namespace ImageLib.Agat
         }
 
         private static Rgb Quantize(Rgb c) => Rgb.FromRgb(Quantize(c.R), Quantize(c.G), Quantize(c.B));
-        private static byte Quantize(byte x) => (byte)(x / 17 * 17);
+        private static byte Quantize(byte x) => (byte)((x + 8) / 17 * 17);
         private static double Linear(byte x) => Math.Pow(x / 255.0, 1 / 2.2);
         private static byte Gamma(double x) => (byte)Math.Round(Math.Pow(x, 2.2) * 255);
 
