@@ -10,15 +10,36 @@ namespace ImageLib.Agat
     {
         public IEnumerable<Rgb> Build(IEnumerable<Rgb> pixels, int paletteSize)
         {
-            var ops = new ColorSampleOps();
-            var seeder = new KMeansPlusPlusDeterministicSeeder<ColorSample>(ops);
-            var clustering = new KMeansClustering<ColorSample>(ops, seeder);
-            var samples = pixels.Select(ColorSample.FromRgb);
-            var clusters = clustering.Find(samples, paletteSize);
-            return clusters
-                .Select(x => Quantize(x.ToRgb()))
+            var pixelList = pixels.ToList();
+
+            var palette = CheckFits(pixelList, paletteSize);
+
+            if (palette == null)
+            {
+                var ops = new ColorSampleOps();
+                var seeder = new KMeansPlusPlusDeterministicSeeder<ColorSample>(ops);
+                var clustering = new KMeansClustering<ColorSample>(ops, seeder);
+                var samples = pixelList.Select(ColorSample.FromRgb);
+                var clusters = clustering.Find(samples, paletteSize);
+                palette = clusters.Select(x => x.ToRgb());
+            }
+
+            return palette
+                .Select(Quantize)
                 .Concat(Enumerable.Repeat(Rgb.FromRgb(0, 0, 0), paletteSize))
                 .Take(paletteSize);
+        }
+
+        private static IEnumerable<Rgb> CheckFits(IEnumerable<Rgb> pixels, int paletteSize)
+        {
+            var distinct = new HashSet<Rgb>();
+            foreach (var c in pixels)
+            {
+                distinct.Add(c);
+                if (distinct.Count > paletteSize)
+                    return null;
+            }
+            return distinct;
         }
 
         private static Rgb Quantize(Rgb c) => Rgb.FromRgb(Quantize(c.R), Quantize(c.G), Quantize(c.B));
