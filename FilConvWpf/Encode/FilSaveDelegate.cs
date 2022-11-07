@@ -1,4 +1,4 @@
-﻿using FilLib;
+using FilLib;
 using ImageLib;
 using System;
 using System.Collections.Generic;

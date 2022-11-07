@@ -1,4 +1,4 @@
-﻿namespace ImageLib.Common
+namespace ImageLib.Common
 {
     internal static class Constants
     {

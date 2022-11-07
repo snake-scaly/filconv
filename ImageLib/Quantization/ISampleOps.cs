@@ -1,4 +1,4 @@
-﻿namespace ImageLib.Quantization
+namespace ImageLib.Quantization
 {
     public interface ISampleOps<T>
     {

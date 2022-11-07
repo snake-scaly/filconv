@@ -1,4 +1,4 @@
-﻿namespace FilConvWpf.Presenter
+namespace FilConvWpf.Presenter
 {
     public class NamedChoice
     {

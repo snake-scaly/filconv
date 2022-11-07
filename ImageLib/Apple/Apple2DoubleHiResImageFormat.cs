@@ -1,4 +1,4 @@
-﻿using ImageLib.Util;
+using ImageLib.Util;
 using System;
 using System.Windows;
 using System.Windows.Media;

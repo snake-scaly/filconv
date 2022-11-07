@@ -1,4 +1,4 @@
-﻿# <span style="float:left;margin-right:8pt">![Logo](images/logo.png)</span>Fil Converter
+# <span style="float:left;margin-right:8pt">![Logo](images/logo.png)</span>Fil Converter
 
 ## Содержание
 

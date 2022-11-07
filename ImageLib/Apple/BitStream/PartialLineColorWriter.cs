@@ -1,4 +1,4 @@
-﻿using ImageLib.Util;
+using ImageLib.Util;
 
 namespace ImageLib.Apple.BitStream
 {

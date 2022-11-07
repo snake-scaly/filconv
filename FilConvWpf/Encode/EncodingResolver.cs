@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using FilConvWpf.Presenter;
 using ImageLib;
 using ImageLib.Agat;

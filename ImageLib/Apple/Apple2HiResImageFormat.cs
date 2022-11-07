@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib.Apple.BitStream;

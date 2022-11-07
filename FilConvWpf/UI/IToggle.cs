@@ -1,4 +1,4 @@
-﻿namespace FilConvWpf.UI
+namespace FilConvWpf.UI
 {
     public interface IToggle : ITool
     {

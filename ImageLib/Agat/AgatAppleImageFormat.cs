@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib.Apple;

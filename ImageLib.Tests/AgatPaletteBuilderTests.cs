@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using ImageLib.Agat;
 using ImageLib.Util;
 using Xunit;

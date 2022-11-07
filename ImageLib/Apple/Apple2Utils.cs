@@ -1,4 +1,4 @@
-﻿namespace ImageLib.Apple
+namespace ImageLib.Apple
 {
     class Apple2Utils
     {

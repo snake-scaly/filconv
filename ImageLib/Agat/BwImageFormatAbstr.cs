@@ -1,4 +1,4 @@
-﻿using ImageLib.Gamut;
+using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {

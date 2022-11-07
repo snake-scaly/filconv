@@ -1,4 +1,4 @@
-﻿namespace ImageLib.Apple.HiRes
+namespace ImageLib.Apple.HiRes
 {
     internal static class Apple2HiResUtils
     {

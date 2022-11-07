@@ -1,4 +1,4 @@
-﻿<Window x:Class="FilConvWpf.AboutBox"
+<Window x:Class="FilConvWpf.AboutBox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="clr-namespace:FilConvWpf.I18n"

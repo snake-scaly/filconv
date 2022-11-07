@@ -1,4 +1,4 @@
-﻿namespace FilConvWpf.Encode
+namespace FilConvWpf.Encode
 {
     static class EncodingSettingNames
     {

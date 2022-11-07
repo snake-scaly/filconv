@@ -1,4 +1,4 @@
-﻿using FilLib;
+using FilLib;
 
 namespace ImageLib
 {

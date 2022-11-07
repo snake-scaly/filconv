@@ -1,4 +1,4 @@
-﻿namespace ImageLib
+namespace ImageLib
 {
     public static class StringExtensions
     {

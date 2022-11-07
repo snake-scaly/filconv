@@ -1,4 +1,4 @@
-﻿namespace ImageLib
+namespace ImageLib
 {
     /// Palettes used by some Agat modes.
     public enum NativePalette

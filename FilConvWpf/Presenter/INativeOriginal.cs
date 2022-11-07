@@ -1,4 +1,4 @@
-﻿using ImageLib;
+using ImageLib;
 
 namespace FilConvWpf.Presenter
 {
