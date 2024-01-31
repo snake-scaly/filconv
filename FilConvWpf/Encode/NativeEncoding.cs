@@ -51,9 +51,9 @@ namespace FilConvWpf.Encode
 
         public IEnumerable<ITool> Tools { get; private set; }
 
-        public AspectBitmap Preview(BitmapSource original)
+        public AspectBitmapSource Preview(BitmapSource original)
         {
-            return _format.FromNative(ToNative(original), GetDecodingOptions());
+            return _format.FromNative(ToNative(original), GetDecodingOptions()).ToAspectBitmapSource();
         }
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)
@@ -107,7 +107,7 @@ namespace FilConvWpf.Encode
 
         private NativeImage ToNative(BitmapSource original)
         {
-            return _format.ToNative(original, GetEncodingOptions());
+            return _format.ToNative(new BitmapPixels(original), GetEncodingOptions());
         }
 
         private void SetCurrentDisplay(NamedDisplay display)

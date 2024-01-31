@@ -1,19 +1,20 @@
-using System.Windows.Media.Imaging;
-
 namespace ImageLib
 {
     /// <summary>
-    /// An image to be displayed.
+    /// A raw image with an associated aspect ratio.
     /// </summary>
     public class AspectBitmap
     {
-        public AspectBitmap(BitmapSource bitmap, double pixelAspect)
+        public AspectBitmap(Bgr32BitmapData bitmap, double pixelAspect)
         {
             Bitmap = bitmap;
             PixelAspect = pixelAspect;
         }
 
-        public BitmapSource Bitmap { get; }
+        /// <summary>
+        /// Gets Image data.
+        /// </summary>
+        public Bgr32BitmapData Bitmap { get; }
 
         /// <summary>
         /// Gets aspect ratio of the image pixels.
@@ -25,9 +26,9 @@ namespace ImageLib
         /// </remarks>
         public double PixelAspect { get; }
 
-        public static AspectBitmap FromImageAspect(BitmapSource bitmap, double imageAspect)
+        public static AspectBitmap FromImageAspect(Bgr32BitmapData bitmap, double imageAspect)
         {
-            return new AspectBitmap(bitmap, imageAspect * bitmap.PixelHeight / bitmap.PixelWidth);
+            return new AspectBitmap(bitmap, imageAspect * bitmap.Height / bitmap.Width);
         }
     }
 }

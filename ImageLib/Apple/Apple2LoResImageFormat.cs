@@ -1,11 +1,7 @@
 using ImageLib.Util;
 using System;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib.Apple.BitStream;
-using ImageLib.Common;
 
 namespace ImageLib.Apple
 {
@@ -49,11 +45,10 @@ namespace ImageLib.Apple
             }
         }
 
-        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            int w = Math.Min(bitmap.PixelWidth, _bmpWidth);
-            int h = Math.Min(bitmap.PixelHeight, _bmpHeight);
-            var src = new BitmapPixels(bitmap);
+            int w = Math.Min(src.Width, _bmpWidth);
+            int h = Math.Min(src.Height, _bmpHeight);
 
             byte[] nativePixels = new byte[_totalBytes];
 
@@ -92,7 +87,6 @@ namespace ImageLib.Apple
 
         private AspectBitmap NativeToColor(NativeImage native)
         {
-            PixelFormat bmpPixelFormat = PixelFormats.Bgr32;
             const int bmpBPP = 4;
 
             int bmpStride = _bmpWidth * bmpBPP;
@@ -125,11 +119,7 @@ namespace ImageLib.Apple
                 }
             }
 
-            var bmp = new WriteableBitmap(
-                _bmpWidth, _bmpHeight, Constants.Dpi, Constants.Dpi, bmpPixelFormat, null);
-            var srcRect = new Int32Rect(0, 0, _bmpWidth, _bmpHeight);
-            bmp.WritePixels(srcRect, pixels, bmpStride, 0);
-            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
+            return AspectBitmap.FromImageAspect(new Bgr32BitmapData(pixels, _bmpWidth, _bmpHeight), 4.0 / 3.0);
         }
 
         // Write a 1x2 pixel block at the specified offset.
@@ -149,7 +139,7 @@ namespace ImageLib.Apple
         }
 
         // Read a 1x2 pixel block at the specified coordinates.
-        private byte GetPixels(BitmapPixels pixels, int x, int y)
+        private byte GetPixels(IReadOnlyPixels pixels, int x, int y)
         {
             Rgb c1 = pixels.GetPixel(x, y);
             Rgb c2 = y < pixels.Height ? pixels.GetPixel(x, y + 1) : new Rgb();

@@ -1,5 +1,3 @@
-using System.Windows.Media.Imaging;
-
 namespace ImageLib.Apple.BitStream
 {
     internal interface IBitStreamPictureBuilder
@@ -12,6 +10,6 @@ namespace ImageLib.Apple.BitStream
         IScanlineWriter GetScanlineWriter(int index);
 
         /// Get the rendered bitmap.
-        BitmapSource Build();
+        Bgr32BitmapData Build();
     }
 }

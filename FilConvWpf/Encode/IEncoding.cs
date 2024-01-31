@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using FilConvWpf.UI;
-using ImageLib;
 
 namespace FilConvWpf.Encode
 {
@@ -13,7 +12,7 @@ namespace FilConvWpf.Encode
         string Name { get; }
         IEnumerable<ITool> Tools { get; }
 
-        AspectBitmap Preview(BitmapSource original);
+        AspectBitmapSource Preview(BitmapSource original);
         IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original);
 
         void StoreSettings(IDictionary<string, object> settings);

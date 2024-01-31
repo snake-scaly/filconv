@@ -59,7 +59,7 @@ namespace FilConvWpf.Native
         {
         }
 
-        public AspectBitmap DisplayImage { get; private set; }
+        public AspectBitmapSource DisplayImage { get; private set; }
 
         public BitmapSource OriginalBitmap => DisplayImage.Bitmap;
 
@@ -122,7 +122,7 @@ namespace FilConvWpf.Native
                 Display = _currentDisplay?.Display ?? NativeDisplay.Color,
                 Palette = _currentPalette?.Palette ?? NativePalette.Default,
             };
-            DisplayImage = _currentMode.Format.FromNative(NativeImage, options);
+            DisplayImage = _currentMode.Format.FromNative(NativeImage, options).ToAspectBitmapSource();
             OnDisplayImageChanged();
         }
 

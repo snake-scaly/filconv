@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using FilLib;
-using ImageLib.Common;
 using ImageLib.Gamut;
 using ImageLib.Util;
 
@@ -38,7 +34,6 @@ namespace ImageLib.Agat
 
         public AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
-            var bmp = new WriteableBitmap(Width, Height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
             int stride = Width * 4;
             byte[] pixels = new byte[Height * stride];
 
@@ -57,15 +52,11 @@ namespace ImageLib.Agat
                     pixels[pixel + 2] = c.R;
                 }
             }
-            Int32Rect srcRect = new Int32Rect(0, 0, Width, Height);
-            bmp.WritePixels(srcRect, pixels, stride, 0);
-            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
+            return AspectBitmap.FromImageAspect(new Bgr32BitmapData(pixels, Width, Height), 4.0 / 3.0);
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            var src = new BitmapPixels(bitmap);
-
             var currentLineErrors = new Error[Width];
             var nextLineErrors = new Error[Width];
 
@@ -248,7 +239,7 @@ namespace ImageLib.Agat
             pixels[offset] = (byte)b;
         }
 
-        private ImageMeta BuildMeta(BitmapPixels src, EncodingOptions options)
+        private ImageMeta BuildMeta(IReadOnlyPixels src, EncodingOptions options)
         {
             ImageMeta.Palette paletteType = ImageMeta.Palette.Unknown;
             uint[] customPalette = null;
@@ -287,7 +278,7 @@ namespace ImageLib.Agat
             };
         }
 
-        private uint[] BuildPalette(BitmapPixels src, int paletteIndex)
+        private uint[] BuildPalette(IReadOnlyPixels src, int paletteIndex)
         {
             var paletteBuilder = new AgatPaletteBuilder();
             var colors = paletteBuilder.Build(AllPixelsForPalette(src), 1 << BitsPerPixel).ToList();
@@ -309,7 +300,7 @@ namespace ImageLib.Agat
             return palette;
         }
 
-        private IEnumerable<Rgb> AllPixelsForPalette(BitmapPixels src)
+        private IEnumerable<Rgb> AllPixelsForPalette(IReadOnlyPixels src)
         {
             for (var y = 0; y < Height; y++)
             {

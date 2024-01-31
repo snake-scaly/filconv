@@ -1,10 +1,12 @@
 using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageLib;
+using ImageLib.Util;
 
-namespace ImageLib.Util
+namespace FilConvWpf
 {
-    public class BitmapPixels
+    public class BitmapPixels : IReadOnlyPixels
     {
         private byte[] _pixels;
         private int _stride;

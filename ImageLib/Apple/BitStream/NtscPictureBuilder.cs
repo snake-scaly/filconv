@@ -1,7 +1,4 @@
 using System;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using ImageLib.Common;
 using ImageLib.Util;
 
 namespace ImageLib.Apple.BitStream
@@ -31,8 +28,8 @@ namespace ImageLib.Apple.BitStream
         private const int _linesPerScanline = 3;
         private const int _scanlinePadding = 3;
 
-        private int _phase;
-        private WriteableBitmap _bitmap;
+        private readonly int _phase;
+        private readonly Bgr32BitmapData _bitmap;
 
         /// <summary>
         /// Create a builder instance.
@@ -44,13 +41,8 @@ namespace ImageLib.Apple.BitStream
         public NtscPictureBuilder(int phase)
         {
             _phase = phase;
-            _bitmap = new WriteableBitmap(
-                _width,
-                _height * _linesPerScanline,
-                Constants.Dpi,
-                Constants.Dpi,
-                PixelFormats.Bgr32,
-                null);
+            var pixels = new byte[_width * _height * _linesPerScanline * 4];
+            _bitmap = new Bgr32BitmapData(pixels, _width, _height * _linesPerScanline);
         }
 
         /// <summary>
@@ -76,7 +68,7 @@ namespace ImageLib.Apple.BitStream
         /// Get the rendered bitmap.
         /// </summary>
         /// <returns>A bitmap object with scanlines rendered so far.</returns>
-        public BitmapSource Build()
+        public Bgr32BitmapData Build()
         {
             return _bitmap;
         }

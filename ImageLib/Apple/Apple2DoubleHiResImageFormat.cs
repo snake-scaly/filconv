@@ -1,11 +1,7 @@
 using ImageLib.Util;
 using System;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib.Apple.BitStream;
-using ImageLib.Common;
 
 namespace ImageLib.Apple
 {
@@ -32,13 +28,11 @@ namespace ImageLib.Apple
             }
         }
 
-        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            int w = Math.Min(bitmap.PixelWidth, _width);
-            int h = Math.Min(bitmap.PixelHeight, _height);
+            int w = Math.Min(src.Width, _width);
+            int h = Math.Min(src.Height, _height);
             int wordWidth = (w + _pixelsPerWord - 1) / _pixelsPerWord;
-
-            var src = new BitmapPixels(bitmap);
 
             var data = new byte[_bytesPerHalfScreen * 2];
 
@@ -119,12 +113,7 @@ namespace ImageLib.Apple
                 }
             }
 
-            var bmp = new WriteableBitmap(
-                _width, _height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
-            var rect = new Int32Rect(0, 0, _width, _height);
-            bmp.WritePixels(rect, pixels, stride, 0);
-
-            return AspectBitmap.FromImageAspect(bmp, 4.0 / 3.0);
+            return AspectBitmap.FromImageAspect(new Bgr32BitmapData(pixels, _width, _height), 4.0 / 3.0);
         }
 
         private AspectBitmap NativeToBitStream(NativeImage native, IBitStreamPictureBuilder builder)

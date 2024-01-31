@@ -1,7 +1,3 @@
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using ImageLib.Common;
 using ImageLib.Util;
 
 namespace ImageLib.Apple.BitStream
@@ -11,17 +7,12 @@ namespace ImageLib.Apple.BitStream
         private const int _width = 560;
         private const int _height = 192;
 
-        private readonly WriteableBitmap _bitmap;
+        private readonly Bgr32BitmapData _bitmap;
 
         public MonoPictureBuilder()
         {
-            _bitmap = new WriteableBitmap(
-                _width,
-                _height,
-                Constants.Dpi,
-                Constants.Dpi,
-                PixelFormats.Bgr32,
-                null);
+            var pixels = new byte[_width * _height * 4];
+            _bitmap = new Bgr32BitmapData(pixels, _width, _height);
         }
 
         public IScanlineWriter GetScanlineWriter(int index)
@@ -29,41 +20,39 @@ namespace ImageLib.Apple.BitStream
             return new ScanlineWriter(_bitmap, index);
         }
 
-        public BitmapSource Build()
+        public Bgr32BitmapData Build()
         {
             return _bitmap;
         }
 
         private class ScanlineWriter : IScanlineWriter
         {
-            private readonly WriteableBitmap _bitmap;
-            private readonly int _scanline;
-            private readonly byte[] _pixels;
-            private readonly Rgb[] _palette;
+            private static readonly Rgb[] _palette = { Rgb.FromRgb(0, 0, 0), Rgb.FromRgb(255, 255, 255) };
+
+            private readonly Bgr32BitmapData _bitmap;
+            private readonly int _end;
             private int _pos;
 
-            public ScanlineWriter(WriteableBitmap bitmap, int scanline)
+            public ScanlineWriter(Bgr32BitmapData bitmap, int scanline)
             {
                 _bitmap = bitmap;
-                _scanline = scanline;
-                _pixels = new byte[_bitmap.PixelWidth * 4];
-                _palette = new[] { Rgb.FromRgb(0, 0, 0), Rgb.FromRgb(255, 255, 255) };
+                _pos = scanline * _bitmap.Width * 4;
+                _end = _pos + _bitmap.Width * 4;
             }
 
             public void Write(int bit)
             {
-                if (_pos >= _pixels.Length)
+                if (_pos >= _end)
                     return;
                 var c = _palette[bit & 1];
-                _pixels[_pos++] = c.B;
-                _pixels[_pos++] = c.G;
-                _pixels[_pos++] = c.R;
+                _bitmap.Pixels[_pos++] = c.B;
+                _bitmap.Pixels[_pos++] = c.G;
+                _bitmap.Pixels[_pos++] = c.R;
                 _pos++;
             }
 
             public void Dispose()
             {
-                _bitmap.WritePixels(new Int32Rect(0, _scanline, _bitmap.PixelWidth, 1), _pixels, _pixels.Length, 0);
             }
         }
     }

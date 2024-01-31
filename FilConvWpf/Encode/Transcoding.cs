@@ -30,9 +30,9 @@ namespace FilConvWpf.Encode
 
         public IEnumerable<ITool> Tools { get; } = new ITool[] { };
 
-        public AspectBitmap Preview(BitmapSource original)
+        public AspectBitmapSource Preview(BitmapSource original)
         {
-            return _format.FromNative(_nativeImage, new DecodingOptions());
+            return _format.FromNative(_nativeImage, new DecodingOptions()).ToAspectBitmapSource();
         }
 
         public IEnumerable<ISaveDelegate> GetSaveDelegates(BitmapSource original)

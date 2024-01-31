@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Media.Imaging;
 using FilLib;
 using ImageLib.Apple.BitStream;
 using ImageLib.Apple.HiRes;
@@ -31,9 +30,8 @@ namespace ImageLib.Apple
             }
         }
 
-        public override NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            var src = new BitmapPixels(bitmap);
             var dst = new AppleScreenHiRes();
             var writer = new AppleScreenWriter(dst);
 

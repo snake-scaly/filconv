@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using FilConvWpf.UI;
-using ImageLib;
 
 namespace FilConvWpf.Encode
 {
@@ -17,9 +16,9 @@ namespace FilConvWpf.Encode
 
         public string Name => "FormatNameOriginal";
 
-        public AspectBitmap Preview(BitmapSource original)
+        public AspectBitmapSource Preview(BitmapSource original)
         {
-            return new AspectBitmap(original, 1);
+            return new AspectBitmapSource(original, 1);
         }
 
         public IEnumerable<ITool> Tools { get; } = new ITool[] { };

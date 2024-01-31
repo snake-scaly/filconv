@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.Windows;
-using ImageLib.Common;
 using ImageLib.Util;
 
 namespace ImageLib.Spectrum
@@ -50,12 +46,10 @@ namespace ImageLib.Spectrum
                 }
             }
 
-            var bmp = new WriteableBitmap(_width, _height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
-            bmp.WritePixels(new Int32Rect(0, 0, _width, _height), pixels, dstStride, 0);
-            return new AspectBitmap(bmp, 1);
+            return new AspectBitmap(new Bgr32BitmapData(pixels, _width, _height), 1);
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options)
         {
             throw new NotSupportedException("Conversion to Spectrum format is not supported");
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using FilConvWpf.Presenter;
 using FilConvWpf.UI;
-using ImageLib;
 
 namespace FilConvWpf
 {
@@ -23,20 +22,14 @@ namespace FilConvWpf
 
         public BitmapPresenter(BitmapSource bmp)
         {
-            DisplayImage = new AspectBitmap(bmp, 1);
+            DisplayImage = new AspectBitmapSource(bmp, 1);
         }
 
         public void Dispose()
         {
         }
 
-        public AspectBitmap DisplayImage { get; }
-
-        public int PreviewMode
-        {
-            get => 0;
-            set { }
-        }
+        public AspectBitmapSource DisplayImage { get; }
 
         public IEnumerable<ITool> Tools { get; } = new ITool[] { };
 

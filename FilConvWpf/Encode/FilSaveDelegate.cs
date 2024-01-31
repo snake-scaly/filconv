@@ -51,7 +51,7 @@ namespace FilConvWpf.Encode
             }
             else
             {
-                var nativeImage = _format.ToNative(_bitmap, _options);
+                var nativeImage = _format.ToNative(new BitmapPixels(_bitmap), _options);
                 fil.SetData(nativeImage.Data);
                 nativeImage.Metadata?.Embed(fil);
             }

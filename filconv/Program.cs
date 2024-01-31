@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
 using FilLib;
 using ImageLib;
 using ImageLib.Agat;
 using NDesk.Options;
+using SkiaSharp;
 
 namespace filconv
 {
@@ -81,8 +82,7 @@ namespace filconv
             {
                 // converting from Agat to PC
                 string ext = Path.GetExtension(dst);
-                Type imgFormat;
-                if (!_extToFormat.TryGetValue(ext, out imgFormat))
+                if (!_extToFormat.TryGetValue(ext, out var imgFormat))
                 {
                     Console.Error.WriteLine("Supported PC formats are {0} but output file is {1}", string.Join(", ", _extToFormat.Keys), dst);
                     return 1;
@@ -103,30 +103,34 @@ namespace filconv
             return 0;
         }
 
-        static void FromFil(string from, string to, INativeImageFormat formatFrom, Type formatTo)
+        static void FromFil(string from, string to, INativeImageFormat formatFrom, SKEncodedImageFormat formatTo)
         {
-            Fil fil = Fil.FromFile(from);
-            NativeImage ni = new NativeImage
-            {
-                Data = fil.GetData(),
-                FormatHint = new FormatHint(Path.GetExtension(from))
-            };
-            BitmapSource bmp = formatFrom.FromNative(ni, formatFrom.GetDefaultDecodingOptions(ni)).Bitmap;
+            var fil = Fil.FromFile(from);
+            var ni = new NativeImage { Data = fil.GetData(), FormatHint = new FormatHint(Path.GetExtension(from)) };
+            var bitmapData = formatFrom.FromNative(ni, formatFrom.GetDefaultDecodingOptions(ni)).Bitmap;
 
-            BitmapEncoder enc = (BitmapEncoder)Activator.CreateInstance(formatTo);
-            enc.Frames.Add(BitmapFrame.Create(bmp));
-            using (FileStream fs = new FileStream(to, FileMode.Create))
+            var bmp = new SKBitmap();
+            var pixels = GCHandle.Alloc(bitmapData.Pixels, GCHandleType.Pinned);
+
+            try
             {
-                enc.Save(fs);
+                var imageInfo = new SKImageInfo(bitmapData.Width, bitmapData.Height, SKColorType.Bgra8888, SKAlphaType.Opaque);
+                bmp.InstallPixels(imageInfo, pixels.AddrOfPinnedObject());
+                using var toStream = File.Create(to);
+                bmp.Encode(toStream, formatTo, 0);
+            }
+            finally
+            {
+                pixels.Free();
             }
         }
 
         static void ToFil(string from, string to, INativeImageFormat format, FilType type, bool dither)
         {
-            BitmapImage bmp = new BitmapImage(new Uri(from, UriKind.Relative));
+            var bmp = SKBitmap.Decode(from);
             EncodingOptions options = new EncodingOptions();
             options.Dither = dither;
-            byte[] pixels = format.ToNative(bmp, options).Data;
+            byte[] pixels = format.ToNative(new BitmapPixels(bmp), options).Data;
             var fil = new Fil { Name = Path.GetFileNameWithoutExtension(to), Type = type };
             fil.SetData(pixels);
             using (var fs = new FileStream(to, FileMode.Create))
@@ -156,22 +160,22 @@ namespace filconv
             return null;
         }
 
-        static readonly Tuple<INativeImageFormat, string>[] _agatFormats =
+        static readonly (INativeImageFormat, string)[] _agatFormats =
         {
-            Tuple.Create((INativeImageFormat)new AgatCGNRImageFormat(), "CGNR"),
-            Tuple.Create((INativeImageFormat)new AgatCGSRImageFormat(), "CGSR"),
-            Tuple.Create((INativeImageFormat)new AgatMGVRImageFormat(), "MGVR"),
-            Tuple.Create((INativeImageFormat)new AgatCGVRImageFormat(), "CGVR"),
-            Tuple.Create((INativeImageFormat)new AgatMGDPImageFormat(), "MGDP"),
+            (new AgatCGNRImageFormat(), "CGNR"),
+            (new AgatCGSRImageFormat(), "CGSR"),
+            (new AgatMGVRImageFormat(), "MGVR"),
+            (new AgatCGVRImageFormat(), "CGVR"),
+            (new AgatMGDPImageFormat(), "MGDP"),
         };
 
-        static readonly Dictionary<string, Type> _extToFormat =
-            new Dictionary<string, Type>(StringComparer.InvariantCultureIgnoreCase)
+        static readonly Dictionary<string, SKEncodedImageFormat> _extToFormat =
+            new(StringComparer.InvariantCultureIgnoreCase)
         {
-            { ".png", typeof(PngBitmapEncoder) },
-            { ".jpg", typeof(JpegBitmapEncoder) },
-            { ".gif", typeof(GifBitmapEncoder) },
-            { ".bmp", typeof(BmpBitmapEncoder) },
+            { ".png", SKEncodedImageFormat.Png },
+            { ".jpg", SKEncodedImageFormat.Jpeg },
+            { ".gif", SKEncodedImageFormat.Gif },
+            { ".bmp", SKEncodedImageFormat.Bmp },
         };
     }
 }

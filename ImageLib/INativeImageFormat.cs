@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 
 namespace ImageLib
 {
@@ -20,7 +19,7 @@ namespace ImageLib
         IEnumerable<NativePalette> SupportedPalettes { get; }
 
         AspectBitmap FromNative(NativeImage native, DecodingOptions options);
-        NativeImage ToNative(BitmapSource bitmap, EncodingOptions options);
+        NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options);
 
         /// Compute probability of an image to be in this format.
         /// <param name="native">the image to test</param>

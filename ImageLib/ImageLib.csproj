@@ -8,10 +8,5 @@
     <ItemGroup>
       <ProjectReference Include="..\FilLib\FilLib.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Reference Include="PresentationCore" />
-      <Reference Include="WindowsBase" />
-    </ItemGroup>
-    
+
 </Project>

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 using FilLib;
-using ImageLib.Apple;
 using ImageLib.Apple.HiRes;
 using ImageLib.Util;
 
@@ -20,7 +18,7 @@ namespace ImageLib.Agat
             return Apple2HiResSimpleRenderer.Render(native, tv);
         }
 
-        public NativeImage ToNative(BitmapSource bitmap, EncodingOptions options)
+        public NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options)
         {
             throw new System.NotImplementedException();
         }

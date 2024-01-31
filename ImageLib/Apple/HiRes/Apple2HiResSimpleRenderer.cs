@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using ImageLib.Common;
 using ImageLib.Util;
 
 namespace ImageLib.Apple.HiRes
@@ -35,10 +31,7 @@ namespace ImageLib.Apple.HiRes
                 }
             }
 
-            WriteableBitmap result = new WriteableBitmap(
-                width, height, Constants.Dpi, Constants.Dpi, PixelFormats.Bgr32, null);
-            result.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
-            return AspectBitmap.FromImageAspect(result, 4.0 / 3.0);
+            return AspectBitmap.FromImageAspect(new Bgr32BitmapData(pixels, width, height), 4.0 / 3.0);
         }
 
         /// <summary>

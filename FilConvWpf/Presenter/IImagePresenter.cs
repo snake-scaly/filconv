@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using FilConvWpf.UI;
-using ImageLib;
 
 namespace FilConvWpf.Presenter
 {
@@ -10,7 +9,7 @@ namespace FilConvWpf.Presenter
         event EventHandler<EventArgs> DisplayImageChanged;
         event EventHandler<EventArgs> ToolBarChanged;
 
-        AspectBitmap DisplayImage { get; }
+        AspectBitmapSource DisplayImage { get; }
 
         /// <summary>
         /// Tools for manipulating the presenter.
