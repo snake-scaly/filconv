@@ -1,3 +1,4 @@
+using ImageLib.ColorManagement;
 using ImageLib.Util;
 
 namespace ImageLib.Apple

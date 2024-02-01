@@ -2,14 +2,14 @@ using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImageLib;
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace FilConvWpf
 {
     public class BitmapPixels : IReadOnlyPixels
     {
-        private byte[] _pixels;
-        private int _stride;
+        private readonly byte[] _pixels;
+        private readonly int _stride;
 
         /// <summary>
         /// Extract pixel data from a bitmap.

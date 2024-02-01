@@ -2,6 +2,7 @@ using ImageLib.Util;
 using System;
 using FilLib;
 using ImageLib.Apple.BitStream;
+using ImageLib.ColorManagement;
 
 namespace ImageLib.Apple
 {

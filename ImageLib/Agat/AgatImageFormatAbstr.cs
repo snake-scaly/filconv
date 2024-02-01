@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FilLib;
-using ImageLib.Gamut;
+using ImageLib.ColorManagement;
 using ImageLib.Util;
 
 namespace ImageLib.Agat
@@ -26,7 +26,6 @@ namespace ImageLib.Agat
         protected abstract int Height { get; }
         protected abstract int BitsPerPixel { get; }
         protected abstract ImageMeta.Mode MetaMode { get; }
-        protected virtual IGamut Gamut { get; } = new SrgbGamut();
         protected int PixelsPerByte => 8 / BitsPerPixel;
         protected int BytesPerScanline => Width / PixelsPerByte;
 
@@ -57,64 +56,58 @@ namespace ImageLib.Agat
 
         public NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            var currentLineErrors = new Error[Width];
-            var nextLineErrors = new Error[Width];
+            var currentLineErrors = new XyzColor[Width];
+            var nextLineErrors = new XyzColor[Width];
 
             var paletteIndex = NativePaletteToIndex(options.Palette);
-            ImageMeta meta = BuildMeta(src, options);
-
-            var colors = AgatColorUtils.NativeDisplayToColors(options.Display, meta);
-            var nativeColors = GetNativeColors(colors, paletteIndex);
+            var palette = BuildDisplayPalette(src, options.Display, paletteIndex);
 
             byte[] bytes = new byte[ImageSizeInBytes];
+
             for (int y = 0; y < Height; ++y)
             {
                 for (int x = 0; x < Width; ++x)
                 {
-                    Rgb pixel = (x < src.Width && y < src.Height) ? src.GetPixel(x, y) : Rgb.FromRgb(0, 0, 0);
+                    var pixel = new XyzColor();
+                    if (x < src.Width && y < src.Height)
+                        pixel = ColorSpace.Srgb.ToXyz(src.GetPixel(x, y));
 
-                    float r = 0, g = 0, b = 0;
                     if (options.Dither)
-                    {
-                        pixel = Gamut.FromSrgb(pixel);
-                        r = ColorUtils.Clamp(pixel.R + currentLineErrors[x].R, 0, 255);
-                        g = ColorUtils.Clamp(pixel.G + currentLineErrors[x].G, 0, 255);
-                        b = ColorUtils.Clamp(pixel.B + currentLineErrors[x].B, 0, 255);
-                        pixel = Rgb.FromRgb((byte)Math.Round(r), (byte)Math.Round(g), (byte)Math.Round(b));
-                    }
+                        pixel = pixel.Add(currentLineErrors[x]);
 
-                    SetPixel(bytes, nativeColors, x, y, pixel);
+                    var colorIndex = palette.Match(pixel);
+
+                    SetPixel(bytes, x, y, colorIndex);
 
                     if (options.Dither)
                     {
-                        pixel = GetBgr32Pixel(bytes, colors, paletteIndex, x, y);
-                        float re = r - pixel.R;
-                        float ge = g - pixel.G;
-                        float be = b - pixel.B;
+                        var actualPixel = palette[colorIndex].Linear;
+                        var error = pixel.Sub(actualPixel);
 
                         if (x + 1 < Width)
                         {
-                            AddError(re * _errDistrE, ge * _errDistrE, be * _errDistrE, ref currentLineErrors[x + 1]);
+                            currentLineErrors[x + 1] = currentLineErrors[x + 1].Add(error.Mul(_errDistrE));
                         }
                         if (y + 1 < Height)
                         {
-                            AddError(re * _errDistrS, ge * _errDistrS, be * _errDistrS, ref nextLineErrors[x]);
+                            nextLineErrors[x] = nextLineErrors[x].Add(error.Mul(_errDistrS));
                             if (x - 1 >= 0)
                             {
-                                AddError(re * _errDistrSw, ge * _errDistrSw, be * _errDistrSw, ref nextLineErrors[x - 1]);
+                                nextLineErrors[x - 1] = nextLineErrors[x - 1].Add(error.Mul(_errDistrSw));
                             }
                             if (x + 1 < Width)
                             {
-                                AddError(re * _errDistrSe, ge * _errDistrSe, be * _errDistrSe, ref nextLineErrors[x + 1]);
+                                nextLineErrors[x + 1] = nextLineErrors[x + 1].Add(error.Mul(_errDistrSe));
                             }
                         }
                     }
                 }
 
                 currentLineErrors = nextLineErrors;
-                nextLineErrors = new Error[Width];
+                nextLineErrors = new XyzColor[Width];
             }
 
+            ImageMeta meta = BuildMeta(options, palette);
             return new NativeImage { Data = bytes, FormatHint = new FormatHint(this), Metadata = meta };
         }
 
@@ -225,7 +218,7 @@ namespace ImageLib.Agat
             return colors[MapColorIndexNativeToStandard(b, palette)];
         }
 
-        private void SetPixel(IList<byte> pixels, IEnumerable<Rgb> nativeColors, int x, int y, Rgb color)
+        private void SetPixel(IList<byte> pixels, int x, int y, int colorIndex)
         {
             int byteInLine = Math.DivRem(x, PixelsPerByte, out var pixelIndex);
             int offset = GetLineOffset(y) + byteInLine;
@@ -234,20 +227,61 @@ namespace ImageLib.Agat
             int b = pixels[offset];
             int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
             int mask = ((1 << BitsPerPixel) - 1) << shift;
-            int index = ColorUtils.BestMatch(color, nativeColors) << shift;
-            b = b & ~mask | index;
+            b = b & ~mask | (colorIndex << shift);
             pixels[offset] = (byte)b;
         }
 
-        private ImageMeta BuildMeta(IReadOnlyPixels src, EncodingOptions options)
+        private Palette BuildDisplayPalette(IReadOnlyPixels src, NativeDisplay display, int paletteIndex)
+        {
+            if (display == NativeDisplay.Meta)
+                return BuildCustomPalette(src, paletteIndex);
+            return GetNativePalette(display, paletteIndex);
+        }
+
+        private static IList<Rgb> GetDisplayColors(NativeDisplay display)
+        {
+            switch (display)
+            {
+                case NativeDisplay.Mono: return AgatHardwareColors.Mono;
+                case NativeDisplay.MonoA7: return AgatHardwareColors.Mono7;
+                default: return AgatHardwareColors.Color;
+            }
+        }
+
+        private Palette GetNativePalette(NativeDisplay display, int paletteIndex)
+        {
+            var displayColors = GetDisplayColors(display);
+            return new Palette(GetNativeColors(displayColors, paletteIndex));
+        }
+
+        private Palette BuildCustomPalette(IReadOnlyPixels src, int paletteIndex)
+        {
+            var k = 1 << BitsPerPixel;
+
+            var paletteBuilder = new AgatPaletteBuilder();
+            var palette = paletteBuilder.Build(AllPixelsForPalette(src), k);
+
+            var template = GetNativePalette(NativeDisplay.Color, paletteIndex);
+            palette.Sort(template);
+
+            return palette;
+        }
+
+        private ImageMeta BuildMeta(EncodingOptions options, Palette palette)
         {
             ImageMeta.Palette paletteType = ImageMeta.Palette.Unknown;
-            uint[] customPalette = null;
+            var pal16 = GetDisplayColors(options.Display);
 
             if (options.Display == NativeDisplay.Meta)
             {
                 paletteType = ImageMeta.Palette.Custom;
-                customPalette = BuildPalette(src, NativePaletteToIndex(options.Palette));
+                pal16 = new Rgb[16];
+                var paletteIndex = NativePaletteToIndex(options.Palette);
+                for (var i = (1 << BitsPerPixel) - 1; i >= 0; i--)
+                {
+                    var j = MapColorIndexNativeToStandard(i, paletteIndex);
+                    pal16[j] = palette[i].Value;
+                }
             }
             else
             {
@@ -274,30 +308,8 @@ namespace ImageLib.Agat
             {
                 DisplayMode = MetaMode,
                 PaletteType = paletteType,
-                CustomPalette = customPalette,
+                CustomPalette = pal16.Select(AgatColorUtils.RgbToUint).ToArray(),
             };
-        }
-
-        private uint[] BuildPalette(IReadOnlyPixels src, int paletteIndex)
-        {
-            var paletteBuilder = new AgatPaletteBuilder();
-            var colors = paletteBuilder.Build(AllPixelsForPalette(src), 1 << BitsPerPixel).ToList();
-
-            SortPalette(colors, GetNativeColors(AgatPalettes.Color, paletteIndex));
-
-            if (BitsPerPixel == 4)
-            {
-                return colors.Select(AgatColorUtils.RgbToUint).ToArray();
-            }
-
-            var palette = new uint[16];
-            var i = 0;
-            foreach (var color in colors)
-            {
-                palette[MapColorIndexNativeToStandard(i, paletteIndex)] = AgatColorUtils.RgbToUint(color);
-                i++;
-            }
-            return palette;
         }
 
         private IEnumerable<Rgb> AllPixelsForPalette(IReadOnlyPixels src)
@@ -312,53 +324,6 @@ namespace ImageLib.Agat
                         yield return Rgb.FromRgb(0, 0, 0);
                 }
             }
-        }
-
-        private void SortPalette(IList<Rgb> palette, IList<Rgb> nativeColors)
-        {
-            int d(byte a, byte b) => (a - b) * (a - b);
-            int cd(Rgb a, Rgb b) => d(a.R, b.R) + d(a.G, b.G) + d(a.B, b.B);
-
-            void swap(int i, int j)
-            {
-                var tmp = palette[i];
-                palette[i] = palette[j];
-                palette[j] = tmp;
-            }
-
-            var repeat = true;
-
-            // Minimize square distances between palette and native colors.
-            while (repeat)
-            {
-                repeat = false;
-
-                for (var i = 0; i < palette.Count - 1; i++)
-                {
-                    for (var j = i + 1; j < palette.Count; j++)
-                    {
-                        var m1 = cd(palette[i], nativeColors[i]) + cd(palette[j], nativeColors[j]);
-                        var m2 = cd(palette[i], nativeColors[j]) + cd(palette[j], nativeColors[i]);
-                        if (m2 < m1)
-                        {
-                            swap(i, j);
-                            repeat = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void AddError(float re, float ge, float be, ref Error e)
-        {
-            e.R += re;
-            e.G += ge;
-            e.B += be;
-        }
-
-        private struct Error
-        {
-            public float R, G, B;
         }
     }
 }

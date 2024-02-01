@@ -1,12 +1,8 @@
-using ImageLib.Gamut;
-
 namespace ImageLib.Agat
 {
     public abstract class BwImageFormatAbstr : AgatImageFormatAbstr
     {
         protected override int BitsPerPixel => 1;
-
-        protected override IGamut Gamut { get; } = new BlackAndWhiteGamut();
 
         protected override int MapColorIndexNativeToStandard(int index, int palette)
         {

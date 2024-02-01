@@ -1,8 +1,9 @@
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace ImageLib.Agat
 {
-    public static class AgatPalettes
+    // Colors that the standard Agat hardware is capable of producing on different standard displays.
+    internal static class AgatHardwareColors
     {
         public static Rgb[] Color { get; } =
         {

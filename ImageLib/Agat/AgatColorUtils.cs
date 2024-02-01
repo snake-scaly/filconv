@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using FilLib;
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace ImageLib.Agat
 {
@@ -11,9 +11,9 @@ namespace ImageLib.Agat
         {
             switch (display)
             {
-                case NativeDisplay.Color: return AgatPalettes.Color;
-                case NativeDisplay.Mono: return AgatPalettes.Mono;
-                case NativeDisplay.MonoA7: return AgatPalettes.Mono7;
+                case NativeDisplay.Color: return AgatHardwareColors.Color;
+                case NativeDisplay.Mono: return AgatHardwareColors.Mono;
+                case NativeDisplay.MonoA7: return AgatHardwareColors.Mono7;
 
                 case NativeDisplay.Meta:
                     if (meta == null)

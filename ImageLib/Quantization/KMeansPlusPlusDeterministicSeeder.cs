@@ -7,7 +7,6 @@ namespace ImageLib.Quantization
     public class KMeansPlusPlusDeterministicSeeder<T> : IKMeansSeeder<T>
     {
         private readonly ISampleOps<T> _sampleOps;
-        private readonly Random _rng = new Random();
 
         public KMeansPlusPlusDeterministicSeeder(ISampleOps<T> sampleOps)
         {

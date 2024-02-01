@@ -1,6 +1,5 @@
 using System;
 using FilLib;
-using ImageLib.Gamut;
 
 namespace ImageLib.Agat
 {
@@ -11,7 +10,6 @@ namespace ImageLib.Agat
         protected override int Width => 256;
         protected override int Height => 256;
         protected override int BitsPerPixel => 2;
-        protected override IGamut Gamut { get; } = new Mgr9BlackGamut();
         protected override ImageMeta.Mode MetaMode => ImageMeta.Mode.Agat_256_256_Pal4;
 
         protected override int GetLineOffset(int y)

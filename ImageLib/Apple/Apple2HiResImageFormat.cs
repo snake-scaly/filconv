@@ -2,6 +2,7 @@ using System;
 using FilLib;
 using ImageLib.Apple.BitStream;
 using ImageLib.Apple.HiRes;
+using ImageLib.ColorManagement;
 using ImageLib.Util;
 
 namespace ImageLib.Apple

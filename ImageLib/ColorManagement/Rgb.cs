@@ -1,6 +1,6 @@
 using System;
 
-namespace ImageLib.Util
+namespace ImageLib.ColorManagement
 {
     public struct Rgb : IEquatable<Rgb>
     {

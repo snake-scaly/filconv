@@ -5,7 +5,7 @@ using FilConvWpf.UI;
 using ImageLib;
 using ImageLib.Apple;
 using ImageLib.Apple.HiRes;
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace FilConvWpf.Encode
 {

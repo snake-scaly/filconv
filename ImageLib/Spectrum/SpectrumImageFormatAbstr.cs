@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace ImageLib.Spectrum
 {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using FilLib;
 using ImageLib.Apple.HiRes;
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace ImageLib.Agat
 {

@@ -1,4 +1,4 @@
-using ImageLib.Util;
+using ImageLib.ColorManagement;
 
 namespace ImageLib.Apple.BitStream
 {
