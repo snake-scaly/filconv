@@ -37,7 +37,7 @@ namespace FilConvWpf.Encode
 
             Tools = new ITool[] { _fillToggle, _palToggle };
 
-            _format = new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2Palettes.European));
+            _format = new Apple2HiResImageFormat(new Apple2SimpleTv(Apple2HardwareColors.European));
         }
 
         public event EventHandler<EventArgs> EncodingChanged;
@@ -89,7 +89,7 @@ namespace FilConvWpf.Encode
 
         private void UpdateFormat()
         {
-            Rgb[] pal = _pal ? Apple2Palettes.American : Apple2Palettes.European;
+            Rgb[] pal = _pal ? Apple2HardwareColors.American : Apple2HardwareColors.European;
             Apple2TvSet tv = _fill ? (Apple2TvSet)new Apple2FillTv(pal) : (Apple2TvSet)new Apple2SimpleTv(pal);
             _format = new Apple2HiResImageFormat(tv);
             OnEncodingChanged();

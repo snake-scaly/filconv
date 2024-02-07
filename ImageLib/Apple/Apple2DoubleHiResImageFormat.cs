@@ -49,7 +49,7 @@ namespace ImageLib.Apple
 
                     for (int j = 0; j < maxJ; ++j)
                     {
-                        int bits = ColorUtils.BestMatch(src.GetPixel(x0 + j, y), Apple2Palettes.DoubleHiRes16);
+                        int bits = ColorUtils.BestMatch(src.GetPixel(x0 + j, y), Apple2HardwareColors.DoubleHiRes16);
                         word |= bits << (j * _bitsPerApplePixel);
                     }
 
@@ -104,7 +104,7 @@ namespace ImageLib.Apple
                     for (int i = 0; i < _pixelsPerWord; ++i)
                     {
                         int pixelValue = (word >> (i * _bitsPerApplePixel)) & applePixelMask;
-                        Rgb c = Apple2Palettes.DoubleHiRes16[pixelValue];
+                        Rgb c = Apple2HardwareColors.DoubleHiRes16[pixelValue];
 
                         int dstPixelOffset = y * stride + (w * _pixelsPerWord + i) * bytesPerBmpPixel;
                         pixels[dstPixelOffset + 2] = c.R;

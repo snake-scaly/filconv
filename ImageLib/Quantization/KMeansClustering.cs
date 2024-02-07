@@ -20,27 +20,19 @@ namespace ImageLib.Quantization
             var clusters = _seeder.Seed(points, k).Select(x => new Cluster { Centroid = x }).ToList();
             bool repeat = true;
 
-            var n = points.Count;
-            k = clusters.Count;
-
             while (repeat)
             {
                 repeat = false;
 
-                for (var i = 0; i < n; i++)
+                foreach (var point in points)
                 {
-                    var point = points[i];
                     var cluster = Closest(clusters, point);
-                    if (cluster.Count != 0)
-                        cluster.Accumulator = _sampleOps.Sum(cluster.Accumulator, point);
-                    else
-                        cluster.Accumulator = point;
+                    cluster.Accumulator = cluster.Count == 0 ? point : _sampleOps.Sum(cluster.Accumulator, point);
                     cluster.Count++;
                 }
 
-                for (var i = 0; i < k; i++)
+                foreach (var cluster in clusters)
                 {
-                    var cluster = clusters[i];
                     if (cluster.Count == 0)
                     {
                         // This cluster was consumed by nearby clusters.
@@ -64,10 +56,8 @@ namespace ImageLib.Quantization
         {
             Cluster best = null;
             var bestMetric = double.PositiveInfinity;
-            var k = clusters.Count;
-            for (var i = 0; i < k; i++)
+            foreach (var cluster in clusters)
             {
-                var cluster = clusters[i];
                 var metric = _sampleOps.Metric(cluster.Centroid, point);
                 if (metric < bestMetric)
                 {
