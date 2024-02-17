@@ -8,7 +8,6 @@ namespace ImageLib
     {
         Color,
         Mono,
-        MonoA7,
         Meta,
         Artifact,
     }

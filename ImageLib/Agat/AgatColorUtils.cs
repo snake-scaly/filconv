@@ -13,7 +13,6 @@ namespace ImageLib.Agat
             {
                 case NativeDisplay.Color: return AgatHardwareColors.Color;
                 case NativeDisplay.Mono: return AgatHardwareColors.Mono;
-                case NativeDisplay.MonoA7: return AgatHardwareColors.Mono7;
 
                 case NativeDisplay.Meta:
                     if (meta == null)

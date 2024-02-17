@@ -11,7 +11,7 @@ namespace ImageLib.Agat
     public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
         public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
-            new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.MonoA7, NativeDisplay.Meta };
+            new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
 
         public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
@@ -184,7 +184,6 @@ namespace ImageLib.Agat
             switch (display)
             {
                 case NativeDisplay.Mono: return AgatHardwareColors.Mono;
-                case NativeDisplay.MonoA7: return AgatHardwareColors.Mono7;
                 default: return AgatHardwareColors.Color;
             }
         }
@@ -226,7 +225,7 @@ namespace ImageLib.Agat
             }
             else
             {
-                var bw = options.Display == NativeDisplay.Mono || options.Display == NativeDisplay.MonoA7;
+                var bw = options.Display == NativeDisplay.Mono;
                 switch (options.Palette)
                 {
                     case NativePalette.Default:

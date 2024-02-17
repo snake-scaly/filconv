@@ -44,25 +44,5 @@ namespace ImageLib.Agat
             Rgb.FromRgb(153, 153, 153),
             Rgb.FromRgb(255, 255, 255),
         };
-
-        public static Rgb[] Mono7 { get; } =
-        {
-            Rgb.FromRgb(0, 0, 0),
-            Rgb.FromRgb(59, 59, 59),
-            Rgb.FromRgb(88, 88, 88),
-            Rgb.FromRgb(110, 110, 110),
-            Rgb.FromRgb(148, 148, 148),
-            Rgb.FromRgb(175, 175, 175),
-            Rgb.FromRgb(211, 211, 211),
-            Rgb.FromRgb(255, 255, 255),
-            Rgb.FromRgb(0, 0, 0),
-            Rgb.FromRgb(59, 59, 59),
-            Rgb.FromRgb(88, 88, 88),
-            Rgb.FromRgb(110, 110, 110),
-            Rgb.FromRgb(148, 148, 148),
-            Rgb.FromRgb(175, 175, 175),
-            Rgb.FromRgb(211, 211, 211),
-            Rgb.FromRgb(255, 255, 255),
-        };
     }
 }

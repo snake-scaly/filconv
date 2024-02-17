@@ -266,7 +266,6 @@ namespace FilConvWpf.Native
         {
             new NamedDisplay("DisplayNameColor", NativeDisplay.Color),
             new NamedDisplay("DisplayNameMono", NativeDisplay.Mono),
-            new NamedDisplay("DisplayNameMonoA7", NativeDisplay.MonoA7),
             new NamedDisplay("DisplayNameMeta", NativeDisplay.Meta),
             new NamedDisplay("DisplayNameArtifact", NativeDisplay.Artifact),
         };
