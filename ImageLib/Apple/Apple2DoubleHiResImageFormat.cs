@@ -1,8 +1,9 @@
-using ImageLib.Util;
 using System;
+using System.Collections.Generic;
 using FilLib;
 using ImageLib.Apple.BitStream;
 using ImageLib.ColorManagement;
+using ImageLib.Quantization;
 
 namespace ImageLib.Apple
 {
@@ -31,38 +32,10 @@ namespace ImageLib.Apple
 
         public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            int w = Math.Min(src.Width, _width);
-            int h = Math.Min(src.Height, _height);
-            int wordWidth = (w + _pixelsPerWord - 1) / _pixelsPerWord;
-
             var data = new byte[_bytesPerHalfScreen * 2];
-
-            for (int y = 0; y < h; ++y)
-            {
-                int lineOffset = Apple2Utils.GetHiResLineOffset(y);
-
-                for (int i = 0; i < wordWidth; ++i)
-                {
-                    int word = 0;
-                    int x0 = i * _pixelsPerWord;
-                    int maxJ = Math.Min(_pixelsPerWord, w - x0);
-
-                    for (int j = 0; j < maxJ; ++j)
-                    {
-                        int bits = ColorUtils.BestMatch(src.GetPixel(x0 + j, y), Apple2HardwareColors.DoubleHiRes16);
-                        word |= bits << (j * _bitsPerApplePixel);
-                    }
-
-                    int wordOffsetLo = lineOffset + i * _bytesPerWord;
-                    int wordOffsetHi = wordOffsetLo + _bytesPerHalfScreen;
-
-                    data[wordOffsetLo] = (byte)(word & _significantBitsMask);
-                    data[wordOffsetHi] = (byte)((word >> _significantBitsPerByte) & _significantBitsMask);
-                    data[wordOffsetLo + 1] = (byte)((word >> _significantBitsPerByte * 2) & _significantBitsMask);
-                    data[wordOffsetHi + 1] = (byte)((word >> _significantBitsPerByte * 3) & _significantBitsMask);
-                }
-            }
-
+            var dst = new WriteableNative(data);
+            var quantizer = options.Dither ? (IQuantizer)new FloydSteinbergDithering() : new NearestColorQuantizer();
+            quantizer.Quantize(src, dst, Apple2HardwareColors.DoubleHiRes16);
             return new NativeImage { Data = data, FormatHint = new FormatHint(this) };
         }
 
@@ -104,7 +77,7 @@ namespace ImageLib.Apple
                     for (int i = 0; i < _pixelsPerWord; ++i)
                     {
                         int pixelValue = (word >> (i * _bitsPerApplePixel)) & applePixelMask;
-                        Rgb c = Apple2HardwareColors.DoubleHiRes16[pixelValue];
+                        Rgb c = Apple2HardwareColors.DoubleHiRes16[pixelValue].Value;
 
                         int dstPixelOffset = y * stride + (w * _pixelsPerWord + i) * bytesPerBmpPixel;
                         pixels[dstPixelOffset + 2] = c.R;
@@ -163,6 +136,54 @@ namespace ImageLib.Apple
             int subBlock = (lineIndex >> 3) & 7;
             int line = (lineIndex >> 6) & 3;
             return block * 1024 + subBlock * 128 + line * 40;
+        }
+
+        private class WriteableNative : IWriteablePixels<int>
+        {
+            private readonly IList<byte> _pixels;
+
+            public WriteableNative(IList<byte> pixels)
+            {
+                _pixels = pixels;
+            }
+
+            public int Width => _width;
+            public int Height => _height;
+
+            public void SetPixel(int x, int y, int pixel)
+            {
+                if (x < 0 || x >= Width)
+                    throw new ArgumentOutOfRangeException(nameof(x));
+                if (y < 0 || y >= Height)
+                    throw new ArgumentOutOfRangeException(nameof(y));
+                if (pixel < 0 || pixel >= 16)
+                    throw new ArgumentOutOfRangeException(nameof(pixel));
+
+                var blockOffset = Math.DivRem(x, 7, out var pixelInBlock) * 2;
+                var offset = Apple2Utils.GetHiResLineOffset(y) + blockOffset;
+
+                var block = GetBlock(offset);
+                block &= ~(0xF << (4 * pixelInBlock));
+                block |= pixel << (4 * pixelInBlock);
+                SetBlock(offset, block);
+            }
+
+            private int GetBlock(int offset)
+            {
+                return
+                    ((_pixels[offset] & 0x7F) << 0) |
+                    ((_pixels[offset + _bytesPerHalfScreen] & 0x7F) << 7) |
+                    ((_pixels[offset + 1] & 0x7F) << 14) |
+                    ((_pixels[offset + _bytesPerHalfScreen + 1] & 0x7F) << 21);
+            }
+
+            private void SetBlock(int offset, int block)
+            {
+                _pixels[offset] = (byte)((block >> 0) & 0x7F);
+                _pixels[offset + _bytesPerHalfScreen] = (byte)((block >> 7) & 0x7F);
+                _pixels[offset + 1] = (byte)((block >> 14) & 0x7F);
+                _pixels[offset + _bytesPerHalfScreen + 1] = (byte)((block >> 21) & 0x7F);
+            }
         }
     }
 }

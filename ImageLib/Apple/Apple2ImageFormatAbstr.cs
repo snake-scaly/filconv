@@ -7,6 +7,8 @@ namespace ImageLib.Apple
         public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Artifact };
 
+        public IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;
+
         public IEnumerable<NativePalette> SupportedPalettes => null;
 
         public abstract AspectBitmap FromNative(NativeImage native, DecodingOptions options);

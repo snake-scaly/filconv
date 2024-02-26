@@ -1,8 +1,9 @@
-using ImageLib.Util;
 using System;
+using System.Collections.Generic;
 using FilLib;
 using ImageLib.Apple.BitStream;
 using ImageLib.ColorManagement;
+using ImageLib.Quantization;
 
 namespace ImageLib.Apple
 {
@@ -48,31 +49,10 @@ namespace ImageLib.Apple
 
         public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            int w = Math.Min(src.Width, _bmpWidth);
-            int h = Math.Min(src.Height, _bmpHeight);
-
             byte[] nativePixels = new byte[_totalBytes];
-
-            for (int y = 0; y < h; y += _bmpBlockHeight)
-            {
-                int nativeLineOffset = Apple2Utils.GetTextLineOffset(y / _bmpBlockHeight);
-
-                for (int x = 0; x < w; x += _bmpBlockWidth)
-                {
-                    int nativePixelOffset = nativeLineOffset + x / _bmpBlockWidth;
-                    if (_doubleResolution)
-                    {
-                        nativePixels[nativePixelOffset + _nativePage] = GetPixels(src, x, y);
-                        if (x + 1 < w)
-                            nativePixels[nativePixelOffset] = GetPixels(src, x + 1, y);
-                    }
-                    else
-                    {
-                        nativePixels[nativePixelOffset] = GetPixels(src, x, y);
-                    }
-                }
-            }
-
+            var dst = new WriteableNative(_doubleResolution, nativePixels);
+            var quantizer = options.Dither ? (IQuantizer)new FloydSteinbergDithering() : new NearestColorQuantizer();
+            quantizer.Quantize(src, dst, Apple2HardwareColors.LoRes16);
             return new NativeImage { Data = nativePixels, FormatHint = new FormatHint(this) };
         }
 
@@ -133,20 +113,10 @@ namespace ImageLib.Apple
         // Write a color pixel at the specified offset.
         private void PutPixel(int colorIndex, byte[] pixels, int offset)
         {
-            Rgb c = Apple2HardwareColors.LoRes16[colorIndex];
+            Rgb c = Apple2HardwareColors.LoRes16[colorIndex].Value;
             pixels[offset + _redByteOffset] = c.R;
             pixels[offset + _greenByteOffset] = c.G;
             pixels[offset + _blueByteOffset] = c.B;
-        }
-
-        // Read a 1x2 pixel block at the specified coordinates.
-        private byte GetPixels(IReadOnlyPixels pixels, int x, int y)
-        {
-            Rgb c1 = pixels.GetPixel(x, y);
-            Rgb c2 = y < pixels.Height ? pixels.GetPixel(x, y + 1) : new Rgb();
-            int v1 = ColorUtils.BestMatch(c1, Apple2HardwareColors.LoRes16);
-            int v2 = ColorUtils.BestMatch(c2, Apple2HardwareColors.LoRes16);
-            return (byte)(v1 | (v2 << 4));
         }
 
         private AspectBitmap NativeToBitStream(NativeImage native, IBitStreamPictureBuilder builder)
@@ -216,6 +186,45 @@ namespace ImageLib.Apple
                 scanlines[7].Write(bottomBit);
 
                 ++tick;
+            }
+        }
+        
+        private class WriteableNative : IWriteablePixels<int>
+        {
+            private readonly bool _doubleResolution;
+            private readonly IList<byte> _pixels;
+
+            public WriteableNative(bool doubleResolution, IList<byte> pixels)
+            {
+                _doubleResolution = doubleResolution;
+                _pixels = pixels;
+                Width = doubleResolution ? 80 : 40;
+            }
+
+            public int Width { get; }
+            public int Height => 48;
+
+            public void SetPixel(int x, int y, int pixel)
+            {
+                if (x < 0 || x >= Width)
+                    throw new ArgumentOutOfRangeException(nameof(x));
+                if (y < 0 || y >= Height)
+                    throw new ArgumentOutOfRangeException(nameof(y));
+                if (pixel < 0 || pixel >= 16)
+                    throw new ArgumentOutOfRangeException(nameof(pixel));
+
+                var offset = Apple2Utils.GetTextLineOffset(y >> 1);
+                if (!_doubleResolution)
+                    offset += x;
+                else if ((x & 1) == 0)
+                    offset += _nativePage + (x >> 1);
+                else
+                    offset += x >> 1;
+
+                if ((y & 1) == 0)
+                    _pixels[offset] = (byte)((_pixels[offset] & 0xF0) | pixel);
+                else
+                    _pixels[offset] = (byte)((_pixels[offset] & 0x0F) | (pixel << 4));
             }
         }
     }

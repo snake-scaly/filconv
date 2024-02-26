@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using FilLib;
 using ImageLib.ColorManagement;
+using ImageLib.Quantization;
 using ImageLib.Util;
 
 namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
-        // Error distribution coefficients by direction: East, South-West, South, South-East
-        // These values distribute error inversely related to pixel distance
-        private const float _errDistrE = 0.2929f;
-        private const float _errDistrSw = 0.2071f;
-        private const float _errDistrS = 0.2929f;
-        private const float _errDistrSe = 0.2071f;
-
         public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.MonoA7, NativeDisplay.Meta };
+
+        public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+            new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
 
         public virtual IEnumerable<NativePalette> SupportedPalettes { get; } =
             new[] { NativePalette.Agat1, NativePalette.Agat2, NativePalette.Agat3, NativePalette.Agat4 };
@@ -56,56 +53,14 @@ namespace ImageLib.Agat
 
         public NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            var currentLineErrors = new XyzColor[Width];
-            var nextLineErrors = new XyzColor[Width];
-
             var paletteIndex = NativePaletteToIndex(options.Palette);
             var palette = BuildDisplayPalette(src, options.Display, paletteIndex);
-
+            
             byte[] bytes = new byte[ImageSizeInBytes];
+            var dst = new WriteableNative(Width, Height, bytes, this);
 
-            for (int y = 0; y < Height; ++y)
-            {
-                for (int x = 0; x < Width; ++x)
-                {
-                    var pixel = new XyzColor();
-                    if (x < src.Width && y < src.Height)
-                        pixel = ColorSpace.Srgb.ToXyz(src.GetPixel(x, y));
-
-                    if (options.Dither)
-                        pixel = pixel.Add(currentLineErrors[x]);
-
-                    var colorIndex = palette.Match(pixel);
-
-                    SetPixel(bytes, x, y, colorIndex);
-
-                    if (options.Dither)
-                    {
-                        var actualPixel = palette[colorIndex].Linear;
-                        var error = pixel.Sub(actualPixel);
-
-                        if (x + 1 < Width)
-                        {
-                            currentLineErrors[x + 1] = currentLineErrors[x + 1].Add(error.Mul(_errDistrE));
-                        }
-                        if (y + 1 < Height)
-                        {
-                            nextLineErrors[x] = nextLineErrors[x].Add(error.Mul(_errDistrS));
-                            if (x - 1 >= 0)
-                            {
-                                nextLineErrors[x - 1] = nextLineErrors[x - 1].Add(error.Mul(_errDistrSw));
-                            }
-                            if (x + 1 < Width)
-                            {
-                                nextLineErrors[x + 1] = nextLineErrors[x + 1].Add(error.Mul(_errDistrSe));
-                            }
-                        }
-                    }
-                }
-
-                currentLineErrors = nextLineErrors;
-                nextLineErrors = new XyzColor[Width];
-            }
+            var quantizer = options.Dither ? (IQuantizer)new FloydSteinbergDithering() : new NearestColorQuantizer();
+            quantizer.Quantize(src, dst, palette);
 
             ImageMeta meta = BuildMeta(options, palette);
             return new NativeImage { Data = bytes, FormatHint = new FormatHint(this), Metadata = meta };
@@ -209,26 +164,12 @@ namespace ImageLib.Agat
 
         private Rgb GetBgr32Pixel(IList<byte> pixels, IList<Rgb> colors, int palette, int x, int y)
         {
-            int pixelIndex;
-            int byteInLine = Math.DivRem(x, PixelsPerByte, out pixelIndex);
+            int byteInLine = Math.DivRem(x, PixelsPerByte, out var pixelIndex);
             int offset = GetLineOffset(y) + byteInLine;
             int b = offset < pixels.Count ? pixels[offset] : 0;
             b >>= (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
             b &= (1 << BitsPerPixel) - 1;
             return colors[MapColorIndexNativeToStandard(b, palette)];
-        }
-
-        private void SetPixel(IList<byte> pixels, int x, int y, int colorIndex)
-        {
-            int byteInLine = Math.DivRem(x, PixelsPerByte, out var pixelIndex);
-            int offset = GetLineOffset(y) + byteInLine;
-            if (offset >= pixels.Count)
-                return;
-            int b = pixels[offset];
-            int shift = (PixelsPerByte - pixelIndex - 1) * BitsPerPixel;
-            int mask = ((1 << BitsPerPixel) - 1) << shift;
-            b = b & ~mask | (colorIndex << shift);
-            pixels[offset] = (byte)b;
         }
 
         private Palette BuildDisplayPalette(IReadOnlyPixels src, NativeDisplay display, int paletteIndex)
@@ -323,6 +264,36 @@ namespace ImageLib.Agat
                     else
                         yield return Rgb.FromRgb(0, 0, 0);
                 }
+            }
+        }
+        
+        private class WriteableNative : IWriteablePixels<int>
+        {
+            private readonly AgatImageFormatAbstr _format;
+            private readonly IList<byte> _pixels;
+
+            public WriteableNative(int width, int height, IList<byte> pixels, AgatImageFormatAbstr format)
+            {
+                Width = width;
+                Height = height;
+                _pixels = pixels;
+                _format = format;
+            }
+
+            public int Width { get; }
+            public int Height { get; }
+
+            public void SetPixel(int x, int y, int pixel)
+            {
+                int byteInLine = Math.DivRem(x, _format.PixelsPerByte, out var pixelIndex);
+                int offset = _format.GetLineOffset(y) + byteInLine;
+                if (offset >= _pixels.Count)
+                    return;
+                int b = _pixels[offset];
+                int shift = (_format.PixelsPerByte - pixelIndex - 1) * _format.BitsPerPixel;
+                int mask = ((1 << _format.BitsPerPixel) - 1) << shift;
+                b = b & ~mask | (pixel << shift);
+                _pixels[offset] = (byte)b;
             }
         }
     }

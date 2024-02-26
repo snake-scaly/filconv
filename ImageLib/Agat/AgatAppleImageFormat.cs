@@ -9,6 +9,8 @@ namespace ImageLib.Agat
     {
         public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
+        public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+            new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
         public IEnumerable<NativePalette> SupportedPalettes => null;
 
         public AspectBitmap FromNative(NativeImage native, DecodingOptions options)

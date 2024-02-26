@@ -21,21 +21,21 @@ namespace ImageLib.Apple
             Rgb.FromRgb(255, 0, 0),
             Rgb.FromRgb(255, 255, 255),
         };
-        public static Rgb[] LoRes16 { get; } = BuildAmerican16Palette(0);
-        public static Rgb[] DoubleHiRes16 { get; } = BuildAmerican16Palette(1);
+        public static Palette LoRes16 { get; } = BuildYiq16Palette(0);
+        public static Palette DoubleHiRes16 { get; } = BuildYiq16Palette(1);
 
         /// <summary>
         /// Construct all Apple's NTSC colors.
         /// </summary>
         /// <returns></returns>
-        private static Rgb[] BuildAmerican16Palette(int phase)
+        private static Palette BuildYiq16Palette(int phase)
         {
             var result = new Rgb[16];
             for (int i = 0; i < 16; i++)
             {
                 result[i] = YIQColor.From4BitsStrict(i, phase).ToColor();
             }
-            return result;
+            return new Palette(result);
         }
     }
 }

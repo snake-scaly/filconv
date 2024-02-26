@@ -63,7 +63,7 @@ namespace FilConvWpf.Encode
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            if (_format.SupportedDisplays != null)
+            if (_format.SupportedEncodingDisplays != null)
                 settings[EncodingSettingNames.Display] = _currentDisplay;
             if (_format.SupportedPalettes != null)
                 settings[EncodingSettingNames.Palette] = _currentPalette;
@@ -73,10 +73,10 @@ namespace FilConvWpf.Encode
 
         public void AdoptSettings(IDictionary<string, object> settings)
         {
-            if (_format.SupportedDisplays != null && settings.TryGetValue(EncodingSettingNames.Display, out var d))
+            if (_format.SupportedEncodingDisplays != null && settings.TryGetValue(EncodingSettingNames.Display, out var d))
             {
                 var display = (NamedDisplay)d;
-                if (_format.SupportedDisplays.Any(x => x == display.Display))
+                if (_format.SupportedEncodingDisplays.Any(x => x == display.Display))
                 {
                     _currentDisplay = display;
                     _displaySelector.CurrentChoice = display;
@@ -147,9 +147,9 @@ namespace FilConvWpf.Encode
         {
             var tools = new List<ITool>();
 
-            if (_format.SupportedDisplays != null)
+            if (_format.SupportedEncodingDisplays != null)
             {
-                var choices = _displays.Where(x => _format.SupportedDisplays.Contains(x.Display)).ToList();
+                var choices = _displays.Where(x => _format.SupportedEncodingDisplays.Contains(x.Display)).ToList();
                 _displaySelector.Choices = choices;
                 if (choices.Contains(_currentDisplay))
                     _displaySelector.CurrentChoice = _currentDisplay;

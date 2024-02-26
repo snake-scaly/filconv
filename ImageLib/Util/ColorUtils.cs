@@ -42,20 +42,6 @@ namespace ImageLib.Util
             return closest;
         }
 
-        public static Rgb Desaturate(Rgb color)
-        {
-            byte gray = (byte)Math.Round(Kr * color.R + Kg * color.G + Kb * color.B);
-            return Rgb.FromRgb(gray, gray, gray);
-        }
-
-        public static Rgb Gamma(Rgb color, double gamma)
-        {
-            return Rgb.FromRgb(
-                Pow(color.R, gamma),
-                Pow(color.G, gamma),
-                Pow(color.B, gamma));
-        }
-
         /// <summary>
         /// Convert a color component from double to byte.
         /// </summary>
@@ -66,11 +52,6 @@ namespace ImageLib.Util
         public static byte FromDouble(double value)
         {
             return ClampByte((int)Math.Round(value * 255));
-        }
-
-        public static double ToDouble(byte value)
-        {
-            return value / 255.0;
         }
 
         /// Clamp an integer to the specified interval.
@@ -109,11 +90,6 @@ namespace ImageLib.Util
             double g = y - 0.2721 * i - 0.6474 * q;
             double b = y - 1.1070 * i + 1.7046 * q;
             return Rgb.FromRgb(FromDouble(r), FromDouble(g), FromDouble(b));
-        }
-
-        private static byte Pow(byte c, double gamma)
-        {
-            return FromDouble(Math.Pow(ToDouble(c), gamma));
         }
     }
 }

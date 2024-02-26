@@ -1,4 +1,5 @@
 using System;
+using ImageLib.Util;
 
 namespace ImageLib.ColorManagement
 {
@@ -15,7 +16,7 @@ namespace ImageLib.ColorManagement
             byte FromLinear(double x)
             {
                 var l = x <= 0.0031308 ? 12.92 * x : 1.055 * Math.Pow(x, 1 / 2.4) - 0.055;
-                return (byte)Math.Round(l * 255);
+                return (byte)Math.Round(ColorUtils.Clamp(l, 0, 1) * 255);
             }
 
             return new Rgb

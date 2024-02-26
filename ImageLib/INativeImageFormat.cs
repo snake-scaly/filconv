@@ -12,16 +12,27 @@ namespace ImageLib
     /// </remarks>
     public interface INativeImageFormat
     {
+        /// <summary>
         /// Output displays supported by the format.
+        /// </summary>
         IEnumerable<NativeDisplay> SupportedDisplays { get; }
 
+        /// <summary>
+        /// Displays supported for encoding.
+        /// </summary>
+        IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; }
+
+        /// <summary>
         /// Color palettes supported by the format. Null for none.
+        /// </summary>
         IEnumerable<NativePalette> SupportedPalettes { get; }
 
         AspectBitmap FromNative(NativeImage native, DecodingOptions options);
         NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options);
 
+        /// <summary>
         /// Compute probability of an image to be in this format.
+        /// </summary>
         /// <param name="native">the image to test</param>
         /// <returns>Matching score. Higher value means better probability.</returns>
         int ComputeMatchScore(NativeImage native);
