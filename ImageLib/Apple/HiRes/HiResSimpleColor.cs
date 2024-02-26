@@ -1,11 +1,11 @@
 namespace ImageLib.Apple.HiRes
 {
-    public enum Apple2SimpleColor
+    public enum HiResSimpleColor
     {
         Black,
-        Green,
         Violet,
         Blue,
+        Green,
         Orange,
         White,      // Convenience for color matching, never used in actual rasters
     }

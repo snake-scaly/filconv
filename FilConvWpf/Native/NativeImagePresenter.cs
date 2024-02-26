@@ -256,7 +256,7 @@ namespace FilConvWpf.Native
             new NamedMode("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
             new NamedMode("FormatNameApple2LoRes", new Apple2LoResImageFormat(false)),
             new NamedMode("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true)),
-            new NamedMode("FormatNameApple2HiRes", new Apple2HiResImageFormat(new Apple2FillTv(Apple2HardwareColors.American))),
+            new NamedMode("FormatNameApple2HiRes", new Apple2HiResImageFormat()),
             new NamedMode("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat()),
             new NamedMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
             new NamedMode("FormatNamePicler", new SpectrumImageFormatPicler()),

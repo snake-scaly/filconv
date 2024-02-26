@@ -48,10 +48,11 @@ namespace FilConvWpf.Encode
             new NativeEncoding("FormatNameAgatMGVR", new AgatMGVRImageFormat(), true),
             new NativeEncoding("FormatNameAgatCGVR", new AgatCGVRImageFormat(), true),
             new NativeEncoding("FormatNameAgatMGDP", new AgatMGDPImageFormat(), true),
+            new NativeEncoding("FormatNameAgatApple", new AgatAppleImageFormat(), true),
             new NativeEncoding("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat(), true),
             new NativeEncoding("FormatNameApple2LoRes", new Apple2LoResImageFormat(false), true),
             new NativeEncoding("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true), true),
-            new AppleHiResEncoding(),
+            new NativeEncoding("FormatNameApple2HiRes", new Apple2HiResImageFormat(), true),
             new NativeEncoding("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat(), true),
         };
     }

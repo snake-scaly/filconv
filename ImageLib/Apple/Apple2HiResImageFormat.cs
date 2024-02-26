@@ -2,29 +2,29 @@ using System;
 using FilLib;
 using ImageLib.Apple.BitStream;
 using ImageLib.Apple.HiRes;
-using ImageLib.ColorManagement;
-using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
     public class Apple2HiResImageFormat : Apple2ImageFormatAbstr
     {
+        private static readonly IHiResFragmentRenderer _renderer;
+        private static readonly IHiResPalette _palette;
+
         private const int width = 280;
         private const int height = 192;
         private const int totalBytes = 0x2000;
 
-        private readonly Apple2TvSet tvSet;
-
-        public Apple2HiResImageFormat(Apple2TvSet tvSet)
+        static Apple2HiResImageFormat()
         {
-            this.tvSet = tvSet;
+            _renderer = new HiResFragmentRenderer(Apple2HardwareColors.American, new FilledHiResFillPolicy());
+            _palette = new HiResPaletteBuilder(_renderer).Build();
         }
 
         public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             switch (options.Display)
             {
-                case NativeDisplay.Color: return Apple2HiResSimpleRenderer.Render(native, tvSet);
+                case NativeDisplay.Color: return NativeToRgb(native);
                 case NativeDisplay.Mono: return NativeToBitStream(native, new MonoPictureBuilder());
                 case NativeDisplay.Artifact: return NativeToBitStream(native, new NtscPictureBuilder(1));
                 default: throw new ArgumentException($"Unsupported display {options.Display:G}", nameof(options));
@@ -33,48 +33,12 @@ namespace ImageLib.Apple
 
         public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            var dst = new AppleScreenHiRes();
-            var writer = new AppleScreenWriter(dst);
-
-            for (int y = 0; y < src.Height; y++)
-            {
-                if (y >= dst.Height)
-                    break;
-
-                writer.MoveToLine(y);
-                var p1 = new PixelPipe(tvSet);
-                var p2 = new PixelPipe(tvSet);
-
-                for (int x = 0; x < src.Width; x += 7)
-                {
-                    if (x >= dst.Width)
-                        break;
-
-                    p1.ResetError();
-                    p2.ResetError();
-
-                    for (int i = 0; i < 7; i++)
-                    {
-                        Rgb c = x + i < src.Width ? src.GetPixel(x + i, y) : Rgb.FromRgb(0, 0, 0);
-                        bool isOdd = ((x + i) & 1) != 0;
-                        p1.PutPixel(c, false, isOdd);
-                        p2.PutPixel(c, true, isOdd);
-                    }
-
-                    if (p2.Err < p1.Err)
-                    {
-                        writer.Write(p2.Bits | 128);
-                        p1 = new PixelPipe(p2);
-                    }
-                    else
-                    {
-                        writer.Write(p1.Bits);
-                        p2 = new PixelPipe(p1);
-                    }
-                }
-            }
-
-            return new NativeImage { Data = dst.Pixels, FormatHint = new FormatHint(this) };
+            var quantizer = options.Dither
+                ? (IHiResQuantizer)new HiResDitheringQuantizer(_palette, _renderer)
+                : new HiResNearestColorQuantizer(_palette);
+            var data = quantizer.Quantize(src);
+            var meta = new ImageMeta { DisplayMode = ImageMeta.Mode.Apple_280_192_HiRes };
+            return new NativeImage { Data = data, Metadata = meta };
         }
 
         public override int ComputeMatchScore(NativeImage native)
@@ -82,6 +46,20 @@ namespace ImageLib.Apple
             if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_280_192_HiRes)
                 return NativeImageFormatUtils.MetaMatchScore;
             return NativeImageFormatUtils.ComputeMatch(native, totalBytes);
+        }
+
+        private AspectBitmap NativeToRgb(NativeImage native)
+        {
+            var pixels = new byte[width * 4 * height];
+
+            for (var y = 0; y < height; y++)
+            {
+                _renderer.RenderLine(
+                    new ArraySegment<byte>(native.Data, Apple2Utils.GetHiResLineOffset(y), 40),
+                    new ArraySegment<byte>(pixels, width * 4 * y, width * 4));
+            }
+
+            return AspectBitmap.FromImageAspect(new Bgr32BitmapData(pixels, width, height), 4 / 3.0);
         }
 
         private AspectBitmap NativeToBitStream(NativeImage native, IBitStreamPictureBuilder builder)
@@ -123,99 +101,6 @@ namespace ImageLib.Apple
             }
 
             return AspectBitmap.FromImageAspect(builder.Build(), 4.0 / 3.0);
-        }
-
-        private class AppleScreenHiRes : AppleScreen
-        {
-            public AppleScreenHiRes()
-            {
-                Pixels = new byte[totalBytes];
-            }
-
-            public int Width => width;
-            public int Height => height;
-            public byte[] Pixels { get; }
-
-            public int GetLineOffset(int lineIndex)
-            {
-                return Apple2Utils.GetHiResLineOffset(lineIndex);
-            }
-        }
-
-        private class PixelPipe
-        {
-            private readonly Apple2TvSet _tv;
-            private Apple2SimpleColor _prevPixel;
-            private bool _setNext;
-
-            public PixelPipe(Apple2TvSet tv)
-            {
-                _tv = tv;
-            }
-
-            public PixelPipe(PixelPipe o)
-            {
-                _tv = o._tv;
-                Bits = o.Bits;
-                _prevPixel = o._prevPixel;
-                _setNext = o._setNext;
-            }
-
-            public int Bits { get; private set; }
-            public double Err { get; private set; }
-
-            public void PutPixel(Rgb c, bool shiftBit, bool isOdd)
-            {
-                Bits >>= 1;
-
-                Apple2SimpleColor thisPixel = Apple2HiResUtils.GetPixelColor(true, shiftBit, isOdd);
-                Rgb thisColor;
-
-                if (_setNext)
-                {
-                    _setNext = false;
-                    Bits |= 0x40;
-                    thisColor = _tv.GetMiddleColor(_prevPixel, thisPixel, Apple2SimpleColor.Black);
-                }
-                else
-                {
-                    Apple2SimpleColor nextPixel = Apple2HiResUtils.GetPixelColor(true, shiftBit, !isOdd);
-
-                    Rgb[] palette = new Rgb[4];
-                    palette[0] = _tv.GetMiddleColor(_prevPixel, Apple2SimpleColor.Black, Apple2SimpleColor.Black);
-                    palette[1] = _tv.GetMiddleColor(_prevPixel, thisPixel, Apple2SimpleColor.Black);
-                    palette[2] = _tv.GetMiddleColor(Apple2SimpleColor.Black, nextPixel, Apple2SimpleColor.Black);
-                    palette[3] = _tv.GetMiddleColor(_prevPixel, thisPixel, nextPixel);
-
-                    int bestMatch = ColorUtils.BestMatch(c, palette);
-                    thisColor = palette[bestMatch];
-
-                    switch (bestMatch)
-                    {
-                        case 0:
-                            thisPixel = Apple2SimpleColor.Black;
-                            break;
-                        case 1:
-                            Bits |= 0x40;
-                            break;
-                        case 2:
-                            thisColor = _tv.GetMiddleColor(_prevPixel, Apple2SimpleColor.Black, nextPixel);
-                            goto case 0;
-                        case 3:
-                            _setNext = true;
-                            goto case 1;
-                    }
-                }
-
-                _prevPixel = thisPixel;
-
-                Err += ColorUtils.GetDistanceSq(c, thisColor);
-            }
-
-            public void ResetError()
-            {
-                Err = 0;
-            }
         }
     }
 }

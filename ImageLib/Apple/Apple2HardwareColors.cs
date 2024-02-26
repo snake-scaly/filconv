@@ -7,20 +7,13 @@ namespace ImageLib.Apple
     {
         public static Rgb[] American { get; } = {
             YIQColor.From4BitsStrict(0x0, 0).ToColor(),
-            YIQColor.From4BitsStrict(0xC, 0).ToColor(),
             YIQColor.From4BitsStrict(0x3, 0).ToColor(),
             YIQColor.From4BitsStrict(0x6, 0).ToColor(),
+            YIQColor.From4BitsStrict(0xC, 0).ToColor(),
             YIQColor.From4BitsStrict(0x9, 0).ToColor(),
             YIQColor.From4BitsStrict(0xF, 0).ToColor(),
         };
-        public static Rgb[] European { get; } = {
-            Rgb.FromRgb(0, 0, 0),
-            Rgb.FromRgb(0, 255, 0),
-            Rgb.FromRgb(255, 0, 255),
-            Rgb.FromRgb(0, 0, 255),
-            Rgb.FromRgb(255, 0, 0),
-            Rgb.FromRgb(255, 255, 255),
-        };
+
         public static Palette LoRes16 { get; } = BuildYiq16Palette(0);
         public static Palette DoubleHiRes16 { get; } = BuildYiq16Palette(1);
 
