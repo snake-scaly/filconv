@@ -4,6 +4,7 @@ using FilLib;
 using ImageLib.Apple.BitStream;
 using ImageLib.ColorManagement;
 using ImageLib.Quantization;
+using ImageLib.Util;
 
 namespace ImageLib.Apple
 {
@@ -19,6 +20,9 @@ namespace ImageLib.Apple
         private const int _width = 140;
         private const int _height = 192;
 
+        public override IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+            new[] { NativeDisplay.Color, NativeDisplay.Mono };
+
         public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
         {
             switch (options.Display)
@@ -33,10 +37,30 @@ namespace ImageLib.Apple
         public override NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
             var data = new byte[_bytesPerHalfScreen * 2];
-            var dst = new WriteableNative(data);
+
+            IWriteablePixels<int> dst;
+            Palette palette;
+            ImageMeta.Mode displayMode;
+
+            switch (options.Display)
+            {
+                case NativeDisplay.Color:
+                    dst = new WriteableColor(data);
+                    palette = Apple2HardwareColors.DoubleHiRes16;
+                    displayMode = ImageMeta.Mode.Apple_140_192_DoubleHiResColor;
+                    break;
+                case NativeDisplay.Mono:
+                    dst = new WriteableMono(data);
+                    palette = Apple2HardwareColors.Monochrome;
+                    displayMode = ImageMeta.Mode.Apple_560_192_DoubleHiResMono;
+                    break;
+                default:
+                    throw new ArgumentException($"Unsupported display {options.Display:G}", nameof(options));
+            }
+
             var quantizer = options.Dither ? (IQuantizer)new FloydSteinbergDithering() : new NearestColorQuantizer();
-            quantizer.Quantize(src, dst, Apple2HardwareColors.DoubleHiRes16);
-            return new NativeImage { Data = data, FormatHint = new FormatHint(this) };
+            quantizer.Quantize(src, dst, palette);
+            return new NativeImage { Data = data, Metadata = new ImageMeta { DisplayMode = displayMode } };
         }
 
         public override int ComputeMatchScore(NativeImage native)
@@ -138,11 +162,28 @@ namespace ImageLib.Apple
             return block * 1024 + subBlock * 128 + line * 40;
         }
 
-        private class WriteableNative : IWriteablePixels<int>
+        private static int GetWord(byte[] pixels, int offset)
         {
-            private readonly IList<byte> _pixels;
+            return
+                ((pixels[offset] & 0x7F) << 0) |
+                ((pixels[offset + _bytesPerHalfScreen] & 0x7F) << 7) |
+                ((pixels[offset + 1] & 0x7F) << 14) |
+                ((pixels[offset + _bytesPerHalfScreen + 1] & 0x7F) << 21);
+        }
 
-            public WriteableNative(IList<byte> pixels)
+        private static void SetWord(byte[] pixels, int offset, int word)
+        {
+            pixels[offset] = (byte)((word >> 0) & 0x7F);
+            pixels[offset + _bytesPerHalfScreen] = (byte)((word >> 7) & 0x7F);
+            pixels[offset + 1] = (byte)((word >> 14) & 0x7F);
+            pixels[offset + _bytesPerHalfScreen + 1] = (byte)((word >> 21) & 0x7F);
+        }
+
+        private class WriteableColor : IWriteablePixels<int>
+        {
+            private readonly byte[] _pixels;
+
+            public WriteableColor(byte[] pixels)
             {
                 _pixels = pixels;
             }
@@ -159,30 +200,44 @@ namespace ImageLib.Apple
                 if (pixel < 0 || pixel >= 16)
                     throw new ArgumentOutOfRangeException(nameof(pixel));
 
-                var blockOffset = Math.DivRem(x, 7, out var pixelInBlock) * 2;
-                var offset = Apple2Utils.GetHiResLineOffset(y) + blockOffset;
+                var wordOffset = Math.DivRem(x, _pixelsPerWord, out var pixelInWord) * 2;
+                var offset = Apple2Utils.GetHiResLineOffset(y) + wordOffset;
 
-                var block = GetBlock(offset);
-                block &= ~(0xF << (4 * pixelInBlock));
-                block |= pixel << (4 * pixelInBlock);
-                SetBlock(offset, block);
+                var word = GetWord(_pixels, offset);
+                word &= ~(0xF << (4 * pixelInWord));
+                word |= pixel << (4 * pixelInWord);
+                SetWord(_pixels, offset, word);
+            }
+        }
+
+        private class WriteableMono : IWriteablePixels<int>
+        {
+            private readonly byte[] _pixels;
+
+            public WriteableMono(byte[] pixels)
+            {
+                _pixels = pixels;
             }
 
-            private int GetBlock(int offset)
-            {
-                return
-                    ((_pixels[offset] & 0x7F) << 0) |
-                    ((_pixels[offset + _bytesPerHalfScreen] & 0x7F) << 7) |
-                    ((_pixels[offset + 1] & 0x7F) << 14) |
-                    ((_pixels[offset + _bytesPerHalfScreen + 1] & 0x7F) << 21);
-            }
+            public int Width => _width * 4;
+            public int Height => _height;
 
-            private void SetBlock(int offset, int block)
+            public void SetPixel(int x, int y, int pixel)
             {
-                _pixels[offset] = (byte)((block >> 0) & 0x7F);
-                _pixels[offset + _bytesPerHalfScreen] = (byte)((block >> 7) & 0x7F);
-                _pixels[offset + 1] = (byte)((block >> 14) & 0x7F);
-                _pixels[offset + _bytesPerHalfScreen + 1] = (byte)((block >> 21) & 0x7F);
+                if (x < 0 || x >= Width)
+                    throw new ArgumentOutOfRangeException(nameof(x));
+                if (y < 0 || y >= Height)
+                    throw new ArgumentOutOfRangeException(nameof(y));
+                if (pixel < 0 || pixel >= 2)
+                    throw new ArgumentOutOfRangeException(nameof(pixel));
+
+                var wordOffset = Math.DivRem(x, _pixelsPerWord * 4, out var pixelInWord) * 2;
+                var offset = Apple2Utils.GetHiResLineOffset(y) + wordOffset;
+
+                var word = GetWord(_pixels, offset);
+                word &= ~(1 << pixelInWord);
+                word |= pixel << pixelInWord;
+                SetWord(_pixels, offset, word);
             }
         }
     }

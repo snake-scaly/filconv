@@ -16,6 +16,7 @@ namespace ImageLib.Apple
 
         public static Palette LoRes16 { get; } = BuildYiq16Palette(0);
         public static Palette DoubleHiRes16 { get; } = BuildYiq16Palette(1);
+        public static Palette Monochrome { get; } = new Palette(new[] { default(Rgb), Rgb.FromRgb(255, 255, 255) });
 
         /// <summary>
         /// Construct all Apple's NTSC colors.

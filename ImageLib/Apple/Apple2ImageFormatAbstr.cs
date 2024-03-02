@@ -7,7 +7,7 @@ namespace ImageLib.Apple
         public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Artifact };
 
-        public IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;
+        public virtual IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;
 
         public IEnumerable<NativePalette> SupportedPalettes => null;
 
