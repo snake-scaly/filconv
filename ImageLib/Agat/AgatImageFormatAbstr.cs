@@ -63,7 +63,7 @@ namespace ImageLib.Agat
             quantizer.Quantize(src, dst, palette);
 
             ImageMeta meta = BuildMeta(options, palette);
-            return new NativeImage { Data = bytes, FormatHint = new FormatHint(this), Metadata = meta };
+            return new NativeImage { Data = bytes, Metadata = meta };
         }
 
         public int ComputeMatchScore(NativeImage native)

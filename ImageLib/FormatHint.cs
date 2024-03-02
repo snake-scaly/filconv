@@ -15,23 +15,10 @@ namespace ImageLib
         /// </remarks>
         public string FileName { get; set; }
 
-        /// <summary>
-        /// Concrete format of the image.
-        /// </summary>
-        /// <para>This property may contain <c>null</c> if the format is
-        /// not known.</para>
-        public INativeImageFormat NativeFormat { get; set; }
-
         public FormatHint(string fileName)
             : this()
         {
             FileName = fileName;
-        }
-
-        public FormatHint(INativeImageFormat format)
-            : this()
-        {
-            NativeFormat = format;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace ImageLib.Spectrum
                 Array.Copy(original, srcOffset, interleaved, GetLineOffset(y), _bytesPerLine);
             }
 
-            return new NativeImage { Data = interleaved, FormatHint = new FormatHint(this) };
+            return new NativeImage { Data = interleaved };
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace ImageLib.Spectrum
                 Array.Copy(original, GetLineOffset(y), sequential, dstOffset, _bytesPerLine);
             }
 
-            return new NativeImage { Data = sequential, FormatHint = new FormatHint(new SpectrumImageFormatPicler()) };
+            return new NativeImage { Data = sequential };
         }
     }
 }

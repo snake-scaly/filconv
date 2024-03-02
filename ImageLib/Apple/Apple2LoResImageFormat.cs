@@ -53,7 +53,10 @@ namespace ImageLib.Apple
             var dst = new WriteableNative(_doubleResolution, nativePixels);
             var quantizer = options.Dither ? (IQuantizer)new FloydSteinbergDithering() : new NearestColorQuantizer();
             quantizer.Quantize(src, dst, Apple2HardwareColors.LoRes16);
-            return new NativeImage { Data = nativePixels, FormatHint = new FormatHint(this) };
+            var displayMode = _doubleResolution
+                ? ImageMeta.Mode.Apple_80_48_DoubleLoRes
+                : ImageMeta.Mode.Apple_40_48_LoRes;
+            return new NativeImage { Data = nativePixels, Metadata = new ImageMeta { DisplayMode = displayMode }};
         }
 
         public override int ComputeMatchScore(NativeImage native)
