@@ -259,7 +259,6 @@ namespace FilConvWpf.Native
             new NamedMode("FormatNameApple2HiRes", new Apple2HiResImageFormat()),
             new NamedMode("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat()),
             new NamedMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
-            new NamedMode("FormatNamePicler", new SpectrumImageFormatPicler()),
         };
 
         private static readonly NamedDisplay[] _displays =

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using FilConvWpf.Presenter;
-using ImageLib;
 using ImageLib.Agat;
 using ImageLib.Apple;
-using ImageLib.Spectrum;
 
 namespace FilConvWpf.Encode
 {
@@ -12,33 +10,7 @@ namespace FilConvWpf.Encode
     /// </summary>
     public static class EncodingResolver
     {
-        private const int UncompressedBolStartAddress = 0x4000;
-
-        public static IEnumerable<IEncoding> GetPossibleEncodings(IOriginal original)
-        {
-            foreach (IEncoding e in _genericEncodings)
-            {
-                yield return e;
-            }
-
-            if (original is INativeOriginal nativeOriginal)
-            {
-                if (nativeOriginal.NativeImageFormat is SpectrumImageFormatInterleave)
-                {
-                    NativeImage piclerImage = new SpectrumImageFormatInterleave().Deinterleave(nativeOriginal.NativeImage);
-                    var saveDelegate = new FilSaveDelegate(piclerImage.Data, ".bol");
-                    saveDelegate.LoadAddress = UncompressedBolStartAddress;
-                    yield return new Transcoding(piclerImage, new SpectrumImageFormatPicler(), "FormatNamePicler", new ISaveDelegate[] { saveDelegate });
-                }
-                else if (nativeOriginal.NativeImageFormat is SpectrumImageFormatPicler)
-                {
-                    var format = new SpectrumImageFormatInterleave();
-                    NativeImage spectrumImage = format.Interleave(nativeOriginal.NativeImage);
-                    var saveDelegate = new SimpleSaveDelegate(spectrumImage.Data, "FileFormatNameScr", "*.scr");
-                    yield return new Transcoding(spectrumImage, format, "FormatNameSpectrum", new ISaveDelegate[] { saveDelegate });
-                }
-            }
-        }
+        public static IEnumerable<IEncoding> GetPossibleEncodings(IOriginal original) => _genericEncodings;
 
         private static readonly IEncoding[] _genericEncodings =
         {
