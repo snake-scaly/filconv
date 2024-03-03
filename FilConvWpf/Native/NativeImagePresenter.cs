@@ -8,7 +8,6 @@ using System.Windows.Media.Imaging;
 using FilConvWpf.Presenter;
 using FilConvWpf.UI;
 using ImageLib.Apple;
-using ImageLib.Apple.HiRes;
 
 namespace FilConvWpf.Native
 {
@@ -21,10 +20,14 @@ namespace FilConvWpf.Native
         private readonly IMultiChoice<NamedMode> _modeSelector;
         private readonly IMultiChoice<NamedDisplay> _displaySelector;
         private readonly IMultiChoice<NamedPalette> _paletteSelector;
+        private readonly ITool[] _tools;
 
         private NamedMode _currentMode;
         private NamedDisplay _currentDisplay;
         private NamedPalette _currentPalette;
+
+        private int _updateDisplayImageSemaphore;
+        private int _toolBarChangedSemaphore;
 
         public event EventHandler<EventArgs> DisplayImageChanged;
         public event EventHandler<EventArgs> ToolBarChanged;
@@ -36,23 +39,20 @@ namespace FilConvWpf.Native
 
             _modeSelector = new MultiChoiceBuilder<NamedMode>()
                 .WithChoices(_modes, m => m.Name)
-                .WithCallback(SetCurrentMode)
+                .WithCallback(ModeSelector_Callback)
                 .Build();
 
             _displaySelector = new MultiChoiceBuilder<NamedDisplay>()
-                .WithCallback(d => SetCurrentDisplay(d, true))
+                .WithCallback(DisplaySelector_Callback)
                 .Build();
 
             _paletteSelector = new MultiChoiceBuilder<NamedPalette>()
-                .WithCallback(p => SetCurrentPalette(p, true))
+                .WithCallback(PaletteSelector_Callback)
                 .Build();
 
-            var mode = GuessPreviewMode(_modes.First());
-            if (mode.Format.SupportedDisplays != null)
-                _currentDisplay = ChooseCompatibleDisplay(null, mode.Format);
-            if (mode.Format.SupportedPalettes != null)
-                _currentPalette = ChooseCompatiblePalette(null, mode.Format);
-            SetCurrentMode(mode);
+            _tools = new ITool[] { _modeSelector, _displaySelector, _paletteSelector };
+
+            _modeSelector.CurrentChoice = GuessPreviewMode(_modes.First());
         }
 
         public void Dispose()
@@ -67,61 +67,153 @@ namespace FilConvWpf.Native
 
         public INativeImageFormat NativeImageFormat => _currentMode?.Format;
 
-        public IEnumerable<ITool> Tools { get; private set; } = new ITool[] { };
+        public IEnumerable<ITool> Tools => _tools.Where(x => x.Element.IsEnabled);
 
-        private void SetCurrentMode(NamedMode mode)
+        public void StoreSettings(IDictionary<string, object> settings)
         {
-            if (mode == _currentMode)
+            settings[_modeSettingsKey] = _currentMode;
+            if (_currentMode.Format.SupportedDisplays != null)
+            {
+                settings[_displaySettingsKey] = _currentDisplay;
+                if (_currentMode.Format.GetSupportedPalettes(_currentDisplay.Display) != null)
+                    settings[_paletteSettingsKey] = _currentPalette;
+            }
+        }
+
+        public void AdoptSettings(IDictionary<string, object> settings)
+        {
+            if (NativeImage.Metadata != null)
             {
                 return;
             }
 
-            _currentMode = mode;
-            _modeSelector.CurrentChoice = mode;
+            _updateDisplayImageSemaphore++;
+            _toolBarChangedSemaphore++;
 
-            UpdateTools();
+            if (settings.TryGetValue(_modeSettingsKey, out var m))
+            {
+                _modeSelector.CurrentChoice = GuessPreviewMode((NamedMode)m);
+            }
+            if (_displaySelector.Element.IsEnabled && settings.TryGetValue(_displaySettingsKey, out var d))
+            {
+                var displaySettings = (NamedDisplay)d;
+                _displaySelector.CurrentChoice = ChooseCompatibleDisplay(displaySettings, _currentMode.Format);
+            }
+            if (_paletteSelector.Element.IsEnabled && settings.TryGetValue(_paletteSettingsKey, out var p))
+            {
+                var paletteSettings = (NamedPalette)p;
+                _paletteSelector.CurrentChoice = ChooseCompatiblePalette(paletteSettings, _currentMode.Format);
+            }
+
+            _toolBarChangedSemaphore--;
+            OnToolBarChanged();
+
+            _updateDisplayImageSemaphore--;
             UpdateDisplayImage();
         }
 
-        private void SetCurrentDisplay(NamedDisplay display, bool updateDisplay)
+        private void ModeSelector_Callback(NamedMode mode)
         {
-            if (display == _currentDisplay)
-            {
+            if (mode == _currentMode)
                 return;
-            }
 
-            _currentDisplay = display;
-            _displaySelector.CurrentChoice = display;
+            _currentMode = mode;
 
-            if (updateDisplay)
-            {
-                UpdateDisplayImage();
-            }
+            _updateDisplayImageSemaphore++;
+            _toolBarChangedSemaphore++;
+
+            UpdateDisplayTool();
+
+            _toolBarChangedSemaphore--;
+            OnToolBarChanged();
+
+            _updateDisplayImageSemaphore--;
+            UpdateDisplayImage();
         }
 
-        private void SetCurrentPalette(NamedPalette palette, bool updateDisplay)
+        private void DisplaySelector_Callback(NamedDisplay display)
+        {
+            if (display == _currentDisplay)
+                return;
+
+            _currentDisplay = display;
+
+            _updateDisplayImageSemaphore++;
+            _toolBarChangedSemaphore++;
+
+            UpdatePaletteTool();
+
+            _toolBarChangedSemaphore--;
+            OnToolBarChanged();
+
+            _updateDisplayImageSemaphore--;
+            UpdateDisplayImage();
+        }
+
+        private void PaletteSelector_Callback(NamedPalette palette)
         {
             if (palette == _currentPalette)
+                return;
+
+            _currentPalette = palette;
+            UpdateDisplayImage();
+        }
+
+        private void UpdateDisplayTool()
+        {
+            var format = _currentMode.Format;
+
+            if (format.SupportedDisplays == null)
             {
+                _displaySelector.Element.IsEnabled = false;
+                _paletteSelector.Element.IsEnabled = false;
                 return;
             }
 
-            _currentPalette = palette;
-            _paletteSelector.CurrentChoice = palette;
+            var display = ChooseCompatibleDisplay(_currentDisplay, format);
+            _displaySelector.Choices = GetSupportedDisplays(format);
+            _displaySelector.CurrentChoice = display;
+            _displaySelector.Element.IsEnabled = true;
+        }
 
-            if (updateDisplay)
+        private void UpdatePaletteTool()
+        {
+            if (_currentDisplay == null)
             {
-                UpdateDisplayImage();
+                _paletteSelector.Element.IsEnabled = false;
+                return;
             }
+
+            var format = _currentMode.Format;
+
+            var supportedPalettes = format.GetSupportedPalettes(_currentDisplay.Display)?
+                .Select(p => _palettes.First(s => s.Palette == p));
+
+            if (supportedPalettes == null)
+            {
+                _paletteSelector.Element.IsEnabled = false;
+                return;
+            }
+
+            var palette = ChooseCompatiblePalette(_currentPalette, format);
+            _paletteSelector.Choices = supportedPalettes;
+            _paletteSelector.CurrentChoice = palette;
+            _paletteSelector.Element.IsEnabled = true;
         }
 
         private void UpdateDisplayImage()
         {
+            if (_updateDisplayImageSemaphore < 0)
+                throw new Exception($"{nameof(_updateDisplayImageSemaphore)} below zero");
+            if (_updateDisplayImageSemaphore > 0)
+                return;
+
             var options = new DecodingOptions
             {
                 Display = _currentDisplay?.Display ?? NativeDisplay.Color,
                 Palette = _currentPalette?.Palette ?? NativePalette.Default,
             };
+
             DisplayImage = _currentMode.Format.FromNative(NativeImage, options).ToAspectBitmapSource();
             OnDisplayImageChanged();
         }
@@ -130,6 +222,15 @@ namespace FilConvWpf.Native
         {
             DisplayImageChanged?.Invoke(this, EventArgs.Empty);
             OriginalChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnToolBarChanged()
+        {
+            if (_toolBarChangedSemaphore < 0)
+                throw new Exception($"{nameof(_toolBarChangedSemaphore)} below zero");
+            if (_toolBarChangedSemaphore > 0)
+                return;
+            ToolBarChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private NamedMode GuessPreviewMode(NamedMode preferred)
@@ -141,78 +242,12 @@ namespace FilConvWpf.Native
                 .First();
         }
 
-        public void StoreSettings(IDictionary<string, object> settings)
-        {
-            settings[_modeSettingsKey] = _currentMode;
-            if (_currentMode.Format.SupportedDisplays != null)
-                settings[_displaySettingsKey] = _currentDisplay;
-            if (_currentMode.Format.SupportedPalettes != null)
-                settings[_paletteSettingsKey] = _currentPalette;
-        }
-
-        public void AdoptSettings(IDictionary<string, object> settings)
-        {
-            if (NativeImage.Metadata != null)
-            {
-                return;
-            }
-            if (settings.ContainsKey(_modeSettingsKey))
-            {
-                SetCurrentMode(GuessPreviewMode((NamedMode)settings[_modeSettingsKey]));
-            }
-            if (_currentMode.Format.SupportedDisplays != null && settings.ContainsKey(_displaySettingsKey))
-            {
-                var displaySettings = (NamedDisplay)settings[_displaySettingsKey];
-                SetCurrentDisplay(ChooseCompatibleDisplay(displaySettings, _currentMode.Format), true);
-            }
-            if (_currentMode.Format.SupportedPalettes != null && settings.ContainsKey(_paletteSettingsKey))
-            {
-                var paletteSettings = (NamedPalette)settings[_paletteSettingsKey];
-                SetCurrentPalette(ChooseCompatiblePalette(paletteSettings, _currentMode.Format), true);
-            }
-        }
-
-        private void UpdateTools()
-        {
-            IEnumerable<ITool> tools = new[] { _modeSelector };
-
-            var format = _currentMode.Format;
-
-            if (format.SupportedDisplays != null)
-            {
-                var display = ChooseCompatibleDisplay(_currentDisplay, format);
-
-                _displaySelector.Choices = GetSupportedDisplays(format);
-                _displaySelector.CurrentChoice = display;
-
-                SetCurrentDisplay(display, false);
-
-                tools = tools.Concat(new[] { _displaySelector });
-            }
-
-            if (format.SupportedPalettes != null)
-            {
-                var supportedPalettes = format.SupportedPalettes
-                    .Select(p => _palettes.First(s => s.Palette == p));
-
-                var palette = ChooseCompatiblePalette(_currentPalette, format);
-
-                _paletteSelector.Choices = supportedPalettes;
-                _paletteSelector.CurrentChoice = palette;
-
-                SetCurrentPalette(palette, false);
-
-                tools = tools.Concat(new[] { _paletteSelector });
-            }
-
-            Tools = tools;
-            ToolBarChanged?.Invoke(this, EventArgs.Empty);
-        }
-
         private NamedDisplay ChooseCompatibleDisplay(NamedDisplay current, INativeImageFormat format)
         {
+            if (format.SupportedDisplays == null)
+                return current;
             var supported = GetSupportedDisplays(format).ToList();
-            if (current != null && supported.Contains(current))
+            if (supported.Contains(current))
             {
                 return current;
             }
@@ -222,15 +257,16 @@ namespace FilConvWpf.Native
 
         private NamedPalette ChooseCompatiblePalette(NamedPalette current, INativeImageFormat format)
         {
-            if (format?.SupportedPalettes == null ||
-                current != null && format.SupportedPalettes.Contains(current.Palette))
+            if (_currentDisplay == null)
+                return current;
+            var supportedPalettes = format.GetSupportedPalettes(_currentDisplay.Display)?.ToList();
+            if (supportedPalettes == null || (current != null && supportedPalettes.Contains(current.Palette)))
             {
                 return current;
             }
             var defaultPalette = format.GetDefaultDecodingOptions(NativeImage).Palette;
             return _palettes.First(s => s.Palette == defaultPalette);
         }
-
 
         private IEnumerable<NamedDisplay> GetSupportedDisplays(INativeImageFormat format)
         {

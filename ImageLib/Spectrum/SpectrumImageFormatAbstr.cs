@@ -17,7 +17,6 @@ namespace ImageLib.Spectrum
 
         public IEnumerable<NativeDisplay> SupportedDisplays => null;
         public IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;
-        public IEnumerable<NativePalette> SupportedPalettes => null;
 
         public abstract int ComputeMatchScore(NativeImage native);
 
@@ -56,6 +55,7 @@ namespace ImageLib.Spectrum
         }
 
         public DecodingOptions GetDefaultDecodingOptions(NativeImage native) => default;
+        public IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display) => null;
 
         protected abstract int GetLineOffset(int y);
 

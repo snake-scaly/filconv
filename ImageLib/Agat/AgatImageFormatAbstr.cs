@@ -10,14 +10,14 @@ namespace ImageLib.Agat
 {
     public abstract class AgatImageFormatAbstr : INativeImageFormat
     {
+        private static readonly NativePalette[] _displayPalettes =
+            { NativePalette.Agat1, NativePalette.Agat2, NativePalette.Agat3, NativePalette.Agat4 };
+
         public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
 
         public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
-
-        public virtual IEnumerable<NativePalette> SupportedPalettes { get; } =
-            new[] { NativePalette.Agat1, NativePalette.Agat2, NativePalette.Agat3, NativePalette.Agat4 };
 
         protected abstract int Width { get; }
         protected abstract int Height { get; }
@@ -34,7 +34,7 @@ namespace ImageLib.Agat
             byte[] pixels = new byte[Height * stride];
 
             var colors = AgatColorUtils.NativeDisplayToColors(options.Display, native.Metadata);
-            var paletteIndex = NativePaletteToIndex(options.Palette);
+            var paletteIndex = options.Display == NativeDisplay.Meta ? 0 : NativePaletteToIndex(options.Palette);
 
             for (int y = 0; y < Height; ++y)
             {
@@ -53,7 +53,7 @@ namespace ImageLib.Agat
 
         public NativeImage ToNative(IReadOnlyPixels src, EncodingOptions options)
         {
-            var paletteIndex = NativePaletteToIndex(options.Palette);
+            var paletteIndex = options.Display == NativeDisplay.Meta ? 0 : NativePaletteToIndex(options.Palette);
             var palette = BuildDisplayPalette(src, options.Display, paletteIndex);
             
             byte[] bytes = new byte[ImageSizeInBytes];
@@ -88,6 +88,13 @@ namespace ImageLib.Agat
                 Display = bw ? NativeDisplay.Mono : NativeDisplay.Color,
                 Palette = palette
             };
+        }
+
+        public virtual IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display)
+        {
+            if (display == NativeDisplay.Meta)
+                return null;
+            return _displayPalettes;
         }
 
         protected virtual int GetLineOffset(int y)
@@ -175,7 +182,7 @@ namespace ImageLib.Agat
         private Palette BuildDisplayPalette(IReadOnlyPixels src, NativeDisplay display, int paletteIndex)
         {
             if (display == NativeDisplay.Meta)
-                return BuildCustomPalette(src, paletteIndex);
+                return BuildCustomPalette(src);
             return GetNativePalette(display, paletteIndex);
         }
 
@@ -194,14 +201,17 @@ namespace ImageLib.Agat
             return new Palette(GetNativeColors(displayColors, paletteIndex));
         }
 
-        private Palette BuildCustomPalette(IReadOnlyPixels src, int paletteIndex)
+        private Palette BuildCustomPalette(IReadOnlyPixels src)
         {
             var k = 1 << BitsPerPixel;
 
             var paletteBuilder = new AgatPaletteBuilder();
             var palette = paletteBuilder.Build(AllPixelsForPalette(src), k);
 
-            var template = GetNativePalette(NativeDisplay.Color, paletteIndex);
+            // 2BPP color palettes are pure chaos anyway, so sort custom palette
+            // to look better in grayscale when BPP is low.
+            var display = BitsPerPixel > 2 ? NativeDisplay.Color : NativeDisplay.Mono;
+            var template = GetNativePalette(display, 0);
             palette.Sort(template);
 
             return palette;
@@ -216,10 +226,9 @@ namespace ImageLib.Agat
             {
                 paletteType = ImageMeta.Palette.Custom;
                 pal16 = new Rgb[16];
-                var paletteIndex = NativePaletteToIndex(options.Palette);
                 for (var i = (1 << BitsPerPixel) - 1; i >= 0; i--)
                 {
-                    var j = MapColorIndexNativeToStandard(i, paletteIndex);
+                    var j = MapColorIndexNativeToStandard(i, 0);
                     pal16[j] = palette[i].Value;
                 }
             }

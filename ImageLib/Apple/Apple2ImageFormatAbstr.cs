@@ -9,12 +9,11 @@ namespace ImageLib.Apple
 
         public virtual IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;
 
-        public IEnumerable<NativePalette> SupportedPalettes => null;
-
         public abstract AspectBitmap FromNative(NativeImage native, DecodingOptions options);
         public abstract NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options);
         public abstract int ComputeMatchScore(NativeImage native);
 
         public DecodingOptions GetDefaultDecodingOptions(NativeImage native) => default;
+        public IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display) => null;
     }
 }

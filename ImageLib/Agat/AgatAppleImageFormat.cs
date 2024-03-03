@@ -18,7 +18,6 @@ namespace ImageLib.Agat
             new[] { NativeDisplay.Color, NativeDisplay.Mono };
         public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono };
-        public IEnumerable<NativePalette> SupportedPalettes => null;
 
         static AgatAppleImageFormat()
         {
@@ -83,6 +82,8 @@ namespace ImageLib.Agat
         {
             return new DecodingOptions { Display = NativeDisplay.Color, Palette = NativePalette.Default };
         }
+
+        public IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display) => null;
 
         private static Rgb[] PalToApple(IList<Rgb> agatColors)
         {

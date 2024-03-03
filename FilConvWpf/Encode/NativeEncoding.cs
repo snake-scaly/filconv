@@ -18,6 +18,9 @@ namespace FilConvWpf.Encode
         private readonly IMultiChoice<NamedDisplay> _displaySelector;
         private readonly IMultiChoice<NamedPalette> _paletteSelector;
         private readonly IToggle _ditherToggle;
+        private readonly ITool[] _tools;
+
+        private int _encodingChangedSemaphore;
 
         public event EventHandler<EventArgs> EncodingChanged;
 
@@ -26,30 +29,32 @@ namespace FilConvWpf.Encode
             Name = name;
             _format = format;
             _canDither = canDither;
-            _currentDisplay = _displays.First();
-            _currentPalette = _palettes.First();
 
             _displaySelector = new MultiChoiceBuilder<NamedDisplay>()
-                .WithCallback(SetCurrentDisplay)
+                .WithCallback(DisplaySelector_Callback)
                 .Build();
 
             _paletteSelector = new MultiChoiceBuilder<NamedPalette>()
-                .WithCallback(SetCurrentPalette)
+                .WithCallback(PaletteSelector_Callback)
                 .Build();
 
             _ditherToggle = new ToggleBuilder()
                 .WithIcon("rainbow.png")
                 .WithTooltip("ColorDitherToggleTooltip")
-                .WithCallback(SetDither)
+                .WithCallback(DitherToggle_Callback)
                 .WithInitialState(_dither)
                 .Build();
+            
+            _ditherToggle.Element.IsEnabled = canDither;
+            
+            _tools = new ITool[] { _displaySelector, _paletteSelector, _ditherToggle };
 
-            UpdateTools();
+            UpdateDisplayTool();
         }
 
         public string Name { get; }
 
-        public IEnumerable<ITool> Tools { get; private set; }
+        public IEnumerable<ITool> Tools => _tools.Where(x => x.Element.IsEnabled);
 
         public AspectBitmapSource Preview(BitmapSource original)
         {
@@ -63,9 +68,9 @@ namespace FilConvWpf.Encode
 
         public void StoreSettings(IDictionary<string, object> settings)
         {
-            if (_format.SupportedEncodingDisplays != null)
+            if (_displaySelector.Element.IsEnabled)
                 settings[EncodingSettingNames.Display] = _currentDisplay;
-            if (_format.SupportedPalettes != null)
+            if (_paletteSelector.Element.IsEnabled)
                 settings[EncodingSettingNames.Palette] = _currentPalette;
             if (_canDither)
                 settings[EncodingSettingNames.Dithering] = _dither;
@@ -73,24 +78,20 @@ namespace FilConvWpf.Encode
 
         public void AdoptSettings(IDictionary<string, object> settings)
         {
-            if (_format.SupportedEncodingDisplays != null && settings.TryGetValue(EncodingSettingNames.Display, out var d))
+            _encodingChangedSemaphore++;
+
+            if (_displaySelector.Element.IsEnabled && settings.TryGetValue(EncodingSettingNames.Display, out var d))
             {
                 var display = (NamedDisplay)d;
-                if (_format.SupportedEncodingDisplays.Any(x => x == display.Display))
-                {
-                    _currentDisplay = display;
+                if (_displaySelector.Choices.Contains(display))
                     _displaySelector.CurrentChoice = display;
-                }
             }
 
-            if (_format.SupportedPalettes != null && settings.TryGetValue(EncodingSettingNames.Palette, out var p))
+            if (_paletteSelector.Element.IsEnabled && settings.TryGetValue(EncodingSettingNames.Palette, out var p))
             {
                 var palette = (NamedPalette)p;
-                if (_format.SupportedPalettes.Any(x => x == palette.Palette))
-                {
-                    _currentPalette = palette;
+                if (_paletteSelector.Choices.Contains(palette))
                     _paletteSelector.CurrentChoice = palette;
-                }
             }
 
             if (_canDither && settings.TryGetValue(EncodingSettingNames.Dithering, out var o))
@@ -98,10 +99,17 @@ namespace FilConvWpf.Encode
                 _dither = (bool)o;
                 _ditherToggle.IsChecked = _dither;
             }
+
+            _encodingChangedSemaphore--;
+            OnEncodingChanged();
         }
 
         protected virtual void OnEncodingChanged()
         {
+            if (_encodingChangedSemaphore < 0)
+                throw new Exception($"{nameof(_encodingChangedSemaphore)} below zero");
+            if (_encodingChangedSemaphore > 0)
+                return;
             EncodingChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -110,77 +118,85 @@ namespace FilConvWpf.Encode
             return _format.ToNative(new BitmapPixels(original), GetEncodingOptions());
         }
 
-        private void SetCurrentDisplay(NamedDisplay display)
+        private void DisplaySelector_Callback(NamedDisplay display)
         {
             if (display == _currentDisplay)
-            {
                 return;
-            }
 
             _currentDisplay = display;
+
+            _encodingChangedSemaphore++;
+
+            UpdatePaletteTool();
+
+            _encodingChangedSemaphore--;
             OnEncodingChanged();
         }
 
-        private void SetCurrentPalette(NamedPalette palette)
+        private void PaletteSelector_Callback(NamedPalette palette)
         {
             if (palette == _currentPalette)
-            {
                 return;
-            }
 
             _currentPalette = palette;
             OnEncodingChanged();
         }
 
-        private void SetDither(bool dither)
+        private void DitherToggle_Callback(bool dither)
         {
             if (dither == _dither)
-            {
                 return;
-            }
 
             _dither = dither;
             OnEncodingChanged();
         }
 
-        private void UpdateTools()
+        private void UpdateDisplayTool()
         {
-            var tools = new List<ITool>();
-
-            if (_format.SupportedEncodingDisplays != null)
+            if (_format.SupportedEncodingDisplays == null)
             {
-                var choices = _displays.Where(x => _format.SupportedEncodingDisplays.Contains(x.Display)).ToList();
-                _displaySelector.Choices = choices;
-                if (choices.Contains(_currentDisplay))
-                    _displaySelector.CurrentChoice = _currentDisplay;
-                tools.Add(_displaySelector);
+                _displaySelector.Element.IsEnabled = false;
+                _paletteSelector.Element.IsEnabled = false;
+                return;
             }
 
-            if (_format.SupportedPalettes != null)
+            var choices = _displays.Where(x => _format.SupportedEncodingDisplays.Contains(x.Display)).ToList();
+            var current = _currentDisplay;
+            _displaySelector.Choices = choices;
+            _displaySelector.CurrentChoice = choices.Contains(current) ? current : choices.First();
+            _displaySelector.Element.IsEnabled = true;
+        }
+
+        private void UpdatePaletteTool()
+        {
+            var supportedPalettes = _format.GetSupportedPalettes(_currentDisplay.Display)?.ToList();
+            if (supportedPalettes == null)
             {
-                var choices = _palettes.Where(x => _format.SupportedPalettes.Contains(x.Palette)).ToList();
-                _paletteSelector.Choices = choices;
-                if (choices.Contains(_currentPalette))
-                    _paletteSelector.CurrentChoice = _currentPalette;
-                tools.Add(_paletteSelector);
+                _paletteSelector.Element.IsEnabled = false;
+                return;
             }
 
-            if (_canDither)
-                tools.Add(_ditherToggle);
-
-            Tools = tools;
+            var choices = _palettes.Where(x => supportedPalettes.Contains(x.Palette)).ToList();
+            var current = _currentPalette;
+            _paletteSelector.Choices = choices;
+            _paletteSelector.CurrentChoice = choices.Contains(current) ? current : choices.First();
+            _paletteSelector.Element.IsEnabled = true;
         }
 
         private EncodingOptions GetEncodingOptions() =>
             new EncodingOptions
             {
-                Display = _currentDisplay.Display,
-                Palette = _currentPalette.Palette,
+                Display = _currentDisplay?.Display ?? NativeDisplay.Color,
+                Palette = _currentPalette?.Palette ?? NativePalette.Agat1,
                 Dither = _dither
             };
 
         private DecodingOptions GetDecodingOptions() =>
-            new DecodingOptions { Display = _currentDisplay.Display, Palette = _currentPalette.Palette };
+            new DecodingOptions
+            {
+                Display = _currentDisplay?.Display ?? NativeDisplay.Color,
+                Palette = _currentPalette?.Palette ?? NativePalette.Agat1,
+            };
 
         private static readonly NamedDisplay[] _displays =
         {

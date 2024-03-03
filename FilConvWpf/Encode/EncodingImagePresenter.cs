@@ -70,6 +70,7 @@ namespace FilConvWpf.Encode
 
         private void currentEncoding_EncodingChanged(object sender, EventArgs e)
         {
+            UpdateTools();
             Encode();
         }
 

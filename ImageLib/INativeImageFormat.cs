@@ -22,11 +22,6 @@ namespace ImageLib
         /// </summary>
         IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; }
 
-        /// <summary>
-        /// Color palettes supported by the format. Null for none.
-        /// </summary>
-        IEnumerable<NativePalette> SupportedPalettes { get; }
-
         AspectBitmap FromNative(NativeImage native, DecodingOptions options);
         NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options);
 
@@ -38,5 +33,10 @@ namespace ImageLib
         int ComputeMatchScore(NativeImage native);
 
         DecodingOptions GetDefaultDecodingOptions(NativeImage native);
+
+        /// <summary>
+        /// Color palettes supported by the format on a given display. Null for none.
+        /// </summary>
+        IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display);
     }
 }
