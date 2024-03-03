@@ -59,9 +59,9 @@ namespace ImageLib.Apple.HiRes
             }
             if (isOdd)
             {
-                return shiftBit ? HiResSimpleColor.Orange : HiResSimpleColor.Violet;
+                return shiftBit ? HiResSimpleColor.Orange : HiResSimpleColor.Green;
             }
-            return shiftBit ? HiResSimpleColor.Blue : HiResSimpleColor.Green;
+            return shiftBit ? HiResSimpleColor.Blue : HiResSimpleColor.Violet;
         }
 
         private static IEnumerable<T[]> Triplets<T>(IEnumerable<T> src)

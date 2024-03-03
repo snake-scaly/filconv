@@ -5,7 +5,7 @@ namespace ImageLib.Apple
 {
     public static class Apple2HardwareColors
     {
-        public static Rgb[] American { get; } = {
+        public static Rgb[] HiRes { get; } = {
             YIQColor.From4BitsStrict(0x0, 0).ToColor(),
             YIQColor.From4BitsStrict(0x3, 0).ToColor(),
             YIQColor.From4BitsStrict(0x6, 0).ToColor(),

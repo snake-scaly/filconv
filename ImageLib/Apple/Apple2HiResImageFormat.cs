@@ -16,7 +16,7 @@ namespace ImageLib.Apple
 
         static Apple2HiResImageFormat()
         {
-            _renderer = new HiResFragmentRenderer(Apple2HardwareColors.American, new FilledHiResFillPolicy());
+            _renderer = new HiResFragmentRenderer(Apple2HardwareColors.HiRes, new FilledHiResFillPolicy());
             _palette = new HiResPaletteBuilder(_renderer).Build();
         }
 
@@ -26,7 +26,7 @@ namespace ImageLib.Apple
             {
                 case NativeDisplay.Color: return NativeToRgb(native);
                 case NativeDisplay.Mono: return NativeToBitStream(native, new MonoPictureBuilder());
-                case NativeDisplay.Artifact: return NativeToBitStream(native, new NtscPictureBuilder(1));
+                case NativeDisplay.Artifact: return NativeToBitStream(native, new NtscPictureBuilder(0));
                 default: throw new ArgumentException($"Unsupported display {options.Display:G}", nameof(options));
             }
         }
@@ -64,10 +64,6 @@ namespace ImageLib.Apple
 
         private AspectBitmap NativeToBitStream(NativeImage native, IBitStreamPictureBuilder builder)
         {
-            const int bytesPerLine = 40;
-            const int pixelBitsCount = 7;
-            const int pixelBitsMask = (1 << pixelBitsCount) - 1;
-
             for (int y = 0; y < height; ++y)
             {
                 int lineOffset = Apple2Utils.GetHiResLineOffset(y);
@@ -76,25 +72,22 @@ namespace ImageLib.Apple
 
                 using (IScanlineWriter scanline = builder.GetScanlineWriter(y))
                 {
-                    scanline.Write(0);
+                    var outBit = 0;
 
-                    for (int i = 0; i < bytesPerLine; ++i)
+                    for (var i = 0; i < 40; i++)
                     {
-                        int bitsOffset = lineOffset + i;
-                        if (bitsOffset > native.Data.Length)
-                            break;
+                        var dataByte = native.Data[lineOffset + i];
+                        var shiftReg = dataByte & 0x7F;
+                        var phaseShift = (dataByte >> 7) & 1;
 
-                        int palette = native.Data[bitsOffset] >> pixelBitsCount;
-                        int bits = native.Data[bitsOffset] & pixelBitsMask;
-                        if (i + 1 < bytesPerLine)
+                        for (var t = 0; t < 14; t++)
                         {
-                            bits |= (native.Data[bitsOffset + 1] & pixelBitsMask) << pixelBitsCount;
-                        }
-
-                        for (int tick = 0; tick < 14; ++tick)
-                        {
-                            int shift = (tick + palette) >> 1;
-                            scanline.Write(bits >> shift);
+                            if ((t & 1) == phaseShift)
+                            {
+                                outBit = shiftReg & 1;
+                                shiftReg >>= 1;
+                            }
+                            scanline.Write(outBit);
                         }
                     }
                 }

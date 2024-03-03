@@ -7,7 +7,7 @@ namespace ImageLib.Util
     /// Performs conversion from Apple hardware 4-bit color to an RGB color.
     /// </summary>
     /// <remarks>
-    /// <para>Each bit is assigned a quasi-phase of 0, 1, 2, or 3. The phase of the least significnat
+    /// <para>Each bit is assigned a quasi-phase of 0, 1, 2, or 3. The phase of the least significant
     /// bit can be specified in the <code>phase</code> parameter so that the color
     /// conversion can start from any position in the bit stream.</para>
     /// </remarks>
