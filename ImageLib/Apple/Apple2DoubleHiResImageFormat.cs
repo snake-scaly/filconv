@@ -63,11 +63,22 @@ namespace ImageLib.Apple
             return new NativeImage { Data = data, Metadata = new ImageMeta { DisplayMode = displayMode } };
         }
 
+        public override DecodingOptions GetDefaultDecodingOptions(NativeImage native)
+        {
+            var options = new DecodingOptions { Display = NativeDisplay.Color };
+            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_560_192_DoubleHiResMono)
+                options.Display = NativeDisplay.Mono;
+            return options;
+        }
+
         public override int ComputeMatchScore(NativeImage native)
         {
-            if (native.Metadata?.DisplayMode == ImageMeta.Mode.Apple_140_192_DoubleHiResColor)
-                return NativeImageFormatUtils.MetaMatchScore;
-            return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
+            switch (native.Metadata?.DisplayMode)
+            {
+                case ImageMeta.Mode.Apple_140_192_DoubleHiResColor: return NativeImageFormatUtils.MetaMatchScore;
+                case ImageMeta.Mode.Apple_560_192_DoubleHiResMono: return NativeImageFormatUtils.MetaMatchScore;
+                default: return NativeImageFormatUtils.ComputeMatch(native, _bytesPerHalfScreen * 2);
+            }
         }
 
         private AspectBitmap NativeToColor(NativeImage native)

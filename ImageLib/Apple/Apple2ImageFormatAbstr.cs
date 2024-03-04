@@ -13,7 +13,7 @@ namespace ImageLib.Apple
         public abstract NativeImage ToNative(IReadOnlyPixels bitmap, EncodingOptions options);
         public abstract int ComputeMatchScore(NativeImage native);
 
-        public DecodingOptions GetDefaultDecodingOptions(NativeImage native) => default;
+        public virtual DecodingOptions GetDefaultDecodingOptions(NativeImage native) => default;
         public IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display) => null;
     }
 }
