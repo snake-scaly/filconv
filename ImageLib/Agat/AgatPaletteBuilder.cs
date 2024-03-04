@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImageLib.ColorManagement;
@@ -18,11 +17,11 @@ namespace ImageLib.Agat
             if (palette == null)
             {
                 var ops = new ColorSampleOps();
-                var seeder = new KMeansPlusPlusDeterministicSeeder<XyzColor>(ops);
-                var clustering = new KMeansClustering<XyzColor>(ops, seeder);
-                var samples = pixelList.Select(x => ColorSpace.Srgb.ToXyz(x));
+                var seeder = new KMeansPlusPlusDeterministicSeeder<LabColor>(ops);
+                var clustering = new KMeansClustering<LabColor>(ops, seeder);
+                var samples = pixelList.Select(x => x.ToLab());
                 var clusters = clustering.Find(samples, paletteSize);
-                palette = clusters.Select(x => Quantize(ColorSpace.Srgb.FromXyz(x)));
+                palette = clusters.Select(x => Quantize(x.ToSrgb()));
             }
 
             return new Palette(palette, paletteSize);
@@ -43,29 +42,12 @@ namespace ImageLib.Agat
         private static Rgb Quantize(Rgb c) => Rgb.FromRgb(Quantize(c.R), Quantize(c.G), Quantize(c.B));
         private static byte Quantize(byte x) => (byte)((x + 8) / 17 * 17);
 
-        private class ColorSampleOps : ISampleOps<XyzColor>
+        private class ColorSampleOps : ISampleOps<LabColor>
         {
-            public double Metric(XyzColor x, XyzColor y)
-            {
-                var d = x.Sub(y);
-                return d.X * d.X + d.Y * d.Y + d.Z * d.Z;
-            }
-
-            public XyzColor Sum(XyzColor x, XyzColor y)
-            {
-                return x.Add(y);
-            }
-
-            public XyzColor Average(XyzColor sum, int count)
-            {
-                return sum.Div(count);
-            }
-
-            public bool CloseEnough(XyzColor x, XyzColor y)
-            {
-                bool c(double a, double b) => Math.Abs(a - b) <= 0.001;
-                return c(x.X, y.X) && c(x.Y, y.Y) && c(x.Z, y.Z);
-            }
+            public double Metric(LabColor x, LabColor y) => x.Sub(y).LenSq();
+            public LabColor Sum(LabColor x, LabColor y) => x.Add(y);
+            public LabColor Average(LabColor sum, int count) => sum.Div(count);
+            public bool CloseEnough(LabColor x, LabColor y) => Metric(x, y) < 1;
         }
     }
 }

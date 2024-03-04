@@ -4,6 +4,10 @@ namespace ImageLib.ColorManagement
 {
     public static class XyzColorExtensions
     {
+        public static LuvColor ToLuv(this XyzColor xyz) => ColorSpace.Luv.FromXyz(xyz);
+
+        public static LabColor ToLab(this XyzColor xyz) => ColorSpace.Lab.FromXyz(xyz);
+
         public static XyzColor Add(this XyzColor a, XyzColor b)
         {
             return new XyzColor { X = a.X + b.X, Y = a.Y + b.Y, Z = a.Z + b.Z };

@@ -9,6 +9,6 @@ namespace ImageLib.Apple.HiRes
         /// <param name="odd">Whether the first pixel of the septet is in an odd screen column.</param>
         /// <param name="previousByte">Value of the previous byte in the line. Pass zero for the first septet.</param>
         /// <returns>The best match.</returns>
-        ColorMatchResult Match(LinearSeptet septet, bool odd, byte previousByte);
+        byte Match(Septet septet, bool odd, byte previousByte);
     }
 }

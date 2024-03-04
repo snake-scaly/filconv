@@ -17,10 +17,10 @@ namespace ImageLib.Quantization
                 {
                     var srcPixel = x < src.Width && y < src.Height ? src.GetPixel(x, y) : default;
 
-                    var xyzPixel = ColorSpace.Srgb.ToXyz(srcPixel);
+                    var xyzPixel = srcPixel.ToXyz();
                     xyzPixel = xyzPixel.Add(currentLineErrors[x + 1]).Clamp();
-                    var colorIndex = palette.Match(xyzPixel);
-                    var actualPixel = palette[colorIndex].Linear;
+                    var colorIndex = palette.Match(xyzPixel.ToLab());
+                    var actualPixel = palette[colorIndex].Value.ToXyz();
                     var error = xyzPixel.Sub(actualPixel);
 
                     dst.SetPixel(x, y, colorIndex);

@@ -21,7 +21,7 @@ namespace ImageLib.Apple.HiRes
         {
             const int entryCount = 1 << 13;
 
-            var entries = new LinearSeptet[entryCount];
+            var entries = new Septet[entryCount];
 
             Parallel.ForEach(
                 Enumerable.Range(0, entryCount),
@@ -41,24 +41,24 @@ namespace ImageLib.Apple.HiRes
                     _renderer.RenderLine(new ArraySegment<byte>(lineBuffer), new ArraySegment<byte>(colorBuffer), !odd);
 
                     // take the middle 7 pixels
-                    entries[i] = new LinearSeptet
+                    entries[i] = new Septet
                     {
-                        C1 = GetXyz(0),
-                        C2 = GetXyz(1),
-                        C3 = GetXyz(2),
-                        C4 = GetXyz(3),
-                        C5 = GetXyz(4),
-                        C6 = GetXyz(5),
-                        C7 = GetXyz(6),
+                        C1 = Color(0),
+                        C2 = Color(1),
+                        C3 = Color(2),
+                        C4 = Color(3),
+                        C5 = Color(4),
+                        C6 = Color(5),
+                        C7 = Color(6),
                     };
 
                     return buffers;
 
-                    XyzColor GetXyz(int k)
+                    LabColor Color(int k)
                     {
                         var o = (_srcPixelsPerByte + k) * _tgtBytesPerPixel;
                         var rgb = Rgb.FromRgb(colorBuffer[o + 2], colorBuffer[o + 1], colorBuffer[o + 0]);
-                        return rgb.ToXyz();
+                        return rgb.ToLab();
                     }
                 },
                 _ => {});

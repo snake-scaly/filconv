@@ -12,10 +12,7 @@ namespace ImageLib.Quantization
                 for (var x = 0; x < dst.Width; x++)
                 {
                     var srcPixel = x < src.Width && y < src.Height ? src.GetPixel(x, y) : default;
-
-                    var xyzPixel = ColorSpace.Srgb.ToXyz(srcPixel);
-                    var colorIndex = palette.Match(xyzPixel);
-
+                    var colorIndex = palette.Match(srcPixel.ToLab());
                     dst.SetPixel(x, y, colorIndex);
                 }
             }

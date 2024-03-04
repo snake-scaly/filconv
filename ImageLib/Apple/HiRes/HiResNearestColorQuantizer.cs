@@ -29,7 +29,7 @@ namespace ImageLib.Apple.HiRes
                     for (var c = 0; c < 40; c++)
                     {
                         var x = c * 7;
-                        var septet = new LinearSeptet
+                        var septet = new Septet
                         {
                             C1 = GetPixelSafe(x + 0, y),
                             C2 = GetPixelSafe(x + 1, y),
@@ -40,18 +40,18 @@ namespace ImageLib.Apple.HiRes
                             C7 = GetPixelSafe(x + 6, y),
                         };
                         var match = _palette.Match(septet, (c & 1) != 0, previousByte);
-                        data[lineOffset + c] = match.Native;
-                        previousByte = match.Native;
+                        data[lineOffset + c] = match;
+                        previousByte = match;
                     }
                 });
 
             return data;
 
-            XyzColor GetPixelSafe(int x, int y)
+            LabColor GetPixelSafe(int x, int y)
             {
                 if (x < 0 || x >= width || y < 0 || y >= height)
                     return default;
-                return src.GetPixel(x, y).ToXyz();
+                return src.GetPixel(x, y).ToLab();
             }
         }
     }

@@ -13,14 +13,14 @@ namespace ImageLib.Apple.HiRes
         //  n - first (least significant) pixel bit of the next septet
         //  C - shift bit of the septet being matched
         //  c - pixel bits of the septet being matched
-        private readonly LinearSeptet[] _entries;
+        private readonly Septet[] _entries;
 
-        public HiResPalette(LinearSeptet[] entries)
+        public HiResPalette(Septet[] entries)
         {
             _entries = entries;
         }
 
-        public ColorMatchResult Match(LinearSeptet want, bool odd, byte previousByte)
+        public byte Match(Septet want, bool odd, byte previousByte)
         {
             var offset = (odd ? 1 << 12 : 0) | ((previousByte & 0xC0) << 4);
             
@@ -41,28 +41,18 @@ namespace ImageLib.Apple.HiRes
             // Return the best match ignoring the guessed next byte bits. The next byte will be influenced
             // by this one but no guarantee that it will be exactly as we guessed. A mismatch will count
             // towards the quantization error.
-            return new ColorMatchResult
-            {
-                Septet = _entries[bestIndex],
-                Native = (byte)(bestIndex & 0xFF),
-            };
-            
-            double SeptetDistanceSq(LinearSeptet a, LinearSeptet b)
+            return (byte)(bestIndex & 0xFF);
+
+            double SeptetDistanceSq(Septet a, Septet b)
             {
                 return
-                    DistanceSq(a.C1, b.C1) +
-                    DistanceSq(a.C2, b.C2) +
-                    DistanceSq(a.C3, b.C3) +
-                    DistanceSq(a.C4, b.C4) +
-                    DistanceSq(a.C5, b.C5) +
-                    DistanceSq(a.C6, b.C6) +
-                    DistanceSq(a.C7, b.C7);
-            }
-
-            double DistanceSq(XyzColor a, XyzColor b)
-            {
-                var d = a.Sub(b);
-                return d.X * d.X + d.Y * d.Y + d.Z * d.Z;
+                    a.C1.Sub(b.C1).LenSq() +
+                    a.C2.Sub(b.C2).LenSq() +
+                    a.C3.Sub(b.C3).LenSq() +
+                    a.C4.Sub(b.C4).LenSq() +
+                    a.C5.Sub(b.C5).LenSq() +
+                    a.C6.Sub(b.C6).LenSq() +
+                    a.C7.Sub(b.C7).LenSq();
             }
         }
     }

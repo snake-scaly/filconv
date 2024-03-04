@@ -43,7 +43,7 @@ namespace ImageLib.Tests
                 Rgb.FromRgb(200, 255, 128)
             });
 
-            var match = palette.Match(ColorSpace.Srgb.ToXyz(Rgb.FromRgb(r, g, b)));
+            var match = palette.Match(Rgb.FromRgb(r, g, b).ToLab());
 
             Assert.Equal(i, match);
         }

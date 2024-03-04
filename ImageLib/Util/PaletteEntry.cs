@@ -9,14 +9,14 @@ namespace ImageLib.Util
     public struct PaletteEntry
     {
         public Rgb Value { get; }
-        public XyzColor Linear { get; }
+        public LabColor Perceptual { get; }
         public bool Important { get; }
 
         /// Create an important color with the given value.
         public PaletteEntry(Rgb rgb, bool important = true)
         {
             Value = rgb;
-            Linear = ColorSpace.Srgb.ToXyz(rgb);
+            Perceptual = rgb.ToLab();
             Important = important;
         }
     }

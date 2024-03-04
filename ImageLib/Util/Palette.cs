@@ -60,11 +60,8 @@ namespace ImageLib.Util
         /// <remarks>
         /// Unimportant colors are not considered.
         /// </remarks>
-        public int Match(XyzColor c)
+        public int Match(LabColor c)
         {
-            double sq(double x) => x * x;
-            double diff(XyzColor a, XyzColor b) => sq(a.X - b.X) + sq(a.Y - b.Y) + sq(a.Z - b.Z);
-
             var n = Count;
             var best = -1;
             var bestD = double.PositiveInfinity;
@@ -76,7 +73,7 @@ namespace ImageLib.Util
                 if (!entry.Important)
                     continue;
 
-                var d = diff(c, entry.Linear);
+                var d = c.Sub(entry.Perceptual).LenSq();
                 if (d < bestD)
                 {
                     best = i;
@@ -92,9 +89,8 @@ namespace ImageLib.Util
             double diff(PaletteEntry a, PaletteEntry b)
             {
                 if (!a.Important || !b.Important)
-                    return 10;
-                var d = a.Linear.Sub(b.Linear);
-                return d.X * d.X + d.Y * d.Y + d.Z * d.Z;
+                    return 1e12;
+                return a.Perceptual.Sub(b.Perceptual).LenSq();
             }
 
             void swap(int i, int j)
