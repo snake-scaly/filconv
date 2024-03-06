@@ -206,7 +206,7 @@ namespace ImageLib.Agat
             var k = 1 << BitsPerPixel;
 
             var paletteBuilder = new AgatPaletteBuilder();
-            var palette = paletteBuilder.Build(AllPixelsForPalette(src), k);
+            var palette = paletteBuilder.Build(src.AllPixelsInRect(0, 0, Width, Height), k);
 
             // 2BPP color palettes are pure chaos anyway, so sort custom palette
             // to look better in grayscale when BPP is low.
@@ -261,20 +261,6 @@ namespace ImageLib.Agat
             };
         }
 
-        private IEnumerable<Rgb> AllPixelsForPalette(IReadOnlyPixels src)
-        {
-            for (var y = 0; y < Height; y++)
-            {
-                for (var x = 0; x < Width; x++)
-                {
-                    if (x < src.Width && y < src.Height)
-                        yield return src.GetPixel(x, y);
-                    else
-                        yield return Rgb.FromRgb(0, 0, 0);
-                }
-            }
-        }
-        
         private class WriteableNative : IWriteablePixels<int>
         {
             private readonly AgatImageFormatAbstr _format;
