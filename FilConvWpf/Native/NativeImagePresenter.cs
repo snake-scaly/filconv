@@ -300,6 +300,8 @@ namespace FilConvWpf.Native
         private static readonly NamedDisplay[] _displays =
         {
             new NamedDisplay("DisplayNameColor", NativeDisplay.Color),
+            new NamedDisplay("DisplayNameColorFilled", NativeDisplay.ColorFilled),
+            new NamedDisplay("DisplayNameColorStriped", NativeDisplay.ColorStriped),
             new NamedDisplay("DisplayNameMono", NativeDisplay.Mono),
             new NamedDisplay("DisplayNameMeta", NativeDisplay.Meta),
             new NamedDisplay("DisplayNameArtifact", NativeDisplay.Artifact),

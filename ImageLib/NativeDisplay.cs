@@ -7,6 +7,8 @@ namespace ImageLib
     public enum NativeDisplay
     {
         Color,
+        ColorFilled,
+        ColorStriped,
         Mono,
         Meta,
         Artifact,

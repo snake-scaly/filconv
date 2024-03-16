@@ -4,7 +4,7 @@ namespace ImageLib.Apple
 {
     public abstract class Apple2ImageFormatAbstr : INativeImageFormat
     {
-        public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
+        public virtual IEnumerable<NativeDisplay> SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Artifact };
 
         public virtual IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;

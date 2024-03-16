@@ -304,6 +304,12 @@
   <data name="DisplayNameColor" xml:space="preserve">
     <value>Цветной</value>
   </data>
+  <data name="DisplayNameColorFilled" xml:space="preserve">
+    <value>Цветной с заливкой</value>
+  </data>
+  <data name="DisplayNameColorStriped" xml:space="preserve">
+    <value>Цветной без заливки</value>
+  </data>
   <data name="DisplayNameMeta" xml:space="preserve">
     <value>Карта палитр</value>
   </data>

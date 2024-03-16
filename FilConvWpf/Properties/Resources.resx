@@ -346,6 +346,12 @@
   <data name="DisplayNameColor" xml:space="preserve">
     <value>RGB</value>
   </data>
+  <data name="DisplayNameColorFilled" xml:space="preserve">
+    <value>RGB filled</value>
+  </data>
+  <data name="DisplayNameColorStriped" xml:space="preserve">
+    <value>RGB no fill</value>
+  </data>
   <data name="DisplayNameMeta" xml:space="preserve">
     <value>Palette card</value>
   </data>

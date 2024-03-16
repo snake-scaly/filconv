@@ -300,6 +300,12 @@
   <data name="DisplayNameColor" xml:space="preserve">
     <value>Цвят</value>
   </data>
+  <data name="DisplayNameColorFilled" xml:space="preserve">
+    <value>Запълнен цвят</value>
+  </data>
+  <data name="DisplayNameColorStriped" xml:space="preserve">
+    <value>Цвят без запълване</value>
+  </data>
   <data name="DisplayNameMeta" xml:space="preserve">
     <value>Palette card</value>
   </data>
