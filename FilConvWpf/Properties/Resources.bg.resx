@@ -301,13 +301,13 @@
     <value>Цвят</value>
   </data>
   <data name="DisplayNameColorFilled" xml:space="preserve">
-    <value>Запълнен цвят</value>
+    <value>ЧЗС със запълване</value>
   </data>
   <data name="DisplayNameColorStriped" xml:space="preserve">
-    <value>Цвят без запълване</value>
+    <value>ЧЗС без запълване</value>
   </data>
   <data name="DisplayNameMeta" xml:space="preserve">
-    <value>Palette card</value>
+    <value>Разцветъчна платка</value>
   </data>
   <data name="DisplayNameMono" xml:space="preserve">
     <value>Ч/Б</value>
