@@ -25,10 +25,10 @@ namespace ImageLib.Apple
             _paletteStriped = new HiResPaletteBuilder(_rendererStriped).Build();
         }
 
-        public override IEnumerable<NativeDisplay> SupportedDisplays { get; } =
+        public override IEnumerable<NativeDisplay>? SupportedDisplays { get; } =
             new[] { NativeDisplay.ColorFilled, NativeDisplay.ColorStriped, NativeDisplay.Mono, NativeDisplay.Artifact };
 
-        public override IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+        public override IEnumerable<NativeDisplay>? SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.ColorFilled, NativeDisplay.ColorStriped };
 
         public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)

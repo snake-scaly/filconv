@@ -15,8 +15,8 @@ namespace ImageLib.Spectrum
         protected const int _paletteSize = _colorLines * _bytesPerLine;
         protected const int _totalBytes = (_height + _colorLines) * _bytesPerLine;
 
-        public IEnumerable<NativeDisplay> SupportedDisplays => null;
-        public IEnumerable<NativeDisplay> SupportedEncodingDisplays => null;
+        public IEnumerable<NativeDisplay>? SupportedDisplays => null;
+        public IEnumerable<NativeDisplay>? SupportedEncodingDisplays => null;
 
         public abstract int ComputeMatchScore(NativeImage native);
 
@@ -42,6 +42,7 @@ namespace ImageLib.Spectrum
                         pixels[dstOffset] = pixelColor.B;
                         pixels[dstOffset + 1] = pixelColor.G;
                         pixels[dstOffset + 2] = pixelColor.R;
+                        pixels[dstOffset + 3] = byte.MaxValue;
                     }
                 }
             }
@@ -55,7 +56,7 @@ namespace ImageLib.Spectrum
         }
 
         public DecodingOptions GetDefaultDecodingOptions(NativeImage native) => default;
-        public IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display) => null;
+        public IEnumerable<NativePalette>? GetSupportedPalettes(NativeDisplay display) => null;
 
         protected abstract int GetLineOffset(int y);
 

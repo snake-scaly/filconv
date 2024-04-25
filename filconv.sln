@@ -3,17 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "filconv", "filconv\filconv.csproj", "{6CC6ECA1-2150-48C6-BD6A-4CC05014AD46}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilLib", "FilLib\FilLib.csproj", "{FB0CF20F-2915-4BD1-9CA0-0B853738A04A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageLib", "ImageLib\ImageLib.csproj", "{D920C1B3-0F11-4021-9C7C-E36A3AE5C3DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilConvWpf", "FilConvWpf\FilConvWpf.csproj", "{4707962D-EE99-4C50-AB11-2BFE9965A340}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilConv", "FilConv\FilConv.csproj", "{4707962D-EE99-4C50-AB11-2BFE9965A340}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilLib.Tests", "FilLib.Tests\FilLib.Tests.csproj", "{79B35196-1B78-4E6C-A815-A135E1682C93}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageLib.Tests", "ImageLib.Tests\ImageLib.Tests.csproj", "{B79E59C3-8F6D-473F-A108-11CFB292F905}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Etc", "Etc", "{1665C02F-FB56-4045-BA41-0991A055B49D}"
+	ProjectSection(SolutionItems) = preProject
+		CHANGELOG = CHANGELOG
+		LICENSE = LICENSE
+		publish.sh = publish.sh
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6CC6ECA1-2150-48C6-BD6A-4CC05014AD46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CC6ECA1-2150-48C6-BD6A-4CC05014AD46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CC6ECA1-2150-48C6-BD6A-4CC05014AD46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CC6ECA1-2150-48C6-BD6A-4CC05014AD46}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB0CF20F-2915-4BD1-9CA0-0B853738A04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB0CF20F-2915-4BD1-9CA0-0B853738A04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB0CF20F-2915-4BD1-9CA0-0B853738A04A}.Release|Any CPU.ActiveCfg = Release|Any CPU

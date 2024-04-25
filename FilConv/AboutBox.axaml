@@ -1,0 +1,26 @@
+<Window x:Class="FilConv.AboutBox"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="clr-namespace:FilConv.I18n"
+        Title="{i:L10n AboutBoxTitle}" Height="264" Width="400" CanResize="False" ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Resources/icon.ico">
+    <Grid RowDefinitions="*,Auto">
+        <StackPanel Grid.Row="0">
+            <TextBlock TextAlignment="Center" FontWeight="Bold" Margin="0 10 0 0">
+                <Run Text="{i:L10n AboutBoxProgramTitle}" /> <Run x:Name="version" />
+            </TextBlock>
+            <TextBlock TextAlignment="Center" Margin="0 14 0 0" Text="{i:L10n AboutBoxCopyright}"/>
+            <TextBlock TextAlignment="Center" Margin="0 14 0 0">
+                <Run Text="{i:L10n AboutBoxDevelopedFor}" /><LineBreak />
+                <Run TextDecorations="Underline">http://agatcomp.ru/</Run>
+            </TextBlock>
+            <TextBlock TextAlignment="Center" Margin="0 10 0 0">
+                <Run Text="{i:L10n AboutBoxIconsBy}" /><LineBreak />
+                <Run TextDecorations="Underline">https://github.com/legacy-icons/famfamfam-silk</Run>
+            </TextBlock>
+            <TextBlock TextAlignment="Center" Margin="0 10 0 0" Text="{i:L10n AboutBoxBulgarianTranslation}" />
+        </StackPanel>
+        <Button Grid.Row="1" Content="{i:L10n OkButtonTitle}" HorizontalContentAlignment="Center" HorizontalAlignment="Center" MinWidth="60" IsDefault="True" Margin="0 0 0 16" Click="Button_OnClick"/>
+    </Grid>
+</Window>

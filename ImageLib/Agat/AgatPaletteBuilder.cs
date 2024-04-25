@@ -27,7 +27,7 @@ namespace ImageLib.Agat
             return new Palette(palette, paletteSize);
         }
 
-        private static IEnumerable<Rgb> CheckFits(IEnumerable<Rgb> pixels, int paletteSize)
+        private static IEnumerable<Rgb>? CheckFits(IEnumerable<Rgb> pixels, int paletteSize)
         {
             var distinct = new HashSet<Rgb>();
             foreach (var c in pixels)

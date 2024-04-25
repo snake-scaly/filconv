@@ -22,18 +22,18 @@ namespace FilLib
             return new FilType((byte)typeCode);
         }
 
-        public override bool Equals(object obj) => obj is FilType other && Equals(other);
-        public bool Equals(FilType other) => Code == other?.Code;
+        public override bool Equals(object? obj) => obj is FilType other && Equals(other);
+        public bool Equals(FilType? other) => Code == other?.Code;
         public override int GetHashCode() => Code.GetHashCode();
 
-        public static bool operator ==(FilType a, FilType b)
+        public static bool operator ==(FilType? a, FilType? b)
         {
             if (a is null)
                 return b is null;
             return a.Equals(b);
         }
 
-        public static bool operator !=(FilType a, FilType b) => !(a == b);
+        public static bool operator !=(FilType? a, FilType? b) => !(a == b);
 
         // Calculate type index like Apple DOS does:
         // 1. Ignore the most significant write-protect bit.

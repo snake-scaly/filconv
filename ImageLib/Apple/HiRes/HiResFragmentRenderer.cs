@@ -21,10 +21,11 @@ namespace ImageLib.Apple.HiRes
             {
                 var sc = _fillPolicy.GetMiddleColor(triplet[0], triplet[1], triplet[2]);
                 var color = _palette[(int)sc];
-                ((IList<byte>)dst)[0] = color.B;
-                ((IList<byte>)dst)[1] = color.G;
-                ((IList<byte>)dst)[2] = color.R;
-                dst = new ArraySegment<byte>(dst.Array, dst.Offset + 4, dst.Count - 4);
+                dst[0] = color.B;
+                dst[1] = color.G;
+                dst[2] = color.R;
+                dst[3] = byte.MaxValue;
+                dst = dst[4..];
             }
         }
 
@@ -65,6 +66,7 @@ namespace ImageLib.Apple.HiRes
         }
 
         private static IEnumerable<T[]> Triplets<T>(IEnumerable<T> src)
+             where T : struct
         {
             // src is extended with an additional zero element at the start and at the end.
 
@@ -74,14 +76,14 @@ namespace ImageLib.Apple.HiRes
             foreach (var x2 in src)
             {
                 if (skip == 0)
-                    yield return new[] { x0, x1, x2 };
+                    yield return [x0, x1, x2];
                 else
                     skip--;
                 x0 = x1;
                 x1 = x2;
             }
 
-            yield return new[] { x0, x1, default };
+            yield return [x0, x1, default];
         }
     }
 }

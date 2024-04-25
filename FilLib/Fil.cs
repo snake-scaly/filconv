@@ -8,16 +8,15 @@ namespace FilLib
 {
     public class Fil
     {
-        private string _name;
+        private string? _name;
         private FilType _type = new FilType(0);
-        private byte[] _sectors;
+        private byte[] _sectors = [];
 
         public const int MaxNameLength = 30;
         public const int DefaultLoadAddress = 0x2000;
 
         public Fil()
         {
-            Sectors = new byte[0];
         }
 
         private Fil(byte[] originalName)
@@ -29,13 +28,19 @@ namespace FilLib
         /// <summary>
         /// Decoded name of the file
         /// </summary>
-        public string Name
+        public string? Name
         {
             get => _name;
 
             set
             {
-                _name = string.Concat(value.Take(MaxNameLength));
+                _name = value switch
+                {
+                    null => null,
+                    { Length: <= MaxNameLength } => value,
+                    _ => value[..MaxNameLength]
+                };
+                _name = value?[..Math.Min(value.Length, MaxNameLength)];
                 OriginalName = null;
             }
         }
@@ -43,7 +48,7 @@ namespace FilLib
         /// <summary>
         /// Name of the file in original encoding
         /// </summary>
-        public byte[] OriginalName { get; private set; }
+        public byte[]? OriginalName { get; private set; }
 
         public FilType Type
         {

@@ -9,9 +9,10 @@ namespace ImageLib.Apple.BitStream
     /// </summary>
     internal sealed class NtscScanlineWriter : IScanlineWriter
     {
-        private IColorWriter _colorWriter;
+        private readonly IColorWriter _colorWriter;
         private int _bits;
         private int _phase;
+        private bool _disposed;
 
         public NtscScanlineWriter(IColorWriter colorWriter, int initialPhase = 0)
         {
@@ -31,7 +32,7 @@ namespace ImageLib.Apple.BitStream
 
         public void Dispose()
         {
-            if (_colorWriter == null)
+            if (_disposed)
                 return;
 
             while (_bits != 0)
@@ -40,7 +41,7 @@ namespace ImageLib.Apple.BitStream
             }
 
             _colorWriter.Dispose();
-            _colorWriter = null;
+            _disposed = true;
         }
     }
 }

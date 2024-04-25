@@ -16,6 +16,7 @@ namespace ImageLib.Apple
         private const int _nativePage = 1024;
         private int _totalBytes;
 
+        private const int _alphaByteOffset = 3;
         private const int _redByteOffset = 2;
         private const int _greenByteOffset = 1;
         private const int _blueByteOffset = 0;
@@ -120,6 +121,7 @@ namespace ImageLib.Apple
             pixels[offset + _redByteOffset] = c.R;
             pixels[offset + _greenByteOffset] = c.G;
             pixels[offset + _blueByteOffset] = c.B;
+            pixels[offset + _alphaByteOffset] = byte.MaxValue;
         }
 
         private AspectBitmap NativeToBitStream(NativeImage native, IBitStreamPictureBuilder builder)

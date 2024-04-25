@@ -16,9 +16,9 @@ namespace ImageLib.Agat
         private static readonly IHiResPalette _hiResPaletteColor;
         private static readonly IHiResPalette _hiResPaletteMono;
 
-        public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
+        public IEnumerable<NativeDisplay>? SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
-        public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+        public IEnumerable<NativeDisplay>? SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
 
         static AgatAppleImageFormat()
@@ -105,7 +105,7 @@ namespace ImageLib.Agat
                 : new DecodingOptions { Display = NativeDisplay.Color, Palette = NativePalette.Default };
         }
 
-        public IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display) => null;
+        public IEnumerable<NativePalette>? GetSupportedPalettes(NativeDisplay display) => null;
 
         private static Rgb[] HardwareToAppleColorOrder(Rgb[] rgb16) => new[]
         {

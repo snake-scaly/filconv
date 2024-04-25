@@ -1,0 +1,57 @@
+<Window x:Class="FilConv.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:z="clr-namespace:FilConv"
+        xmlns:i="clr-namespace:FilConv.I18n"
+        xmlns:v="clr-namespace:FilConv.Views"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
+        Title="{Binding Title}"
+        Icon="/Resources/icon.ico">
+
+    <Design.DataContext>
+        <z:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto,*">
+
+        <Menu Grid.ColumnSpan="3">
+            <MenuItem Header="{i:L10n MenuFile}">
+                <MenuItem Header="{i:L10n MenuFileOpen}"
+                          Command="{Binding FileOpenCommand}"
+                          CommandParameter="{Binding $parent[Window].StorageProvider}" />
+                <MenuItem Header="{i:L10n MenuFileSaveAs}"
+                          Command="{Binding FileSaveAsCommand}"
+                          CommandParameter="{Binding $parent[Window].StorageProvider}" />
+                <Separator />
+                <MenuItem Header="{i:L10n MenuFileExit}" Click="menuExit_Click" />
+            </MenuItem>
+            <MenuItem Header="{i:L10n MenuLanguage}">
+                <MenuItem Header="{i:L10n MenuLanguageAuto}"
+                          Command="{Binding ChangeLanguageCommand}"/>
+                <MenuItem Header="{i:L10n MenuLanguageEnglish}"
+                          Command="{Binding ChangeLanguageCommand}"
+                          CommandParameter="en"/>
+                <MenuItem Header="{i:L10n MenuLanguageRussian}"
+                          Command="{Binding ChangeLanguageCommand}"
+                          CommandParameter="ru"/>
+                <MenuItem Header="{i:L10n MenuLanguageBulgarian}"
+                          Command="{Binding ChangeLanguageCommand}"
+                          CommandParameter="bg"/>
+            </MenuItem>
+            <MenuItem Header="{i:L10n MenuHelp}">
+                <MenuItem Header="{i:L10n MenuHelpAbout}" Click="menuAbout_Click" />
+            </MenuItem>
+        </Menu>
+
+        <v:PresenterView Grid.Row="1" Grid.Column="0"
+                         Title="{i:L10n LeftPreviewDefaultTitle}"
+                         ImagePresenter="{Binding OriginalPresenter}"/>
+        <v:PresenterView Grid.Row="1" Grid.Column="2"
+                         Title="{i:L10n RightPreviewDefaultTitle}"
+                         ImagePresenter="{Binding EncodingPresenter}"/>
+        <GridSplitter Grid.Row="1" Grid.Column="1"
+                      Background="{DynamicResource ScrollBarTrackFill}"/>
+    </Grid>
+</Window>

@@ -4,6 +4,7 @@ using System.Linq;
 namespace ImageLib.Quantization
 {
     public class KMeansClustering<T>
+        where T : struct
     {
         private readonly ISampleOps<T> _sampleOps;
         private readonly IKMeansSeeder<T> _seeder;
@@ -54,9 +55,9 @@ namespace ImageLib.Quantization
 
         private Cluster Closest(IList<Cluster> clusters, T point)
         {
-            Cluster best = null;
-            var bestMetric = double.PositiveInfinity;
-            foreach (var cluster in clusters)
+            Cluster best = clusters[0];
+            var bestMetric = _sampleOps.Metric(best.Centroid, point);
+            foreach (var cluster in clusters.Skip(1))
             {
                 var metric = _sampleOps.Metric(cluster.Centroid, point);
                 if (metric < bestMetric)

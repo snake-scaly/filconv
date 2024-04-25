@@ -12,16 +12,16 @@ namespace ImageLib
         /// <summary>
         /// Raw image data.
         /// </summary>
-        public byte[] Data { get; set; }
+        public required byte[] Data { get; init; }
 
         /// <summary>
         /// Hint about the possible data format.
         /// </summary>
-        public FormatHint FormatHint { get; set; }
+        public FormatHint FormatHint { get; init; }
 
         /// <summary>
         /// Optional image metadata.
         /// </summary>
-        public ImageMeta Metadata { get; set; }
+        public ImageMeta? Metadata { get; init; }
     }
 }

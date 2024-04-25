@@ -1,11 +1,17 @@
 #!/bin/bash
 
-PROJECT=FilConvWpf/FilConvWpf.csproj
-VERSION=$(cat FilConvWpf/Properties/AssemblyInfo.cs | sed 's@//.*@@' | grep '\<AssemblyVersion\>' | sed -E 's/^.*\("(.*?)"\).*/\1/')
-COMMFLAGS="--configuration Release -p:DebugType=None -p:DebugSymbols=false"
+PROJECT=FilConv/FilConv.csproj
+VERSION=$(cat $PROJECT | grep '<AssemblyVersion>' | sed -E 's/^.*>(.*?)<.*/\1/')
+
+pub() {
+  dotnet publish $PROJECT \
+    --configuration Release \
+    -p:DebugType=None \
+    -p:DebugSymbols=false \
+    "$@"
+}
 
 echo "AssemblyVersion $VERSION"
 
-dotnet restore $PROJECT
-dotnet build $COMMFLAGS $PROJECT --no-restore
-dotnet publish $COMMFLAGS $PROJECT --no-build --output FilConv-$VERSION
+pub --runtime linux-x64 --output FilConv-linux-$VERSION
+pub --runtime win-x64 --output FilConv-win-$VERSION

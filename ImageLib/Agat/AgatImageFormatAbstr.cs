@@ -13,10 +13,10 @@ namespace ImageLib.Agat
         private static readonly NativePalette[] _displayPalettes =
             { NativePalette.Agat1, NativePalette.Agat2, NativePalette.Agat3, NativePalette.Agat4 };
 
-        public IEnumerable<NativeDisplay> SupportedDisplays { get; } =
+        public IEnumerable<NativeDisplay>? SupportedDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
 
-        public IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+        public IEnumerable<NativeDisplay>? SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono, NativeDisplay.Meta };
 
         protected abstract int Width { get; }
@@ -46,6 +46,7 @@ namespace ImageLib.Agat
                     pixels[pixel] = c.B;
                     pixels[pixel + 1] = c.G;
                     pixels[pixel + 2] = c.R;
+                    pixels[pixel + 3] = byte.MaxValue;
                 }
             }
             return AspectBitmap.FromImageAspect(new Bgr32BitmapData(pixels, Width, Height), 4.0 / 3.0);
@@ -90,7 +91,7 @@ namespace ImageLib.Agat
             };
         }
 
-        public virtual IEnumerable<NativePalette> GetSupportedPalettes(NativeDisplay display)
+        public virtual IEnumerable<NativePalette>? GetSupportedPalettes(NativeDisplay display)
         {
             if (display == NativeDisplay.Meta)
                 return null;

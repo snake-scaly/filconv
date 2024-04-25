@@ -1,3 +1,4 @@
+using System;
 using ImageLib.ColorManagement;
 
 namespace ImageLib.Apple.BitStream
@@ -48,7 +49,7 @@ namespace ImageLib.Apple.BitStream
                 _bitmap.Pixels[_pos++] = c.B;
                 _bitmap.Pixels[_pos++] = c.G;
                 _bitmap.Pixels[_pos++] = c.R;
-                _pos++;
+                _bitmap.Pixels[_pos++] = byte.MaxValue;
             }
 
             public void Dispose()

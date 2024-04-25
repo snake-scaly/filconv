@@ -7,7 +7,7 @@ namespace ImageLib.Agat
 {
     internal static class AgatColorUtils
     {
-        public static Rgb[] NativeDisplayToColors(NativeDisplay display, ImageMeta meta)
+        public static Rgb[] NativeDisplayToColors(NativeDisplay display, ImageMeta? meta)
         {
             switch (display)
             {
@@ -17,6 +17,8 @@ namespace ImageLib.Agat
                 case NativeDisplay.Meta:
                     if (meta == null)
                         throw new InvalidOperationException("Cannot use Meta palette without meta");
+                    if (meta.CustomPalette == null)
+                        throw new InvalidOperationException("Meta palette is null");
                     return meta.CustomPalette.Select(UintToRgb).ToArray();
 
                 default:

@@ -59,7 +59,7 @@ namespace ImageLib.Apple.BitStream
             if (index < 0 || index >= _height)
                 throw new ArgumentOutOfRangeException(nameof(index), index, "Must be within [0, " + _height + ")");
 
-            var doubleColorWriter = new BitmapDoubleColorWriter(_bitmap, index * _linesPerScanline);
+            var doubleColorWriter = new BitmapTripleColorWriter(_bitmap, index * _linesPerScanline);
             var partialLineColorWriter = new PartialLineColorWriter(doubleColorWriter, _scanlinePadding, _width);
             return new NtscScanlineWriter(partialLineColorWriter, _phase);
         }

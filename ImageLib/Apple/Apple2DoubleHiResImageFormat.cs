@@ -20,7 +20,7 @@ namespace ImageLib.Apple
         private const int _width = 140;
         private const int _height = 192;
 
-        public override IEnumerable<NativeDisplay> SupportedEncodingDisplays { get; } =
+        public override IEnumerable<NativeDisplay>? SupportedEncodingDisplays { get; } =
             new[] { NativeDisplay.Color, NativeDisplay.Mono };
 
         public override AspectBitmap FromNative(NativeImage native, DecodingOptions options)
@@ -115,6 +115,7 @@ namespace ImageLib.Apple
                         Rgb c = Apple2HardwareColors.DoubleHiRes16[pixelValue].Value;
 
                         int dstPixelOffset = y * stride + (w * _pixelsPerWord + i) * bytesPerBmpPixel;
+                        pixels[dstPixelOffset + 3] = byte.MaxValue;
                         pixels[dstPixelOffset + 2] = c.R;
                         pixels[dstPixelOffset + 1] = c.G;
                         pixels[dstPixelOffset + 0] = c.B;
