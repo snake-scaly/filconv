@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>FilConv</PackageId>
     <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
