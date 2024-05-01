@@ -52,8 +52,9 @@ public sealed class NativeImagePresenter : IImagePresenter, IOriginal
 
         _tools = new ITool[] { _modeSelector, _displaySelector, _paletteSelector };
 
-        _currentMode = _modes.First();
-        _modeSelector.CurrentChoice = GuessPreviewMode(_currentMode);
+        // setting _modeSelector.CurrentChoice will set _currentMode to non-null before the constructor finishes
+        _currentMode = null!;
+        _modeSelector.CurrentChoice = GuessPreviewMode(null);
     }
 
     public void Dispose()
@@ -236,11 +237,12 @@ public sealed class NativeImagePresenter : IImagePresenter, IOriginal
         ToolBarChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private NamedMode GuessPreviewMode(NamedMode preferred)
+    private NamedMode GuessPreviewMode(NamedMode? preferred)
     {
         // This relies on OrderByDescending performing a stable sort. Therefore if
         // preferred is among the best it will come out first.
-        return new[] { preferred }.Concat(_modes)
+        NamedMode[] head = preferred != null ? [preferred] : [];
+        return head.Concat(_modes)
             .OrderByDescending(f => f.Format.ComputeMatchScore(NativeImage))
             .First();
     }
