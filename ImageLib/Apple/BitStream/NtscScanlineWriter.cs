@@ -13,6 +13,7 @@ namespace ImageLib.Apple.BitStream
         private int _bits;
         private int _phase;
         private bool _disposed;
+        private int _column;
 
         public NtscScanlineWriter(IColorWriter colorWriter, int initialPhase = 0)
         {
@@ -21,13 +22,16 @@ namespace ImageLib.Apple.BitStream
 
             _colorWriter = colorWriter;
             _phase = initialPhase - 1;
+            _column = 0;
         }
 
         public void Write(int bit)
         {
             _bits = (_bits >> 1) | ((bit & 1) << 5);
             ++_phase;
-            _colorWriter.Write(YIQColor.From6BitsPerceptual(_bits, _phase).ToColor());
+            ++_column;
+            if (_column < 560)
+                _colorWriter.Write(YIQColor.From6BitsPerceptual(_bits, _phase).ToColor());
         }
 
         public void Dispose()
@@ -35,7 +39,7 @@ namespace ImageLib.Apple.BitStream
             if (_disposed)
                 return;
 
-            while (_bits != 0)
+            while (_column < 560)
             {
                 Write(0);
             }
