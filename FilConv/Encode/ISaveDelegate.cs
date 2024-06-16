@@ -8,7 +8,6 @@ namespace FilConv.Encode;
 public interface ISaveDelegate
 {
     string FormatNameL10nKey { get; }
-    IEnumerable<string> FileNameMasks { get; }
-    string DeriveOutputFileName(string inputFileName);
+    IEnumerable<string> FileNameSuffixes { get; }
     void SaveAs(string fileName);
 }

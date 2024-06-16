@@ -322,4 +322,13 @@
   <data name="FormatNameAgatApple" xml:space="preserve">
     <value>Агат Apple</value>
   </data>
+  <data name="MenuFileOpenRaw" xml:space="preserve">
+    <value>Открыть _сырые данные...</value>
+  </data>
+  <data name="FileFormatNameRaw" xml:space="preserve">
+    <value>Сырые данные</value>
+  </data>
+  <data name="MenuFileSaveRawAs" xml:space="preserve">
+    <value>Сохранить с_ырые данные как...</value>
+  </data>
 </root>

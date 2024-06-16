@@ -1,24 +1,23 @@
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia.Media.Imaging;
 
 namespace FilConv.Encode;
 
-class GdiSaveDelegate : SaveDelegateAbstr
+class GdiSaveDelegate : ISaveDelegate
 {
-    private Bitmap _bitmap;
-    private string _name;
-    private IEnumerable<string> _masks;
+    private readonly Bitmap _bitmap;
 
-    public GdiSaveDelegate(Bitmap bitmap, string formatNameL10nKey, IEnumerable<string> fileNameMasks)
+    public GdiSaveDelegate(Bitmap bitmap, string formatNameL10nKey, IEnumerable<string> fileNameSuffixes)
     {
         _bitmap = bitmap;
-        _name = formatNameL10nKey;
-        _masks = new List<string>(fileNameMasks).AsReadOnly();
+        FormatNameL10nKey = formatNameL10nKey;
+        FileNameSuffixes = fileNameSuffixes.ToList();
     }
 
-    public override string FormatNameL10nKey => _name;
+    public string FormatNameL10nKey { get; }
 
-    public override IEnumerable<string> FileNameMasks => _masks;
+    public IEnumerable<string> FileNameSuffixes { get; }
 
-    public override void SaveAs(string fileName) => _bitmap.Save(fileName);
+    public void SaveAs(string fileName) => _bitmap.Save(fileName);
 }

@@ -66,6 +66,11 @@ public class NativeEncoding : IEncoding
         return new[] { new FilSaveDelegate(original, _format, GetEncodingOptions()) };
     }
 
+    public ISaveDelegate GetRawSaveDelegate(Bitmap original)
+    {
+        return new RawSaveDelegate(original, _format, GetEncodingOptions());
+    }
+
     public void StoreSettings(IDictionary<string, object> settings)
     {
         if (_displaySelector.Element.IsEnabled && _currentDisplay != null)

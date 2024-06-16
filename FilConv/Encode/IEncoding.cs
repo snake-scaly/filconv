@@ -14,6 +14,7 @@ public interface IEncoding
 
     AspectBitmapSource Preview(Bitmap original);
     IEnumerable<ISaveDelegate> GetSaveDelegates(Bitmap original);
+    ISaveDelegate? GetRawSaveDelegate(Bitmap original);
 
     void StoreSettings(IDictionary<string, object> settings);
     void AdoptSettings(IDictionary<string, object> settings);

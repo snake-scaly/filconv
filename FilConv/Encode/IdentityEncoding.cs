@@ -28,6 +28,11 @@ class IdentityEncoding : IEncoding
         return Enumerable.Empty<ISaveDelegate>();
     }
 
+    public ISaveDelegate? GetRawSaveDelegate(Bitmap original)
+    {
+        return null;
+    }
+
     public void StoreSettings(IDictionary<string, object> settings)
     {
     }

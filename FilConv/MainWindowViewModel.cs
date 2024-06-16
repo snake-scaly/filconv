@@ -5,16 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Data.Core;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FilConv.Encode;
 using FilConv.I18n;
-using FilConv.Native;
 using FilConv.Presenter;
-using FilLib;
-using ImageLib;
+using FilConv.Services;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 
@@ -22,6 +18,8 @@ namespace FilConv;
 
 public partial class MainWindowViewModel : ObservableObject
 {
+    private readonly IImageFileService _imageFileService;
+    private readonly IFileChooserService _fileChooserService;
     private readonly Dictionary<string, object> _originalPreviewSettings = new();
     private readonly Dictionary<string, object> _encodedPreviewSettings = new();
 
@@ -33,8 +31,11 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private IImagePresenter? _encodingPresenter;
     public string Title => FileName == null ? AppTitle : $"{Path.GetFileName(FileName)} - {AppTitle}";
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(IFileChooserService fileChooserService, IImageFileService imageFileService)
     {
+        _fileChooserService = fileChooserService;
+        _imageFileService = imageFileService;
+
         L10n.AddLocalizedProperty(
             this,
             new ClrPropertyInfo(nameof(AppTitle), _ => AppTitle, (_, v) => AppTitle = (string)v!, typeof(string)),
@@ -43,106 +44,81 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task FileOpen(IStorageProvider storageProvider)
+    private async Task FileOpen()
     {
-        var options = new FilePickerOpenOptions { FileTypeFilter = GetFileFilterList() };
+        var allSuffixes = _supportedFiles.SelectMany(x => x.Suffixes).Distinct().ToList();
+        var allSupported = new SupportedFile("FileFormatNameAllSupported", allSuffixes);
 
-        var suggestedDir = Path.GetDirectoryName(FileName);
-        if (suggestedDir != null)
-            options.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(suggestedDir);
+        var all = Enumerable.Empty<SupportedFile>()
+            .Append(allSupported)
+            .Concat(_supportedFiles)
+            .Append(_allFiles);
 
-        var picked = await storageProvider.OpenFilePickerAsync(options);
-        if (picked.Count == 0)
+        var picked = await _fileChooserService.OpenChooserAsync(all, FileName);
+        if (picked == null)
             return;
-
-        var fileName = picked[0].Path.LocalPath;
 
         try
         {
-            IImagePresenter newLeftPresenter;
-
-            if (fileName.EndsWith(".fil", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var fil = Fil.FromFile(fileName);
-                ImageMeta.TryParse(fil, out var metadata);
-                var ni = new NativeImage
-                {
-                    Data = fil.GetData(),
-                    Metadata = metadata,
-                    FormatHint = new FormatHint(fileName),
-                };
-                newLeftPresenter = new NativeImagePresenter(ni);
-            }
-            else if (fileName.EndsWith(".scr", StringComparison.InvariantCultureIgnoreCase) ||
-                     fileName.EndsWith(".bol", StringComparison.InvariantCultureIgnoreCase))
-            {
-                NativeImage ni = new NativeImage
-                {
-                    Data = File.ReadAllBytes(fileName),
-                    FormatHint = new FormatHint(fileName)
-                };
-                newLeftPresenter = new NativeImagePresenter(ni);
-            }
-            else
-            {
-                var bmp = new Bitmap(fileName);
-                _ = bmp.Format ?? throw new NotSupportedException("Unsupported image format");
-                newLeftPresenter = new BitmapPresenter(bmp);
-            }
+            var newLeftPresenter = await _imageFileService.LoadAsync(picked);
 
             OriginalPresenter = newLeftPresenter;
             EncodingPresenter = new EncodingImagePresenter((IOriginal)newLeftPresenter);
-            FileName = fileName;
+            FileName = picked;
         }
-        catch (NotSupportedException e)
+        catch (Exception e)
         {
             var messageBox = MessageBoxManager.GetMessageBoxStandard(
                 (string)L10n.GetObject("ErrorMessageBoxTitle"),
-                string.Format((string)L10n.GetObject("UnableToLoadFileError"), fileName, e.Message),
+                string.Format((string)L10n.GetObject("UnableToLoadFileError"), picked, e.Message),
                 icon: Icon.Error);
             await messageBox.ShowAsync();
         }
     }
 
-    private bool FileSaveAsCanExecute(IStorageProvider storageProvider) =>
-        EncodingPresenter != null;
-
-    [RelayCommand(CanExecute = nameof(FileSaveAsCanExecute))]
-    private async Task FileSaveAs(IStorageProvider storageProvider)
+    [RelayCommand]
+    private async Task FileOpenRaw()
     {
-        var eip = (EncodingImagePresenter)EncodingPresenter!;
-        var delegates = eip.SaveDelegates.ToList();
-        var defaultDelegate = delegates[0];
-
-        var choices = delegates
-            .Select(
-                x => new FilePickerFileType(L10n.GetObject(x.FormatNameL10nKey) as string)
-                {
-                    Patterns = x.FileNameMasks.ToList()
-                })
-            .ToList();
-
-        var options = new FilePickerSaveOptions
-        {
-            FileTypeChoices = choices,
-            DefaultExtension = defaultDelegate.FileNameMasks.First(),
-            SuggestedFileName = Path.GetFileNameWithoutExtension(FileName),
-        };
-
-        var suggestedDir = Path.GetDirectoryName(FileName);
-        if (suggestedDir != null)
-            options.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(suggestedDir);
-
-        var picked = await storageProvider.SaveFilePickerAsync(options);
-
+        var picked = await _fileChooserService.OpenChooserAsync([_allFiles], FileName);
         if (picked == null)
             return;
 
-        var pickedExt = Path.GetExtension(picked.Name);
+        try
+        {
+            var newLeftPresenter = await _imageFileService.LoadRawAsync(picked);
+
+            OriginalPresenter = newLeftPresenter;
+            EncodingPresenter = new EncodingImagePresenter((IOriginal)newLeftPresenter);
+            FileName = picked;
+        }
+        catch (Exception e)
+        {
+            var messageBox = MessageBoxManager.GetMessageBoxStandard(
+                (string)L10n.GetObject("ErrorMessageBoxTitle"),
+                string.Format((string)L10n.GetObject("UnableToLoadFileError"), picked, e.Message),
+                icon: Icon.Error);
+            await messageBox.ShowAsync();
+        }
+    }
+
+    private bool FileSaveAsCanExecute() => EncodingPresenter is EncodingImagePresenter;
+
+    [RelayCommand(CanExecute = nameof(FileSaveAsCanExecute))]
+    private async Task FileSaveAs()
+    {
+        var eip = (EncodingImagePresenter)EncodingPresenter!;
+        var delegates = eip.SaveDelegates.ToList();
+        var choices = delegates.Select(x => new SupportedFile(x.FormatNameL10nKey, x.FileNameSuffixes.ToList()));
+
+        var picked = await _fileChooserService.SaveChooserAsync(choices, FileName);
+        if (picked == null)
+            return;
+
+        var pickedExt = Path.GetExtension(picked);
         ISaveDelegate? pickedDelegate = null;
 
         if (!string.IsNullOrEmpty(pickedExt))
-            pickedDelegate = delegates.FirstOrDefault(x => x.FileNameMasks.Any(y => y.EndsWith(pickedExt)));
+            pickedDelegate = delegates.FirstOrDefault(x => x.FileNameSuffixes.Any(y => y.EndsWith(pickedExt)));
 
         if (pickedDelegate == null)
         {
@@ -156,7 +132,33 @@ public partial class MainWindowViewModel : ObservableObject
 
         try
         {
-            pickedDelegate.SaveAs(picked.Path.LocalPath);
+            pickedDelegate.SaveAs(picked);
+        }
+        catch (Exception ex)
+        {
+            var messageBox = MessageBoxManager.GetMessageBoxStandard(
+                (string)L10n.GetObject("ErrorMessageBoxTitle"),
+                ex.Message,
+                icon: Icon.Error);
+            await messageBox.ShowAsync();
+        }
+    }
+
+    private bool FileRawSaveAsCanExecute() =>
+        EncodingPresenter is EncodingImagePresenter { RawSaveDelegate: not null };
+
+    [RelayCommand(CanExecute = nameof(FileRawSaveAsCanExecute))]
+    private async Task FileSaveRawAs()
+    {
+        var eip = (EncodingImagePresenter)EncodingPresenter!;
+
+        var picked = await _fileChooserService.SaveChooserAsync([_allFiles], FileName);
+        if (picked == null)
+            return;
+
+        try
+        {
+            eip.RawSaveDelegate!.SaveAs(picked);
         }
         catch (Exception ex)
         {
@@ -188,34 +190,16 @@ public partial class MainWindowViewModel : ObservableObject
         oldValue?.Dispose();
     }
 
-    private static IReadOnlyList<FilePickerFileType> GetFileFilterList()
-    {
-        var all = new FilePickerFileType("All files (*.*)") { Patterns = ["*.*"] };
-        var allSupported = new FilePickerFileType("Supported formats")
-        {
-            Patterns = _supportedFiles.SelectMany(x => x.Extensions).ToList(),
-        };
-        var individual = _supportedFiles.Select(x => new FilePickerFileType(FormatName(x)) { Patterns = x.Extensions });
-
-        return Enumerable.Empty<FilePickerFileType>()
-            .Append(allSupported)
-            .Concat(individual)
-            .Append(all)
-            .ToList();
-
-        string FormatName(SupportedFile sf) =>
-            $"{L10n.GetObject(sf.Name) as string} ({string.Join(", ", sf.Extensions)})";
-    }
-
-    private record struct SupportedFile(string Name, string[] Extensions);
-
-    private static readonly SupportedFile[] _supportedFiles = [
-        new SupportedFile("FileFormatNameFil", ["*.fil", "*.FIL"]),
-        new SupportedFile("FileFormatNameScr", ["*.scr"]),
-        new SupportedFile("FileFormatNameBmp", ["*.bmp"]),
-        new SupportedFile("FileFormatNameJpeg", ["*.jpg", "*,jpeg"]),
-        new SupportedFile("FileFormatNamePng", ["*.png"]),
-        new SupportedFile("FileFormatNameGif", ["*.gif"]),
-        new SupportedFile("FileFormatNameTiff", ["*.tif", "*.tiff"])
+    private static readonly SupportedFile[] _supportedFiles =
+    [
+        new SupportedFile("FileFormatNameFil", [".fil", ".FIL"]),
+        new SupportedFile("FileFormatNameScr", [".scr"]),
+        new SupportedFile("FileFormatNameBmp", [".bmp"]),
+        new SupportedFile("FileFormatNameJpeg", [".jpg", ".jpeg"]),
+        new SupportedFile("FileFormatNamePng", [".png"]),
+        new SupportedFile("FileFormatNameGif", [".gif"]),
+        new SupportedFile("FileFormatNameTiff", [".tif", ".tiff"])
     ];
+
+    private static readonly SupportedFile _allFiles = new("FileFormatNameAll", []);
 }

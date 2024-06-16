@@ -53,6 +53,9 @@ public sealed class EncodingImagePresenter : IImagePresenter
         }
     }
 
+    public ISaveDelegate? RawSaveDelegate =>
+        DisplayImage == null ? null : _currentEncoding.GetRawSaveDelegate(DisplayImage.Bitmap);
+
     [MemberNotNull(nameof(_currentEncoding))]
     private void SetCurrentEncoding(IEncoding newEncoding)
     {
@@ -138,11 +141,11 @@ public sealed class EncodingImagePresenter : IImagePresenter
 
     private static IEnumerable<ISaveDelegate> GetStandardSaveDelegates(Bitmap bitmap)
     {
-        yield return new GdiSaveDelegate(bitmap, "FileFormatNamePng", ["*.png"]);
-        yield return new GdiSaveDelegate(bitmap, "FileFormatNameJpeg", ["*.jpg", "*,jpeg"]);
-        yield return new GdiSaveDelegate(bitmap, "FileFormatNameGif", ["*.gif"]);
-        yield return new GdiSaveDelegate(bitmap, "FileFormatNameBmp", ["*.bmp"]);
-        yield return new GdiSaveDelegate(bitmap, "FileFormatNameTiff", ["*.tif", "*.tiff"]);
+        yield return new GdiSaveDelegate(bitmap, "FileFormatNamePng", [".png"]);
+        yield return new GdiSaveDelegate(bitmap, "FileFormatNameJpeg", [".jpg", ".jpeg"]);
+        yield return new GdiSaveDelegate(bitmap, "FileFormatNameGif", [".gif"]);
+        yield return new GdiSaveDelegate(bitmap, "FileFormatNameBmp", [".bmp"]);
+        yield return new GdiSaveDelegate(bitmap, "FileFormatNameTiff", [".tif", ".tiff"]);
     }
 
     public void StoreSettings(IDictionary<string, object> settings)
