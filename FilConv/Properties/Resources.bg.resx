@@ -327,4 +327,10 @@
   <data name="MenuFileSaveRawAs" xml:space="preserve">
     <value>Save Ra_w Data As...</value>
   </data>
+  <data name="FormatNameAgat7Charset" xml:space="preserve">
+    <value>Agat-7 CharGen ROM</value>
+  </data>
+  <data name="FormatNameAgat9Charset" xml:space="preserve">
+    <value>Agat-9 CharGen ROM</value>
+  </data>
 </root>

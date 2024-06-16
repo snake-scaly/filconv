@@ -331,4 +331,10 @@
   <data name="MenuFileSaveRawAs" xml:space="preserve">
     <value>Сохранить с_ырые данные как...</value>
   </data>
+  <data name="FormatNameAgat7Charset" xml:space="preserve">
+    <value>ПЗУ ЗГ Агат-7</value>
+  </data>
+  <data name="FormatNameAgat9Charset" xml:space="preserve">
+    <value>ПЗУ ЗГ Агат-9</value>
+  </data>
 </root>

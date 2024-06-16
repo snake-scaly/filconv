@@ -22,6 +22,8 @@ public static class EncodingResolver
         new NativeEncoding("FormatNameAgatMGDP", new AgatMGDPImageFormat(), true),
         new NativeEncoding("FormatNameAgatApple", new AgatAppleImageFormat(), true),
         new NativeEncoding("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat(), true),
+        new NativeEncoding("FormatNameAgat7Charset", new AgatCharsetImageFormat(agat9: false), false),
+        new NativeEncoding("FormatNameAgat9Charset", new AgatCharsetImageFormat(agat9: true), false),
         new NativeEncoding("FormatNameApple2LoRes", new Apple2LoResImageFormat(false), true),
         new NativeEncoding("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true), true),
         new NativeEncoding("FormatNameApple2HiRes", new Apple2HiResImageFormat(), true),

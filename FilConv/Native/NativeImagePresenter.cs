@@ -285,36 +285,38 @@ public sealed class NativeImagePresenter : IImagePresenter, IOriginal
 
     private static readonly NamedMode[] _modes =
     {
-        new NamedMode("FormatNameAgatCGNR", new AgatCGNRImageFormat()),
-        new NamedMode("FormatNameAgatCGSR", new AgatCGSRImageFormat()),
-        new NamedMode("FormatNameAgatMGVR", new AgatMGVRImageFormat()),
-        new NamedMode("FormatNameAgatCGVR", new AgatCGVRImageFormat()),
-        new NamedMode("FormatNameAgatMGDP", new AgatMGDPImageFormat()),
-        new NamedMode("FormatNameAgatApple", new AgatAppleImageFormat()),
-        new NamedMode("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
-        new NamedMode("FormatNameApple2LoRes", new Apple2LoResImageFormat(false)),
-        new NamedMode("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true)),
-        new NamedMode("FormatNameApple2HiRes", new Apple2HiResImageFormat()),
-        new NamedMode("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat()),
-        new NamedMode("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
+        new("FormatNameAgatCGNR", new AgatCGNRImageFormat()),
+        new("FormatNameAgatCGSR", new AgatCGSRImageFormat()),
+        new("FormatNameAgatMGVR", new AgatMGVRImageFormat()),
+        new("FormatNameAgatCGVR", new AgatCGVRImageFormat()),
+        new("FormatNameAgatMGDP", new AgatMGDPImageFormat()),
+        new("FormatNameAgatApple", new AgatAppleImageFormat()),
+        new("FormatNameAgatCGSRDV", new AgatCGSRDVImageFormat()),
+        new("FormatNameAgat7Charset", new AgatCharsetImageFormat(agat9: false)),
+        new("FormatNameAgat9Charset", new AgatCharsetImageFormat(agat9: true)),
+        new("FormatNameApple2LoRes", new Apple2LoResImageFormat(false)),
+        new("FormatNameApple2DoubleLoRes", new Apple2LoResImageFormat(true)),
+        new("FormatNameApple2HiRes", new Apple2HiResImageFormat()),
+        new("FormatNameApple2DoubleHiRes", new Apple2DoubleHiResImageFormat()),
+        new("FormatNameSpectrum", new SpectrumImageFormatInterleave()),
     };
 
     private static readonly NamedDisplay[] _displays =
     {
-        new NamedDisplay("DisplayNameColor", NativeDisplay.Color),
-        new NamedDisplay("DisplayNameColorFilled", NativeDisplay.ColorFilled),
-        new NamedDisplay("DisplayNameColorStriped", NativeDisplay.ColorStriped),
-        new NamedDisplay("DisplayNameMono", NativeDisplay.Mono),
-        new NamedDisplay("DisplayNameMeta", NativeDisplay.Meta),
-        new NamedDisplay("DisplayNameArtifact", NativeDisplay.Artifact),
+        new("DisplayNameColor", NativeDisplay.Color),
+        new("DisplayNameColorFilled", NativeDisplay.ColorFilled),
+        new("DisplayNameColorStriped", NativeDisplay.ColorStriped),
+        new("DisplayNameMono", NativeDisplay.Mono),
+        new("DisplayNameMeta", NativeDisplay.Meta),
+        new("DisplayNameArtifact", NativeDisplay.Artifact),
     };
 
     private static readonly NamedPalette[] _palettes =
     {
-        new NamedPalette("PaletteNameAgat1", NativePalette.Agat1),
-        new NamedPalette("PaletteNameAgat2", NativePalette.Agat2),
-        new NamedPalette("PaletteNameAgat3", NativePalette.Agat3),
-        new NamedPalette("PaletteNameAgat4", NativePalette.Agat4),
+        new("PaletteNameAgat1", NativePalette.Agat1),
+        new("PaletteNameAgat2", NativePalette.Agat2),
+        new("PaletteNameAgat3", NativePalette.Agat3),
+        new("PaletteNameAgat4", NativePalette.Agat4),
     };
 
     private class NamedMode : NamedChoice
