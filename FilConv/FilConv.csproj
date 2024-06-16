@@ -5,8 +5,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>FilConv</PackageId>
     <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
-    <FileVersion>3.0.1.0</FileVersion>
+    <AssemblyVersion>3.0.2.0</AssemblyVersion>
+    <FileVersion>3.0.2.0</FileVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
