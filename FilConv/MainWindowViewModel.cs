@@ -201,5 +201,5 @@ public partial class MainWindowViewModel : ObservableObject
         new SupportedFile("FileFormatNameTiff", [".tif", ".tiff"])
     ];
 
-    private static readonly SupportedFile _allFiles = new("FileFormatNameAll", []);
+    private static readonly SupportedFile _allFiles = new("FileFormatNameAll", [string.Empty]);
 }
